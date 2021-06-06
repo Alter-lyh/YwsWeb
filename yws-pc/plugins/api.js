@@ -8,7 +8,7 @@ export default function ({ $axios }, inject) {
     // 响应拦截
     $axios.onResponse(res => {
         let json = res.data
-        if (json.error != '00') {
+        if (json.code != '00') {
             Message.error('错了哦，这是一条错误消息');
             return Promise.reject(json)
         }

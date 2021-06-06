@@ -5,7 +5,7 @@
                 <div class="item-header-left">
                     <img
                         class="author-img"
-                        src="https://img.lkong.cn/avatar/000/88/87/41_avatar_small.jpg"
+                        src="https://avatar.lkong.com/avatar/000/33/33/16_avatar_small.jpg"
                         alt=""
                     />
                     <div class="author-info">曲调有氧</div>
@@ -56,7 +56,7 @@
                 <div class="item-header-left">
                     <img
                         class="author-img"
-                        src="https://img.lkong.cn/avatar/000/88/87/41_avatar_small.jpg"
+                        src="https://avatar.lkong.com/avatar/000/33/33/16_avatar_small.jpg"
                         alt=""
                     />
                     <div class="author-info">曲调有氧</div>

@@ -1,5 +1,6 @@
 <template>
     <div class="main">
+        <check-one theme="filled" size="32" fill="#17bd08"/>
         <div class="banner-view">
             <div class="banner-view-left">
                 <img src="https://i.loli.net/2020/04/20/1GE9Lv78nJ4YoqA.png" alt="" />
