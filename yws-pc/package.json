@@ -1,0 +1,21 @@
+{
+  "name": "yws-pc",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.13.1",
+    "@nuxtjs/pwa": "^3.3.5",
+    "core-js": "^3.9.1",
+    "element-ui": "^2.15.1",
+    "less": "^3.13.0",
+    "less-loader": "^7.1.0",
+    "nuxt": "^2.15.3"
+  },
+  "devDependencies": {}
+}
