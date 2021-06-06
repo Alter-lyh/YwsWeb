@@ -1,4 +1,6 @@
-import Vue from 'vue';
-import {CheckOne} from '@icon-park/vue'
+// import Vue from 'vue';
+// import {CheckOne} from '@icon-park/vue'
 
-Vue.component(CheckOne)
+// console.log(CheckOne)
+
+// Vue.component(CheckOne)

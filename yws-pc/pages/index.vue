@@ -22,8 +22,12 @@
 </template>
 
 <script>
+import {CheckOne} from '@icon-park/vue'
 export default {
     name:'home',
+    components:{
+        CheckOne
+    },
     data() {
         return {
         };
