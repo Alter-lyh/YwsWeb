@@ -2,7 +2,7 @@
     <header class="navbar-wrap">
         <nav class="navbar-inner">
             <div class="navbar-main-wrap">
-                <div class="logo"></div>
+                <nuxt-link to="/" class="logo"></nuxt-link>
                 <div class="navbar-main">
                     <nuxt-link to="/bookstore" :class="[routeIndex == 2 ? 'active' : '']">书库</nuxt-link>
                     <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">书单</nuxt-link>
@@ -69,7 +69,7 @@ export default {
     z-index: 100;
     font-size: 14px;
     font-weight: bold;
-    color: #888;
+    color: #333;
     position: fixed;
     left: 0;
     top: 0;
@@ -97,7 +97,6 @@ export default {
                 line-height: 40px;
                 cursor: pointer;
                 font-size: 14px;
-                color: #888;
                 margin: 0 10px;
             }
             a:nth-child(1){

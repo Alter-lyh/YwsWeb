@@ -23,33 +23,8 @@
                 >
                 </el-rate>
             </div>
-            <div class="item-content">
-                <div class="content-inner">
-                    <div class="content-inner-details">
-                        好文。日常角度写那个特殊的年代，从家里到社会，画卷逐渐展开。优点包括但不限于：<br />1.
-                        人物刻画。所有，合
-                    </div>
-                    <div class="show-more">...展开全部</div>
-                </div>
-                <div class="createdAt-source">
-                    编辑于2020-01-18 13:22
-                </div>
-            </div>
-            <div class="item-actions">
-                <div class="item-actions-left">
-                    <el-button type="primary" icon="el-icon-caret-top">赞</el-button >
-                    <el-button type="primary" icon="el-icon-caret-bottom">踩</el-button>
-                    <div class="icon-btn"><i class="el-icon-s-comment icon"></i> 我要评论</div>
-                    <div class="icon-btn"><i class="el-icon-s-promotion icon"></i> 分享</div>
-                    <div class="icon-btn"><i class="el-icon-star-off icon"></i> 收藏</div>
-                </div>
-                <el-popover
-                    placement="bottom"
-                    content="删除"
-                    trigger="click">
-                    <i slot="reference" class="el-icon-more item-actions-right"></i>
-                </el-popover>
-            </div>
+            <DiscussContent content="好文。日常角度写那个特殊的年代，从家里到社会，画卷逐渐展开。优点包括但不限于：" status="false" />
+            <DiscussActions />
         </div>
         <div class="item">
             <div class="item-header">
@@ -74,33 +49,8 @@
                 >
                 </el-rate>
             </div>
-            <div class="item-content">
-                <div class="content-inner">
-                    <div class="content-inner-details">
-                        好文。日常角度写那个特殊的年代，从家里到社会，画卷逐渐展开。优点包括但不限于：<br />1.
-                        人物刻画。所有，合
-                    </div>
-                    <div class="show-more">...展开全部</div>
-                </div>
-                <div class="createdAt-source">
-                    编辑于2020-01-18 13:22
-                </div>
-            </div>
-            <div class="item-actions">
-                <div class="item-actions-left">
-                    <el-button type="primary" icon="el-icon-caret-top">赞</el-button >
-                    <el-button type="primary" icon="el-icon-caret-bottom">踩</el-button>
-                    <div class="icon-btn"><i class="el-icon-s-comment icon"></i> 我要评论</div>
-                    <div class="icon-btn"><i class="el-icon-s-promotion icon"></i> 分享</div>
-                    <div class="icon-btn"><i class="el-icon-star-off icon"></i> 收藏</div>
-                </div>
-                <el-popover
-                    placement="bottom"
-                    content="删除"
-                    trigger="click">
-                    <i slot="reference" class="el-icon-more item-actions-right"></i>
-                </el-popover>
-            </div>
+            <DiscussContent content="好文。日常角度写那个特殊的年代，从家里到社会，画卷逐渐展开。优点包括但不限于：" status="false" />
+            <DiscussActions />
         </div>
     </div>
 </template>
@@ -126,7 +76,6 @@ export default {
         width: 100%;
         height: auto;
         padding: 10px 20px;
-        padding-bottom: 20px;
         box-sizing: border-box;
         background-color: #ffffff;
         margin-bottom: 10px;
@@ -147,54 +96,6 @@ export default {
                 font-size: 18px;
                 font-weight: bold;
                 color: #000;
-            }
-        }
-        .item-content {
-            width: 100%;
-            height: auto;
-            box-sizing: border-box;
-            padding: 10px;
-            padding-bottom: 0;
-            .content-inner {
-                .content-inner-details {
-                    font-size: 14px;
-                    color: #333;
-                    letter-spacing: 1px;
-                }
-                .show-more {
-                    font-size: 14px;
-                    color: #567ceb;
-                    cursor: pointer;
-                }
-            }
-            .createdAt-source {
-                width: 100%;
-                line-height: 48px;
-                font-size: 14px;
-                color: #999;
-            }
-        }
-        .item-actions {
-            width: 100%;
-            height: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            .item-actions-left {
-                display: flex;
-                align-items: center;
-                .icon-btn {
-                    cursor: pointer;
-                    margin: 20px;
-                }
-                .icon {
-                    font-size: 16px;
-                }
-            }
-            .item-actions-right {
-                font-size: 24px;
-                color: #c9c9d1;
-                cursor: pointer;
             }
         }
     }

@@ -79,17 +79,12 @@
         </div>
         <div class="store-sort">
             <div class="store-sort-item">
-                <span class="item active">综合</span>
-                <span class="item">字数</span>
-                <span class="item">评分</span>
-                <span class="item">热度</span>
+                <span :class="['item', query.sort == item.status ? 'active' : null]" v-for="(item, $key) in sortList" :key="$key" @click="changeSort(item.status)">{{item.name}}</span>
             </div>
-            <span class="sort-tip">评分可以按照书龄来选择</span>
-            <div class="store-sort-item">
-                <span class="item">一年内</span>
-                <span class="item">五年内</span>
-                <span class="item">十年内</span>
-                <span class="item">老书虫</span>
+            <span class="sort-tip" v-show="['score', 'scorer'].indexOf(query.sort) != -1">评分和评分人数可以按照书龄来选择</span>
+            <div class="store-sort-item" v-show="['score', 'scorer'].indexOf(query.sort) != -1">
+                <span :class="['item', query.scoreSort == item.status ? 'active' : null]" v-for="(item, $key) in scoreSortList" :key="'score'+$key" v-show="query.sort == 'score'" @click="updateScore(item.status)">{{item.name}}</span>
+                <span :class="['item', query.scoreSort == item.status ? 'active' : null]" v-for="(item, $key) in scorerSortList" :key="'scorer'+$key" v-show="query.sort == 'scorer'" @click="updateScore(item.status)">{{item.name}}</span>
             </div>
         </div>
         <div class="result-view">
@@ -121,9 +116,12 @@
                         <span class="book-info-item">4小时前</span>
                         <span class="book-info-item">连载</span>
                     </div>
-                    <span class="book-sore"
-                        >综合评分：{{ item.score }}({{ item.scorer }}人)</span
-                    >
+                    <div class="book-sore-list">
+                        <span class="book-sore">综合评分：<em>{{ item.score }}</em>（{{ item.scorer }}人）</span>
+                        <span class="book-sore">三年内：<em>{{ item.score_1 }}</em>（{{ item.scorer_1 }}人）</span>
+                        <span class="book-sore">七年内：<em>{{ item.score_2 }}</em>（{{ item.scorer_2 }}人）</span>
+                        <span class="book-sore">七年内：<em>{{ item.score_3 }}</em>（{{ item.scorer_3 }}人）</span>
+                    </div>
                     <div class="book-tag">
                         <span class="book-tag-title">本书标签:</span>
                         <span
@@ -155,7 +153,8 @@ export default {
                 update: null,
                 updateStatus: null,
                 countWord: null,
-                sort: "",
+                sort: null,
+                scoreSort: 'score',
             },
             channelList: [
                 {
@@ -230,6 +229,64 @@ export default {
                 },
             ],
             categoryList: [],
+            sortList: [
+                {
+                    status: null,
+                    name: "综合",
+                },
+                {
+                    status: 'countWord',
+                    name: "字数",
+                },
+                {
+                    status: 'score',
+                    name: "评分",
+                },
+                {
+                    status: 'scorer',
+                    name: "评分人数",
+                },
+                {
+                    status: 'point',
+                    name: "热度",
+                },
+            ],
+            scoreSortList: [
+                {
+                    status: 'score',
+                    name: "综合",
+                },
+                {
+                    status: 'score_1',
+                    name: "三年内",
+                },
+                {
+                    status: 'score_2',
+                    name: "七年内",
+                },
+                {
+                    status: 'score_3',
+                    name: "七年上",
+                },
+            ],
+            scorerSortList: [
+                {
+                    status: 'scorer',
+                    name: "综合",
+                },
+                {
+                    status: 'scorer_1',
+                    name: "三年内",
+                },
+                {
+                    status: 'scorer_2',
+                    name: "七年内",
+                },
+                {
+                    status: 'scorer_3',
+                    name: "七年上",
+                },
+            ],
             pageAll: 1,
             novelList: [],
         };
@@ -266,7 +323,11 @@ export default {
             this.categoryList = await this.$api.novel.getCategory(params)
         },
         async getNovelList() {
-            const res = await this.$api.novel.getNovelList(this.query)
+            const params = {...this.query}
+            if (['score','scorer'].indexOf(this.query.sort) != -1) {
+                params.sort = this.query.scoreSort
+            }
+            const res = await this.$api.novel.getNovelList(params)
             this.pageAll = res.pageAll;
             this.novelList = res.data;
         },
@@ -300,13 +361,22 @@ export default {
             this.query.update = status;
             this.getNovelList();
         },
+        // 更新筛选状态
+        changeSort(status) {
+            this.query.sort = status;
+            if (['score', 'scorer'].indexOf(status) != -1) {
+                this.query.scoreSort = status;
+            }
+            this.getNovelList();
+        },
+        updateScore(status) {
+            this.query.scoreSort = status;
+            this.getNovelList();
+        }
     },
 };
 </script>
 <style lang="less" scoped>
-.main {
-    padding: 10px 0;
-}
 .select-view {
     width: 100%;
     height: auto;
@@ -339,7 +409,8 @@ export default {
                 border-right: none;
             }
             .active {
-                color: #000;
+                color: #5DA7FF;
+                font-weight: bold;
             }
         }
     }
@@ -368,7 +439,8 @@ export default {
             border-right: none;
         }
         .active {
-            color: #000;
+            color: #5DA7FF;
+            font-weight: bold;
         }
     }
     .sort-tip {
@@ -438,6 +510,18 @@ export default {
                 .book-tag-item {
                     margin-right: 10px;
                 }
+            }
+            .book-sore{
+                margin-right: 10px;
+                color: #333;
+                em{
+                    color: #FF6F59;
+                    font-weight: bold;
+                }
+            }
+            .book-tag-item{
+                padding: 4px 8px;
+                background-color: #f8f9fa;
             }
         }
     }

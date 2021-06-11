@@ -6,6 +6,7 @@
             keep-alive
             :keep-alive-props="{ include: includeArr }"
         />
+        <Sidebar/>
         <Login/>
     </div>
 </template>

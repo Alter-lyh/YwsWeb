@@ -24,7 +24,6 @@ export default {
         '@/plugins/element-ui',
         '@/plugins/api',
         '@/plugins/filter',
-        '@/plugins/iconpark',
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
