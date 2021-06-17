@@ -12,20 +12,20 @@
                 <p class="title">{{loginType == 2 ? '欢迎登录' : '马上注册'}}</p>
                 <p class="tips">——— — 超过15,55名用户加入网站名称 — ———</p>
                 <div class="login-block" v-show="loginType == 2">
-                    <el-input class="name-input" v-model="input" placeholder="请输入邮箱"></el-input>
-                    <el-input v-model="input" placeholder="请输入密码" show-password></el-input>
-                    <el-button type="primary" class="login-btn">登录</el-button>
+                    <el-input class="name-input" v-model="email" type="email" placeholder="请输入邮箱"></el-input>
+                    <el-input v-model="password" placeholder="请输入密码" show-password></el-input>
+                    <el-button type="primary" class="login-btn" @click="signIn">登录</el-button>
                 </div>
                 <div class="regist-block" v-show="loginType == 1">
-                    <el-input class="item" v-model="input" placeholder="请输入邮箱"></el-input>
-                    <el-input class="item" v-model="input" placeholder="请输入密码"></el-input>
-                    <el-input class="item" v-model="input" placeholder="请确认密码"></el-input>
+                    <el-input class="item" v-model="email" type="email" placeholder="请输入邮箱"></el-input>
+                    <el-input class="item" v-model="name" placeholder="请输入昵称"></el-input>
+                    <el-input class="item" v-model="password" placeholder="请输入密码"></el-input>
+                    <el-input class="item" v-model="confirmPassword" placeholder="请确认密码"></el-input>
                     <div class="item">
-                        <el-input class="name-input" v-model="input" placeholder="邮箱"></el-input>
-                        <el-button type="primary">发送验证码</el-button>
+                        <el-input class="name-input" v-model="yzCode" placeholder="邮箱验证码"></el-input>
+                        <el-button type="primary" @click="sendYZcode">发送验证码</el-button>
                     </div>
-                    <el-input v-model="input" placeholder="邮箱验证码"></el-input>
-                    <el-button type="primary" class="regist-btn">注册</el-button>
+                    <el-button type="primary" class="regist-btn" @click="register">注册</el-button>
                 </div>
                 <div class="login-type">
                     <span class="login" v-show="loginType == 1" @click="loginType = 2">登录</span>
@@ -37,12 +37,17 @@
 </template>
 
 <script>
+import {setToken, setUserInfo} from "@/plugins/auth";
 export default {
     name:'Login',
     data() {
         return {
-            loginType: 1,
-            input: ''
+            loginType: 2,
+            name: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            yzCode: ''
         };
     },
     computed: {
@@ -50,14 +55,98 @@ export default {
           get: function() {
               return this.$store.state.loginFlag
           },
-          set: function (falg) {
-              this.$store.commit('updateLoginView', falg)
+          set: function (flag) {
+              this.$store.commit('updateLoginView', flag)
           }
       }
+    },
+    created() {
+        this.$store.commit('updateLoginView', false)
     },
     mounted() {
     },
     methods: {
+        // 登录
+        async signIn() {
+            if (!this.email || !this.password) {
+                this.$message('请输入完整数据');
+                return
+            }
+            const params = {
+                email: this.email,
+                password: this.password
+            }
+            try {
+                const res = await this.$api.userApi.signIn(params)
+                setToken(res.token);
+                setUserInfo(res)
+                this.$store.commit('updateLoginStatus', true)
+                this.$store.commit('updateLoginView', false)
+                this.$store.commit('setUserInfo', res)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        // 发送验证码
+        async sendYZcode() {
+            let emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;
+            if (!emailReg.test(this.email)) {
+                this.$message('请输入正确邮箱');
+                return
+            }
+            const params = {
+                email: this.email
+            }
+            try {
+                const res = await this.$api.userApi.sendMail(params)
+                if (res != undefined) {
+                    this.$message({
+                        message: '验证码已发送',
+                        type: 'success'
+                    })
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        // 注册
+        async register() {
+            let emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;
+            if (!emailReg.test(this.email)) {
+                this.$message('请输入正确邮箱');
+                return
+            }
+            if (!this.name ||!this.email || !this.password || !this.confirmPassword || !this.yzCode) {
+                this.$message('请输入完整数据');
+                return
+            }
+            if (this.password != this.confirmPassword) {
+                this.$message('两次输入密码不一致');
+                return
+            }
+            const params = {
+                name: this.name,
+                email: this.email,
+                password: this.password,
+                confirmPassword: this.confirmPassword,
+                yzCode: this.yzCode
+            }
+            try {
+                const res = await this.$api.userApi.register(params)
+                const userInfo = res[0]
+                setToken(userInfo.token);
+                setUserInfo(userInfo)
+                this.$store.commit('updateLoginStatus', true)
+                this.$store.commit('updateLoginView', false)
+                this.$store.commit('setUserInfo', userInfo)
+                this.$message({
+                    message: '注册成功，正在登录',
+                    type: 'success'
+                })
+            } catch (error) {
+                console.log(error)
+            }
+        }
     }
 };
 </script>

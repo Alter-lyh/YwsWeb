@@ -43,7 +43,8 @@ export default {
         .content-inner-details {
             font-size: 14px;
             color: #333;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            line-height: 24px;
         }
         .show-more {
             font-size: 14px;

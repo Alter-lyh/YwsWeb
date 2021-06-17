@@ -24,6 +24,10 @@ const novleApi = ($axios) => {
                 params: params        
             })
         },
+        // 发布评论
+        postDiscuss(params) {
+            return $axios.post(`/novel/postDiscuss`, params)
+        },
     }
 }
 

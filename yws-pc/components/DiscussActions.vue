@@ -3,11 +3,11 @@
         <div class="discuss-actions-left">
             <div class="icon-btn"><thumbs-up theme="outline" size="16" fill="#333"/>赞</div>
             <div class="icon-btn"><thumbs-down theme="outline" size="16" fill="#333"/>踩</div>
-            <div class="icon-btn"><comments theme="outline" size="16" fill="#333"/>评论</div>
+            <div class="icon-btn" @click="setReplayShow"><comments theme="outline" size="16" fill="#333"/>{{replyNum > 0 ? replyNum : "评论"}}</div>
             <div class="icon-btn"><share theme="outline" size="16" fill="#333"/>分享</div>
-            <div class="icon-btn"><like theme="outline" size="16" fill="#333"/>收藏</div>
+            <!-- <div class="icon-btn"><like theme="outline" size="16" fill="#333"/>收藏</div> -->
         </div>
-        <el-dropdown trigger="click">
+        <el-dropdown trigger="click" placement="bottom">
             <span class="el-dropdown-link">
                 <i slot="reference" class="el-icon-more discuss-actions-right"></i>
             </span>
@@ -29,6 +29,7 @@ export default {
         Share,
         Like
     },
+    props: ['replyNum'],
     data() {
         return {
         };
@@ -38,6 +39,9 @@ export default {
     mounted() {
     },
     methods: {
+        setReplayShow() {
+            this.$emit('setReplayShow')
+        }
     }
 };
 </script>
@@ -58,7 +62,7 @@ export default {
             display: flex;
             align-items: center;
             .i-icon{
-                margin-right: 5px;
+                margin-right: 4px;
                 display: flex;
                 align-items: center;
                 line-height: normal;
@@ -66,8 +70,8 @@ export default {
         }
     }
     .discuss-actions-right {
-        font-size: 24px;
-        color: #c9c9d1;
+        font-size: 20px;
+        color: #606266;
         cursor: pointer;
     }
 }

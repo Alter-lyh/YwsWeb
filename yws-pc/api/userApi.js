@@ -1,5 +1,9 @@
 const userApi = ($axios) => {
     return {
+        // 发送验证码
+        sendMail(params) {
+            return $axios.post(`/email/sendMail`, params)
+        },
         // 用户注册
         register(params) {
             return $axios.post(`/user/register`, params)

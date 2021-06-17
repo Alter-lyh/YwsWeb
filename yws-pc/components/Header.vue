@@ -16,18 +16,35 @@
                 </div>
             </div>
             <div class="navbar-side">
-                <div class="navbar-side-item">书架</div>
-                <div class="navbar-side-item" @click="login">登录/注册</div>
+                <div class="navbar-side-item">足迹</div>
+                <div class="navbar-side-item" @click="login" v-show="!loginStatus">登录/注册</div>
+                
+                <div class="navbar-side-item" v-show="loginStatus"><i class="el-icon-notebook-2"></i></div>
+                <el-badge is-dot class="navbar-side-item" v-show="loginStatus"><i class="el-icon-bell"></i></el-badge>
+
+                <el-dropdown class="navbar-side-item" v-show="loginStatus" placement="bottom">
+                    <img class="user-img" src="https://s2.ax1x.com/2019/10/14/KSoO3T.png" alt=""/>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>{{userInfo.name}}</el-dropdown-item>
+                        <el-dropdown-item :divided="true">我的书架</el-dropdown-item>
+                        <el-dropdown-item>我的书评</el-dropdown-item>
+                        <el-dropdown-item>我的书单</el-dropdown-item>
+                        <el-dropdown-item>我的收藏</el-dropdown-item>
+                        <el-dropdown-item :divided="true">个人设置</el-dropdown-item>
+                        <el-dropdown-item :divided="true" @click.native="logout">退出</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </div>
         </nav>
     </header>
 </template>
 
 <script>
+import {clearToken, clearUserInfo} from "@/plugins/auth";
 export default {
     data() {
         return {
-            input: ''
+            input: '',
         };
     },
     computed: {
@@ -46,12 +63,24 @@ export default {
             }
             return routeIndex;
         },
+        loginStatus() {
+            return this.$store.getters.getLoginStatus
+        },
+        userInfo() {
+            return this.$store.getters.getUserInfo
+        }
     },
     mounted() {
     },
     methods: {
         login() {
             this.$store.commit('updateLoginView', true)
+        },
+        logout() {
+            clearToken()
+            clearUserInfo()
+            this.$store.commit('updateLoginStatus', false)
+            this.$store.commit('setUserInfo', {name: '默认用户'})
         }
     }
 };
@@ -119,6 +148,15 @@ export default {
         .navbar-side-item{
             cursor: pointer;
             margin: 0 10px;
+            i{
+                font-size: 18px;
+            }
+            .user-img{
+                width: 36px;
+                height: auto;
+                display: block;
+                border-radius: 50%;
+            }
         }
         .navbar-side-item:nth-last-child(1){
             margin-right: 0;

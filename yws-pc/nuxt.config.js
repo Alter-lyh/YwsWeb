@@ -24,6 +24,7 @@ export default {
         '@/plugins/element-ui',
         '@/plugins/api',
         '@/plugins/filter',
+        { src: '@/plugins/localStorage.js', ssr: false }
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components

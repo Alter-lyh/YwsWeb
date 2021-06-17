@@ -1,16 +1,24 @@
 import { Message } from 'element-ui';
+import { getToken, clearToken } from './auth'
+
 import novleApi from '@/api/novleApi'
+import userApi from '@/api/userApi'
+import discussApi from '@/api/discussApi'
 export default function ({ $axios }, inject) {
     // 请求拦截
     $axios.onRequest(config => {
         console.log('Making request to ' + config.url)
+        config.headers['authorization'] = getToken();
     })
     // 响应拦截
     $axios.onResponse(res => {
         let json = res.data
+        if(json.error == '01') {
+            clearToken()
+        }
         if (json.code != '00') {
-            Message.error('错了哦，这是一条错误消息');
-            return Promise.reject(json)
+            Message.error(json.msg);
+            return Promise.resolve(json.data);
         }
         return json.data
     })
@@ -32,18 +40,8 @@ export default function ({ $axios }, inject) {
         }
     })
     api.novel = novleApi($axios)
-    // api.novel = {
-    //     getNovelList(params) {
-    //         return $axios.get(`/novel/getList`, {            
-    //             params: params        
-    //         })
-    //     },
-    //     getCategory(params) {
-    //         return $axios.get(`/novel/getCategory`, {            
-    //             params: params        
-    //         })
-    //     }
-    // }
+    api.userApi = userApi($axios)
+    api.discussApi = discussApi($axios)
 
     // Inject to context as $api
     inject('api', api)
