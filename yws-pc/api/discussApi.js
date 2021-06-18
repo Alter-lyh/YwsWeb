@@ -6,6 +6,10 @@ const discussApi = ($axios) => {
                 params: params        
             })
         },
+        // 获取书籍评论回复列表
+        postReply(params) {
+            return $axios.post(`/discuss/postReply`, params)
+        },
     }
 }
 

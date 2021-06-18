@@ -1,12 +1,12 @@
 <template>
     <div class="discuss-content">
         <div class="content-inner">
-            <span class="content-inner-details" v-show="status || content.length <= 140">{{content}}</span>
+            <span class="content-inner-details" v-if="status || content.length <= 140">{{content}}</span>
             <span class="content-inner-details" v-show="!status && content.length > 140">{{content | titleFilter(140)}}</span>
             <span class="show-more" v-if="content.length > 140" @click="checkShow(status)">{{!status ? '展开全部' : '收起全部'}}</span>
         </div>
         <div class="createdAt-source">
-            编辑于2020-01-18 13:22
+            编辑于{{editTime | timeFil}}
         </div>
     </div>
 </template>
@@ -16,7 +16,8 @@ export default {
     name: "DiscussContent",
     props: {
         content: '',
-        status: false
+        status: false,
+        editTime: ''
     },
     data() {
         return {
@@ -45,6 +46,7 @@ export default {
             color: #333;
             letter-spacing: 2px;
             line-height: 24px;
+            white-space: pre-wrap;
         }
         .show-more {
             font-size: 14px;

@@ -139,7 +139,7 @@
                         v-model="content">
                     </el-input>
                     <div class="post-comment-tools">
-                        <el-button type="primary" size="small">发送评论</el-button>
+                        <el-button type="primary" size="small" @click="postDiscuss">发送评论</el-button>
                     </div>
                 </div>
                 <!-- 评论列表 -->
@@ -148,7 +148,7 @@
                         <div class="item-header">
                             <div class="item-header-left">
                                 <img class="author-img" src="https://avatar.lkong.com/avatar/000/68/77/17_avatar_small.jpg" alt=""/>
-                                <div class="author-info">{{item.user.name}}</div>
+                                <div class="author-info">{{item.userInfo.name}}</div>
                             </div>
                             <div class="novel-rate" v-show="item.score">
                                 <el-rate
@@ -159,9 +159,9 @@
                                 </el-rate>
                             </div>
                         </div>
-                        <DiscussContent :content="item.content" :status="item.moreStatus" @checkShow="checkShow($key)" />
+                        <DiscussContent :content="item.content" :status="item.moreStatus" :editTime="item.update_time" @checkShow="checkShow($key)" />
                         <DiscussActions :replyNum="item.reply_num" @setReplayShow="setReplayShow($key, item.id)" />
-                        <DiscussReplay :replyNum="item.reply_num" :replyList="item.replyList" :page="item.page" :pageAll="item.pageAll" v-show="item.replayShow" />
+                        <DiscussReplay :itemKey="$key" :replyNum="item.reply_num" :replyList="item.replyList" :page="item.page" :pageAll="item.pageAll" @changeReplayPage="changeReplayPage" @replayComment="replayComment" @replayItemComment="replayItemComment" v-show="item.replayShow" />
                     </div>
                 </div>
                 <pagination
@@ -301,6 +301,50 @@ export default {
 
             this.$set(this.discussList, $key, this.discussList[$key])
         },
+        // 回复评论
+        async replayComment(content, itemKey) {
+            if (content == null) return this.$message.error('评论必须大于5个字');
+            const params = {
+                parentId: this.discussList[itemKey].id,
+                novelId: this.novelId,
+                content: content,
+            }
+            try {
+                const res = await this.$api.discussApi.postReply(params)
+                if (res != null) this.$message.success('评论发布成功');
+                this.changeReplayPage(1, itemKey)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        // 切换子评论页码
+        async changeReplayPage(page, $key) {
+            this.discussList[$key].page = page
+            const params = {
+                discussId: this.discussList[$key].id,
+                page: page
+            }
+            const res = await this.$api.discussApi.getReply(params)
+            this.discussList[$key].replyList = res.data
+            // 更新数据状态
+            this.$set(this.discussList, $key, this.discussList[$key])
+        },
+        // 回复子评论
+        async replayItemComment(parentId, novelId, content, resId) {
+            if (content == null) return this.$message.error('评论必须大于5个字');
+            const params = {
+                parentId: parentId,
+                novelId: novelId,
+                content: content,
+                resId: resId
+            }
+            try {
+                const res = await this.$api.discussApi.postReply(params)
+                if (res != null) this.$message.success('评论发布成功');
+            } catch (error) {
+                console.log(error)
+            }
+        },
         // 更新筛选状态
         changeSort(status) {
             this.discussStatus = status;
@@ -308,17 +352,18 @@ export default {
         },
         // 发布评论
         async postDiscuss() {
-            const params = {
-                novelId: this.novelId,
-                score: this.scoreValue,
-                content: this.content,
-            }
-            try {
-                const res = await this.$api.novel.postDiscuss(params)
-                console.log(res)
-            } catch (error) {
-                console.log(error)
-            }
+            console.log(this.content)
+            // const params = {
+            //     novelId: this.novelId,
+            //     score: this.scoreValue,
+            //     content: this.content,
+            // }
+            // try {
+            //     const res = await this.$api.novel.postDiscuss(params)
+            //     console.log(res)
+            // } catch (error) {
+            //     console.log(error)
+            // }
         }
     }
 }

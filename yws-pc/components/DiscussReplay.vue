@@ -4,9 +4,9 @@
         <div class="replay-item" v-for="(item, $key) in replyList" :key="$key">
             <div class="replay-item-header">
                 <img class="author-img" src="https://avatar.lkong.com/avatar/000/68/77/17_avatar_small.jpg" alt=""/>
-                <div class="author-info">45678</div>
+                <div class="author-info">{{item.userInfo.name}}</div>
             </div>
-            <div class="replay-item-content">{{item.content}}</div>
+            <div class="replay-item-content"><span v-if="item.resInfo" class="replay-title">回复{{item.resInfo.name}} </span>{{item.content}}</div>
             <div class="replay-item-foot">
                 <div class="replay-item-foot-left">
                     编辑于{{item.update_time | timeFil}}
@@ -24,8 +24,8 @@
                 </el-dropdown>
             </div>
             <div class="replay-item-post" v-show="replayShowList.indexOf($key) != -1">
-                <div class="replay-div" contenteditable="true" placeholder="内容不得少于5个字">{{content}}</div>   
-                <el-button class="replay-btn" type="primary" size="small">发布评论</el-button>
+                <div class="replay-div" contenteditable="plaintext-only" placeholder="内容不得少于5个字"></div>
+                <div class="replay-btn" @click="replayItemComment($event, item.parent_id, item.novel_id, $key, item.user_id)">发布评论</div>
             </div>
         </div>
         <div class="discuss-pagination">
@@ -38,8 +38,8 @@
             </el-pagination>
         </div>
         <div class="replay-foot">
-            <div class="replay-div" contenteditable="true" placeholder="内容不得少于5个字">{{content}}</div>   
-            <el-button class="replay-btn" type="primary" size="small">发布评论</el-button>
+            <div class="replay-div" contenteditable="plaintext-only" placeholder="内容不得少于5个字"></div>
+            <div class="replay-btn" @click="replayComment($event, itemKey)">发布评论</div>
         </div>
     </div>
 </template>
@@ -52,10 +52,10 @@ export default {
         ThumbsUp,
         ThumbsDown
     },
-    props: ['replyNum', 'replyList', 'page', 'pageAll'],
+    props: ['itemKey', 'replyNum', 'replyList', 'page', 'pageAll'],
     data() {
         return {
-            content:  null,
+            cd: null,
             replayShowList: []
         };
     },
@@ -66,17 +66,34 @@ export default {
     methods: {
         // 是否显示回复按钮
         setReplayShow($key) {
-            
             let k = this.replayShowList.indexOf($key)
             if (k == -1) {
                 this.replayShowList.push($key)
             } else {
                 this.replayShowList.splice(k, 1)
             }
-
         },
-        changePage() {
+        changePage(page) {
+            this.$emit('changeReplayPage', page, this.itemKey)
+        },
+        replayComment(event, itemKey) {
+            event = event ? event : window.event; 
+            const obj = event.srcElement ? event.srcElement : event.target;
 
+            let content = obj.previousElementSibling.innerHTML
+            content = content.replace(/\s+$/, '')
+
+            this.$emit('replayComment', content, itemKey)
+        },
+        replayItemComment(event, parentId, novelId, $key, resId) {
+            event = event ? event : window.event; 
+            const obj = event.srcElement ? event.srcElement : event.target;
+
+            let content = obj.previousElementSibling.innerHTML
+            content = content.replace(/\s+$/, '')
+
+            this.$emit('replayItemComment', parentId, novelId, content, resId)
+            this.setReplayShow($key)
         }
     }
 };
@@ -122,6 +139,10 @@ export default {
             color: #333;
             letter-spacing: 2px;
             line-height: 24px;
+            .replay-title{
+                color: #8590a6;
+                font-weight: bold;
+            }
         }
         .replay-item-foot{
             width: 100%;
@@ -199,6 +220,19 @@ export default {
     }
     .replay-div:focus{
         border-color: #567ceb;
+    }
+    .replay-btn{
+        width: 70px;
+        height: 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        line-height: normal;
+        border-radius: 2px;
+        background-color: #567ceb;
+        color: #fff;
+        font-size: 12px;
+        cursor: pointer;
     }
 }
 </style>
