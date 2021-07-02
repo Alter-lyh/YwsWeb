@@ -24,9 +24,25 @@ const novleApi = ($axios) => {
                 params: params        
             })
         },
+        // 获取用户小说评论详情
+        getDiscussInfo(params) {
+            return $axios.get(`/novel/getDiscussInfo`, {            
+                params: params        
+            })
+        },
         // 发布评论
         postDiscuss(params) {
             return $axios.post(`/novel/postDiscuss`, params)
+        },
+        // 修改书籍标签
+        editTag(params) {
+            return $axios.post(`/novel/addTag`, params)
+        },
+        // 获取用户小说标签
+        getUserTagList(params) {
+            return $axios.get(`/novel/getUserTagList`, {            
+                params: params        
+            })
         },
     }
 }

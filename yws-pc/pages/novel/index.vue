@@ -8,7 +8,7 @@
                 </div>
                 <div class="author-info">作者：{{novelInfo.author_name}}</div>
                 <div class="book-word">本书字数：{{novelInfo.word_number | wordNumFilter}}</div>
-                <div class="book-status">状态：已完结</div>
+                <div class="book-status">状态：{{novelInfo.update_status | updateStatusFil}}</div>
                 <div class="update-time">更新时间：{{novelInfo.update_time | timeFil}}</div>
                 <div class="book-btns">
                     <el-dropdown>
@@ -97,11 +97,31 @@
                             <p>评分人数</p>
                         </div></el-tab-pane>
                 </el-tabs>
+                <div class="user-score" @click="commentFlag = !commentFlag">
+                    <span>我的评分</span>
+                    <el-rate
+                        class="novel-score"
+                        disabled
+                        v-model="userScoreValue"
+                        :colors="colors">
+                    </el-rate>
+                </div>
             </div>
         </header>
         <div class="tag-list">
             <el-tag size="small" v-for="(item, $key) in tagList" :key="$key">{{item.tag_name}}</el-tag>
-            <el-button class="button-new-tag" size="mini">新建标签</el-button>
+            <el-tag size="small" v-for="(item, $key) in userTagList" closable type='success' :key="`userTag${$key}`" @close="closeTag(item,$key)">{{item.tag_name}}</el-tag>
+            <el-input
+                class="input-new-tag"
+                v-if="tagInputFlag"
+                v-model="tagText"
+                ref="saveTagInput"
+                size="mini"
+                @keyup.enter.native="addUserTag"
+                @blur="tagInputFlag = !tagInputFlag"
+                >
+            </el-input>
+            <el-button v-else class="button-new-tag" size="mini" @click="showAddTag">新建标签</el-button>
         </div>
         <section class="book-layout-main">
             <div class="book-layout-main-left">
@@ -115,6 +135,7 @@
                 <div class="book-sort-view">
                     <div class="sort-view">
                         <div :class="['item', item.status == discussStatus ?'active' : '']" v-for="(item, $key) in sortList" :key="$key" @click="changeSort(item.status)">{{item.name}}</div>
+                        <p class="tips">最新和热度都只展示评分</p>
                     </div>
                     <div class="comment-btn" @click="commentFlag = !commentFlag">
                         <i class="el-icon-edit icon"></i>
@@ -123,10 +144,13 @@
                 <!-- 发表评论 -->
                 <div class="post-comment" v-show="commentFlag">
                     <div class="post-novel-info">
-                        <p>{{discussStatus != 'chat'?'评分':'吐槽'}}：{{novelInfo.novel_name}}</p>
+                        <p class="discuss-type">
+                            <span v-for="(item, $key) in discussTypeList" :key="`discuss${$key}`" :class="['item', discussType == item.type ? 'active' : '']" @click="discussType = item.type">{{item.text}}</span>
+                            <span>{{novelInfo.novel_name}}</span>
+                        </p>
                         <el-rate
                             class="novel-score"
-                            v-show="discussStatus != 'chat'"
+                            v-show="discussType == 2"
                             v-model="scoreValue"
                             :colors="colors">
                         </el-rate>
@@ -139,7 +163,7 @@
                         v-model="content">
                     </el-input>
                     <div class="post-comment-tools">
-                        <el-button type="primary" size="small" @click="postDiscuss">发送评论</el-button>
+                        <el-button type="primary" size="small" @click="postDiscuss">{{userScoreValue >0 && discussType == 2 ? '修改评论' : '发送评论'}}</el-button>
                     </div>
                 </div>
                 <!-- 评论列表 -->
@@ -187,6 +211,9 @@ export default {
                 synTitle: '简介：'
             },
             tagList: [],
+            tagInputFlag: false,
+            tagText: '',
+            userTagList: [],
             page: 1,
             pageAll: 1,
             discussStatus: null,
@@ -209,11 +236,36 @@ export default {
                 }
             ],
             commentFlag: false, //是否显示书写评论区
+            discussType: 1,
+            discussTypeList: [
+                {
+                    type: 1,
+                    text: '吐槽'
+                },
+                {
+                    type: 2,
+                    text: '评分'
+                }
+            ],
             scoreValue: null,
             colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
-            content: null,
+            content: '',
+            // 用户评分
+            userScoreValue: 0,
+            userContent: null,
             discussList: [],
             value: 3.5,
+        }
+    },
+    watch: {
+        discussType(type) {
+            if (type == 2) {
+                this.scoreValue = this.userScoreValue
+                this.content = this.userContent
+            } else {
+                this.scoreValue = null
+                this.content = null
+            }
         }
     },
     async asyncData({ app, query, params }) {
@@ -236,6 +288,8 @@ export default {
         this.novelId = this.$route.query.id
         await this.getNovelInfo()
         await this.getDiscussList()
+        this.getDiscussInfo()
+        this.getUserTagList()
         // if (this.categoryList.length < 1) {
         //     await this.getCategory()
         //     await this.getNovelList()
@@ -246,34 +300,95 @@ export default {
             const params = { 
                 novelId: this.novelId
             }
-            this.novelInfo = await this.$api.novel.getNovelInfo(params)
+            const res = await this.$api.novel.getNovelInfo(params)
+            this.novelInfo = res.data
             this.novelInfo['synTitle'] = '简介：'
             this.novelInfo.synopsis.length > 46 ? this.novelInfo['synTitle'] += this.novelInfo.synopsis.slice(0, 46) + '...' : this.novelInfo['synTitle'] += this.novelInfo.synopsis
             this.novelInfo.source = JSON.parse(this.novelInfo.source)
             this.tagList = this.novelInfo.novel_tags
         },
         async getDiscussList() {
+            let scoreStatus = 1
+            if (this.discussStatus == 'chat') {
+                scoreStatus = 2
+            } else if (this.discussStatus == null) {
+                scoreStatus = 0
+            }
+
             const params = { 
                 novelId: this.novelId,
                 page: this.page,
                 num: 20,
-                score: this.discussStatus != 'chat' ? 1 : 0, //1只展示有评分的，其他只展示无评分的
+                score: scoreStatus, //1只展示有评分的，其他只展示无评分的
                 sort: this.discussStatus != 'chat' ? this.discussStatus : null,
             }
+
+            const res = await this.$api.novel.getDiscussList(params)
+            const json = res.data
+            this.page = json.page*1
+            this.pageAll = json.pageAll
+            this.discussList = json.data
+            this.discussList.map(item => {
+                item.moreStatus = false
+                item.replayShow = false
+                item.page = 1
+                item.pageAll = 1
+            })
+        },
+        // 获取用户评论信息
+        async getDiscussInfo() {
+            const params = { 
+                novelId: this.novelId
+            }
             try {
-                const res = await this.$api.novel.getDiscussList(params)
-                this.page = res.page*1
-                this.pageAll = res.pageAll
-                this.discussList = res.data
-                this.discussList.map(item => {
-                    item.moreStatus = false
-                    item.replayShow = false
-                    item.page = 1
-                    item.pageAll = 1
-                })
+                const res = await this.$api.novel.getDiscussInfo(params)
+                const json = res.data
+                this.userScoreValue = json.score/2
+                this.userContent = json.content
             } catch (error) {
                 console.log(error)
             }
+        },
+        // 显示输入新标签
+        showAddTag() {
+            this.tagInputFlag = true
+            this.$nextTick(_ => {
+                this.$refs.saveTagInput.$refs.input.focus();
+            });
+        },
+        // 添加新的标签
+        async addUserTag() {
+            console.log(this.tagText)
+            const params = {
+                novelId: this.novelId,
+                type: 1,
+                tagName: this.tagText
+            }
+            const res = await this.$api.novel.editTag(params)
+            // let inputValue = this.inputValue;
+            // if (inputValue) {
+            //     this.dynamicTags.push(inputValue);
+            // }
+            // this.inputVisible = false;
+            // this.inputValue = '';
+        },
+        // 获取用户小说标签
+        async getUserTagList() {
+            const params = {
+                novelId: this.novelId
+            }
+            const {data} = await this.$api.novel.getUserTagList(params)
+            this.userTagList = data
+        },
+        // 删除用户标签
+        async closeTag(item, $key) {
+            const params = {
+                novelId: this.novelId,
+                type: 2,
+                tagName: item.tag_name
+            }
+            const res = await this.$api.novel.editTag(params)
+            this.userTagList.splice($key, 1);
         },
         // 分页
         changePage(page) {
@@ -293,17 +408,16 @@ export default {
                     discussId: discussId
                 }
                 const res = await this.$api.discussApi.getReply(params)
-                console.log(res)
-                this.discussList[$key].replyList = res.data
-                this.discussList[$key].page = res.page
-                this.discussList[$key].pageAll = res.pageAll
+                const json = res.data
+                this.discussList[$key].replyList = json.data
+                this.discussList[$key].page = json.page
+                this.discussList[$key].pageAll = json.pageAll
             }
 
             this.$set(this.discussList, $key, this.discussList[$key])
         },
-        // 回复评论
+        // 发布子评论
         async replayComment(content, itemKey) {
-            if (content == null) return this.$message.error('评论必须大于5个字');
             const params = {
                 parentId: this.discussList[itemKey].id,
                 novelId: this.novelId,
@@ -311,7 +425,7 @@ export default {
             }
             try {
                 const res = await this.$api.discussApi.postReply(params)
-                if (res != null) this.$message.success('评论发布成功');
+                if (res.code == '00') this.$message.success('评论发布成功');
                 this.changeReplayPage(1, itemKey)
             } catch (error) {
                 console.log(error)
@@ -325,13 +439,13 @@ export default {
                 page: page
             }
             const res = await this.$api.discussApi.getReply(params)
-            this.discussList[$key].replyList = res.data
+            const json = res.data
+            this.discussList[$key].replyList = json.data
             // 更新数据状态
             this.$set(this.discussList, $key, this.discussList[$key])
         },
         // 回复子评论
         async replayItemComment(parentId, novelId, content, resId) {
-            if (content == null) return this.$message.error('评论必须大于5个字');
             const params = {
                 parentId: parentId,
                 novelId: novelId,
@@ -340,7 +454,8 @@ export default {
             }
             try {
                 const res = await this.$api.discussApi.postReply(params)
-                if (res != null) this.$message.success('评论发布成功');
+                if (res.code == '00') this.$message.success('评论发布成功');
+                this.changeReplayPage(1, itemKey)
             } catch (error) {
                 console.log(error)
             }
@@ -352,18 +467,25 @@ export default {
         },
         // 发布评论
         async postDiscuss() {
-            console.log(this.content)
-            // const params = {
-            //     novelId: this.novelId,
-            //     score: this.scoreValue,
-            //     content: this.content,
-            // }
-            // try {
-            //     const res = await this.$api.novel.postDiscuss(params)
-            //     console.log(res)
-            // } catch (error) {
-            //     console.log(error)
-            // }
+            if (this.content.length < 5) return this.$message.error('评论必须大于5个字');
+            if (this.scoreValue <= 0) return this.$message.error('评分必须大于0');
+
+            const type = this.userScoreValue > 0 && this.discussType == 2 ? 2 : 1
+            const params = {
+                novelId: this.novelId,
+                type: type, // 1 发布评论 2修改评论
+                score: this.discussType != 1 ? this.scoreValue : null,
+                content: this.content,
+            }
+            try {
+                const res = await this.$api.novel.postDiscuss(params)
+                if (this.discussType == 2) this.userScoreValue = res.data.score
+                this.$message.success('发布成功');
+                this.getDiscussList()
+                this.commentFlag = false
+            } catch (error) {
+                console.log(error)
+            }
         }
     }
 }
@@ -471,6 +593,23 @@ export default {
         /deep/.el-tabs__item:nth-last-child(1){
             border-right: none;
         }
+        .user-score{
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            color: #333;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;;
+            span{
+                margin-right: 10px;
+            }
+            /deep/.el-rate__item{
+                cursor: pointer!important;;
+            }
+        }
     }
 }
 .tag-list{
@@ -479,12 +618,17 @@ export default {
 	box-sizing: border-box;
 	padding: 10px 30px;
     background: #FFFFFF;
+    display: flex;
+    align-items: center;
     .el-tag{
         cursor: pointer;
         margin-right: 8px;
     }
     /deep/.el-button{
         padding: 5.4px 10px;
+    }
+    /deep/.el-input{
+        width: 70px;
     }
 }
 .book-layout-main{
@@ -533,6 +677,11 @@ export default {
                     color: #000;
                     font-weight: bold;
                 }
+                .tips{
+                    font-size: 12px;
+                    color: #E6A23C;
+                    margin-left: 10px;
+                }
             }
             .comment-btn{
                 color: #888;
@@ -554,23 +703,29 @@ export default {
                 line-height: normal;
                 display: flex;
                 margin-bottom: 10px;
-                p{
-                    color: #333;
+                .discuss-type{
+                    color: #aaa;
                     font-weight: bold;
                     margin-right: 15px;
+                    margin-left: -10px;
+                    .item{
+                        font-size: 14px;
+                        padding: 0 10px;
+                        border-right: 1px solid #ddd;
+                        cursor: pointer;
+                        color: #333;
+                    }
+                    .item:nth-child(2){
+                        border-right: none;
+                    }
+                    .active{
+                        color: #E6A23C;
+                        font-weight: bold;
+                    }
                 }
             }
             /deep/.el-textarea{
-                textarea::-webkit-input-placeholder {
-                    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif!important;
-                }
-                textarea:-moz-placeholder {
-                    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif!important;
-                }
-                textarea::-moz-placeholder {
-                    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif!important;
-                }
-                textarea::-ms-input-placeholder {
+                textarea, textarea::-webkit-input-placeholder {
                     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif!important;
                 }
             }

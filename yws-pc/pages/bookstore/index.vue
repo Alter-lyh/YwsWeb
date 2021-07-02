@@ -108,13 +108,9 @@
                         <span class="book-info-item">{{
                             item.author_name
                         }}</span>
-                        <span class="book-info-item"
-                            >{{
-                                Number(item.word_number / 10000).toFixed(1)
-                            }}万字</span
-                        >
-                        <span class="book-info-item">4小时前</span>
-                        <span class="book-info-item">连载</span>
+                        <span class="book-info-item">{{item.word_number | wordNumFilter}}</span>
+                        <span class="book-info-item">{{item.update_time | timeFil}}</span>
+                        <span class="book-info-item">{{item.update_status | updateStatusFil}}</span>
                     </div>
                     <div class="book-sore-list">
                         <span class="book-sore">综合评分：<em>{{ item.score }}</em>（{{ item.scorer }}人）</span>
@@ -235,7 +231,7 @@ export default {
                     name: "综合",
                 },
                 {
-                    status: 'countWord',
+                    status: 'word_number',
                     name: "字数",
                 },
                 {
@@ -293,34 +289,33 @@ export default {
     },
     async asyncData({ app, query, params }) {
         // 请检查您是否在服务器端
-        if (!process.server) return;
-        query.page = query.page * 1 || 1;
+        // if (!process.server) return;
+        // query.page = query.page * 1 || 1;
 
-        const result = await Promise.all([
-            app.$api.novel.getCategory({ type: query.type }),
-            app.$api.novel.getNovelList(query),
-        ]);
-        result[0].unshift({ id: null, cate_name: "全部" });
+        // const result = await Promise.all([
+        //     app.$api.novel.getCategory({ type: query.type }),
+        //     app.$api.novel.getNovelList(query),
+        // ]);
+        // result[0].unshift({ id: null, cate_name: "全部" });
 
-        return {
-            query: query,
-            categoryList: result[0],
-            pageAll: result[1].pageAll,
-            novelList: result[1].data,
-        };
+        // return {
+        //     query: query,
+        //     categoryList: result[0],
+        //     pageAll: result[1].pageAll,
+        //     novelList: result[1].data,
+        // };
     },
     async activated() {
-        if (this.categoryList.length < 1) {
-            await this.getCategory()
-            await this.getNovelList()
-        }
+        await this.getCategory()
+        await this.getNovelList()
     },
     methods: {
         async getCategory() {
             const params = { 
                 type: this.query.type 
             }
-            this.categoryList = await this.$api.novel.getCategory(params)
+            const res = await this.$api.novel.getCategory(params)
+            this.categoryList = res.data
         },
         async getNovelList() {
             const params = {...this.query}
@@ -328,8 +323,9 @@ export default {
                 params.sort = this.query.scoreSort
             }
             const res = await this.$api.novel.getNovelList(params)
-            this.pageAll = res.pageAll;
-            this.novelList = res.data;
+            const json = res.data
+            this.pageAll = json.pageAll;
+            this.novelList = json.data;
         },
         // 分页
         changePage(page) {
@@ -339,6 +335,8 @@ export default {
         // 男频 女频
         changeType(type) {
             this.query.type = type;
+            this.getCategory()
+            this.query.categoryId = null
             this.getNovelList();
         },
         // 分类

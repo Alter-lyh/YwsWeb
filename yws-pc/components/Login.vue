@@ -78,11 +78,12 @@ export default {
             }
             try {
                 const res = await this.$api.userApi.signIn(params)
-                setToken(res.token);
-                setUserInfo(res)
+                const json = res.data
+                setToken(json.token);
+                setUserInfo(json)
                 this.$store.commit('updateLoginStatus', true)
                 this.$store.commit('updateLoginView', false)
-                this.$store.commit('setUserInfo', res)
+                this.$store.commit('setUserInfo', json)
             } catch (error) {
                 console.log(error)
             }
@@ -133,7 +134,8 @@ export default {
             }
             try {
                 const res = await this.$api.userApi.register(params)
-                const userInfo = res[0]
+                const json = res.data
+                const userInfo = json[0]
                 setToken(userInfo.token);
                 setUserInfo(userInfo)
                 this.$store.commit('updateLoginStatus', true)

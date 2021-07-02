@@ -82,6 +82,7 @@ export default {
 
             let content = obj.previousElementSibling.innerHTML
             content = content.replace(/\s+$/, '')
+            if (content.length < 5) return this.$message.error('评论必须大于5个字');
 
             this.$emit('replayComment', content, itemKey)
         },
@@ -91,7 +92,8 @@ export default {
 
             let content = obj.previousElementSibling.innerHTML
             content = content.replace(/\s+$/, '')
-
+            if (content.length < 5) return this.$message.error('评论必须大于5个字');
+            
             this.$emit('replayItemComment', parentId, novelId, content, resId)
             this.setReplayShow($key)
         }

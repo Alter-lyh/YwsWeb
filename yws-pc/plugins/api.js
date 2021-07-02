@@ -8,19 +8,19 @@ export default function ({ $axios }, inject) {
     // 请求拦截
     $axios.onRequest(config => {
         console.log('Making request to ' + config.url)
-        config.headers['authorization'] = getToken();
+        if(getToken()) config.headers['authorization'] = getToken();
     })
     // 响应拦截
     $axios.onResponse(res => {
         let json = res.data
-        if(json.error == '01') {
+        if(json.code == '01') {
             clearToken()
         }
         if (json.code != '00') {
             Message.error(json.msg);
-            return Promise.resolve(json.data);
+            return Promise.resolve(json);
         }
-        return json.data
+        return json
     })
     // 错误拦截
     // $axios.onError(error => {

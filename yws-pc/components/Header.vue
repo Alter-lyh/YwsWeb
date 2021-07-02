@@ -6,6 +6,7 @@
                 <div class="navbar-main">
                     <nuxt-link to="/bookstore" :class="[routeIndex == 2 ? 'active' : '']">书库</nuxt-link>
                     <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">书单</nuxt-link>
+                    <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">书架</nuxt-link>
                     <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">帮助中心</nuxt-link>
                     <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">APP下载</nuxt-link>
                 </div>

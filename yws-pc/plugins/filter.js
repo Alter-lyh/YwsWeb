@@ -29,3 +29,20 @@ Vue.filter('timeFil', function (time) {
 
     return date
 })
+
+Vue.filter('updateStatusFil', function (updateStatus) {
+    switch (updateStatus*1) {
+        case 0:
+            updateStatus = '连载中'
+            break;
+
+        case 1:
+            updateStatus = '已完结'
+            break;
+    
+        default:
+            updateStatus = '太监中'
+            break;
+    }
+    return updateStatus
+})
