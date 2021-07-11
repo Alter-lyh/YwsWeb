@@ -5,8 +5,8 @@
                 <nuxt-link to="/" class="logo"></nuxt-link>
                 <div class="navbar-main">
                     <nuxt-link to="/bookstore" :class="[routeIndex == 2 ? 'active' : '']">书库</nuxt-link>
-                    <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">书单</nuxt-link>
-                    <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">书架</nuxt-link>
+                    <nuxt-link to="/booklist" :class="[routeIndex == 3 ? 'active' : '']">书单</nuxt-link>
+                    <nuxt-link to="/bookshelf" :class="[routeIndex == 4 ? 'active' : '']">书架</nuxt-link>
                     <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">帮助中心</nuxt-link>
                     <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">APP下载</nuxt-link>
                 </div>
@@ -58,8 +58,11 @@ export default {
                 case "/bookstore":
                     routeIndex = 2;
                     break;
-                case "/bookshelf":
+                case "/booklist":
                     routeIndex = 3;
+                    break;
+                case "/bookshelf":
+                    routeIndex = 4;
                     break;
             }
             return routeIndex;
