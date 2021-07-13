@@ -25,22 +25,86 @@
                 </div>
                 <div class="result-view">
                     <div class="item">
-                        <p class="item-title">书单名称</p>
-                        <div class="item-tag">
-                            <span>测试</span>
-                            <span>测试</span>
-                        </div>
-                        <p class="item-des">整理一下这些年看的变文，算是留个回忆吧。</p>
-                        <div class="item-bot">
-                            <div class="item-bot-left">
-                                <span class="nick-name">昵称</span>
-                                <span>1天前</span>
+                        <div class="book-info">
+                            <div class="info-left">
+                                <img src="https://qidian.qpic.cn/qdbimg/349573/1014907056/300" alt="">
                             </div>
-                            <div class="item-bot-right">
-                                <span>51本书</span>
-                                <span>23赞</span>
+                            <div class="info-right">
+                                <div class="info-list">
+                                    <a href="" class="book-name">我的群员是大佬</a>
+                                    <p class="info-item">
+                                        <span>只会敲键盘</span>
+                                        <span>199.8万字</span>
+                                        <span>连载</span>
+                                    </p>
+                                    <p class="info-item">
+                                        <span>更新时间:</span>
+                                        <span>1年</span>
+                                    </p>
+                                    <p class="info-item">
+                                        <span>单主评分:</span>
+                                        <el-rate
+                                            class="novel-score"
+                                            disabled
+                                            v-model="value">
+                                        </el-rate>
+                                    </p>
+                                </div>
+                                <el-dropdown :hide-on-click="false">
+                                    <span class="el-dropdown-link">
+                                        正在追读<i class="el-icon-arrow-down el-icon--right"></i>
+                                    </span>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item>黄金糕</el-dropdown-item>
+                                        <el-dropdown-item>狮子头</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
                             </div>
                         </div>
+                        <p class="desc">整理一下这些年看的变文，算是留个回忆吧。</p>
+                        <p class="create-time">发表于2019-07-21 00:44</p>
+                        <DiscussActions replyNum="0" @setReplayShow="setReplayShow($key, item.id)" />
+                    </div>
+                    <div class="item">
+                        <div class="book-info">
+                            <div class="info-left">
+                                <img src="https://qidian.qpic.cn/qdbimg/349573/1014907056/300" alt="">
+                            </div>
+                            <div class="info-right">
+                                <div class="info-list">
+                                    <a href="" class="book-name">我的群员是大佬</a>
+                                    <p class="info-item">
+                                        <span>只会敲键盘</span>
+                                        <span>199.8万字</span>
+                                        <span>连载</span>
+                                    </p>
+                                    <p class="info-item">
+                                        <span>更新时间:</span>
+                                        <span>1年</span>
+                                    </p>
+                                    <p class="info-item">
+                                        <span>单主评分:</span>
+                                        <el-rate
+                                            class="novel-score"
+                                            disabled
+                                            v-model="value">
+                                        </el-rate>
+                                    </p>
+                                </div>
+                                <el-dropdown :hide-on-click="false">
+                                    <span class="el-dropdown-link">
+                                        正在追读<i class="el-icon-arrow-down el-icon--right"></i>
+                                    </span>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item>黄金糕</el-dropdown-item>
+                                        <el-dropdown-item>狮子头</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                            </div>
+                        </div>
+                        <p class="desc">整理一下这些年看的变文，算是留个回忆吧。</p>
+                        <p class="create-time">发表于2019-07-21 00:44</p>
+                        <DiscussActions replyNum="0" @setReplayShow="setReplayShow($key, item.id)" />
                     </div>
                 </div>
                 <pagination
@@ -73,6 +137,7 @@ export default {
                 sort: null,
                 scoreSort: 'score',
             },
+            value: 3.7,
             sortList: [
                 {
                     status: null,
@@ -133,6 +198,9 @@ export default {
         // }
     },
     methods: {
+        setReplayShow() {
+
+        }
     }
 }
 </script>
@@ -208,59 +276,78 @@ export default {
         .result-view {
             width: 100%;
             height: auto;
-            background: #fff;
-            padding: 0 20px;
-            box-sizing: border-box;
             font-size: 14px;
             color: #999;
             .item {
                 width: 100%;
                 height: auto;
-                padding: 20px 0;
-                border-bottom: 1px solid #eee;
-                .item-title{
-                    color: #333;
-                    font-weight: 700;
-                    line-height: 1em;
-                    font-size: 18px;
-                    padding-bottom: 10px;
-                }
-                .item-tag{
-                    color: #7d97e2;
-                    font-size: 14px;
-                    cursor: pointer;
-                    span{
-                        margin-right: 10px;
-                    }
-                }
-                .item-des{
-                    margin-top: 10px;
-                }
-                .item-bot{
+                background: #fff;
+                padding: 20px;
+                box-sizing: border-box;
+                margin-bottom: 20px;
+                .book-info{
                     display: flex;
-                    justify-content: space-between;
-                    font-size: 12px;
-                    margin-top: 10px;
-                    .item-bot-left{
-                        span{
-                            margin-right: 10px;
-                        }
-                        .nick-name{
-                            font-size: 14px;
-                            color: #333;
-                            font-weight: bold;
+                    margin-bottom: 10px;
+                    .info-left{
+                        width: 90px;
+                        height: 120px;
+                        border-radius: 4px;
+                        overflow: hidden;
+                        margin-right: 10px;
+                        img{
+                            width: 100%;
+                            height: auto;
+                            display: block;
                         }
                     }
-                    .item-bot-right{
-                        text-align: right;
-                        span{
-                            margin-left: 20px;
+                    .info-right{
+                        flex: 1;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-start;
+                        .info-list{
+                            .book-name{
+                                max-width: 400px;
+                                font-size: 18px;
+                                font-weight: 700;
+                            }
+                            .info-item{
+                                font-size: 14px;
+                                color: #888;
+                                margin-top: 10px;
+                                display: flex;
+                                align-items: center;
+                                line-height: normal;
+                                span{
+                                    margin-right: 10px;
+                                }
+                                /deep/.novel-score{
+                                    line-height: normal;
+                                }
+                            }
+                        }
+                        .el-dropdown-link {
+                            cursor: pointer;
                         }
                     }
                 }
-            }
-            .item:nth-last-child(1) {
-                border: none;
+                .desc{
+                    font-size: 15px;
+                    line-height: 2em;
+                    color: #333;
+                    word-wrap: break-word;
+                    word-break: break-word;
+                    white-space: pre-line;
+                    overflow: hidden;
+                }
+                .create-time{
+                    color: #999;
+                    font-size: 12px;
+                    display: block;
+                    padding: 15px 0 20px;
+                    border-bottom: 1px solid #eee;
+                    margin-bottom: 20px;
+                }
             }
         }
     }
