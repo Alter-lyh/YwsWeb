@@ -4,6 +4,7 @@ import { getToken, clearToken } from './auth'
 import novleApi from '@/api/novleApi'
 import userApi from '@/api/userApi'
 import discussApi from '@/api/discussApi'
+import booklistApi from '@/api/booklistApi'
 export default function ({ $axios }, inject) {
     // 请求拦截
     $axios.onRequest(config => {
@@ -42,6 +43,7 @@ export default function ({ $axios }, inject) {
     api.novel = novleApi($axios)
     api.userApi = userApi($axios)
     api.discussApi = discussApi($axios)
+    api.booklistApi = booklistApi($axios)
 
     // Inject to context as $api
     inject('api', api)

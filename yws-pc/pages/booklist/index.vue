@@ -23,42 +23,19 @@
                     <div class="store-sort-item">
                         <span :class="['item', query.sort == item.status ? 'active' : null]" v-for="(item, $key) in sortList" :key="$key" @click="changeSort(item.status)">{{item.name}}</span>
                     </div>
-                    <span class="sort-tip" v-show="['score', 'scorer'].indexOf(query.sort) != -1">评分和评分人数可以按照书龄来选择</span>
-                    <div class="store-sort-item" v-show="['score', 'scorer'].indexOf(query.sort) != -1">
-                        <span :class="['item', query.scoreSort == item.status ? 'active' : null]" v-for="(item, $key) in scoreSortList" :key="'score'+$key" v-show="query.sort == 'score'" @click="updateScore(item.status)">{{item.name}}</span>
-                        <span :class="['item', query.scoreSort == item.status ? 'active' : null]" v-for="(item, $key) in scorerSortList" :key="'scorer'+$key" v-show="query.sort == 'scorer'" @click="updateScore(item.status)">{{item.name}}</span>
-                    </div>
                 </div>
                 <div class="result-view">
-                    <div class="item">
-                        <p class="item-title">书单名称</p>
+                    <div class="item" v-for="(item, key) in bookList" :key="key">
+                        <p class="item-title">{{item.title}}</p>
                         <div class="item-tag">
                             <span>测试</span>
                             <span>测试</span>
                         </div>
-                        <p class="item-desc">整理一下这些年看的变文，算是留个回忆吧。</p>
+                        <p class="item-desc">{{item.intro}}</p>
                         <div class="item-bot">
                             <div class="item-bot-left">
                                 <span class="nick-name">昵称</span>
-                                <span>1天前</span>
-                            </div>
-                            <div class="item-bot-right">
-                                <span>51本书</span>
-                                <span>23赞</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <p class="item-title">书单名称</p>
-                        <div class="item-tag">
-                            <span>测试</span>
-                            <span>测试</span>
-                        </div>
-                        <p class="item-desc">整理一下这些年看的变文，算是留个回忆吧。</p>
-                        <div class="item-bot">
-                            <div class="item-bot-left">
-                                <span class="nick-name">昵称</span>
-                                <span>1天前</span>
+                                <span>{{item.update_time | timeFil}}</span>
                             </div>
                             <div class="item-bot-right">
                                 <span>51本书</span>
@@ -85,19 +62,10 @@ export default {
         return {
             query: {
                 page: 1,
-                type: null,
-                categoryId: null,
-                update: null,
-                updateStatus: null,
-                countWord: null,
+                type: 1,
                 sort: null,
-                scoreSort: 'score',
             },
             channelList: [
-                {
-                    type: null,
-                    name: "全部",
-                },
                 {
                     type: 1,
                     name: "男频",
@@ -107,23 +75,14 @@ export default {
                     name: "女频",
                 },
             ],
-            categoryList: [],
             sortList: [
                 {
                     status: null,
                     name: "综合",
                 },
                 {
-                    status: 'word_number',
-                    name: "字数",
-                },
-                {
-                    status: 'score',
-                    name: "评分",
-                },
-                {
-                    status: 'scorer',
-                    name: "评分人数",
+                    status: 'time',
+                    name: "时间",
                 },
                 {
                     status: 'point',
@@ -131,48 +90,21 @@ export default {
                 },
             ],
             pageAll: 1,
-            novelList: [],
+            bookList: [],
         };
     },
     async asyncData({ app, query, params }) {
-        // 请检查您是否在服务器端
-        // if (!process.server) return;
-        // query.page = query.page * 1 || 1;
-
-        // const result = await Promise.all([
-        //     app.$api.novel.getCategory({ type: query.type }),
-        //     app.$api.novel.getNovelList(query),
-        // ]);
-        // result[0].unshift({ id: null, cate_name: "全部" });
-
-        // return {
-        //     query: query,
-        //     categoryList: result[0],
-        //     pageAll: result[1].pageAll,
-        //     novelList: result[1].data,
-        // };
     },
     async activated() {
-        // await this.getCategory()
-        // await this.getNovelList()
+        this.getBooklist()
     },
     methods: {
-        async getCategory() {
-            const params = { 
-                type: this.query.type 
-            }
-            const res = await this.$api.novel.getCategory(params)
-            this.categoryList = res.data
-        },
-        async getNovelList() {
+        async getBooklist() {
             const params = {...this.query}
-            if (['score','scorer'].indexOf(this.query.sort) != -1) {
-                params.sort = this.query.scoreSort
-            }
-            const res = await this.$api.novel.getNovelList(params)
+            const res = await this.$api.booklistApi.getBooklist(params)
             const json = res.data
             this.pageAll = json.pageAll;
-            this.novelList = json.data;
+            this.bookList = json.data;
         },
         // 分页
         changePage(page) {
@@ -292,10 +224,6 @@ export default {
                     color: #5DA7FF;
                     font-weight: bold;
                 }
-            }
-            .sort-tip {
-                color: #e96900;
-                padding: 0 10px;
             }
         }
         .result-view {
