@@ -105,6 +105,30 @@ export default {
             const json = res.data
             this.pageAll = json.pageAll;
             this.bookList = json.data;
+            this.bookList.map((item, key) => {
+                let categoryList = []
+                item.novelList.map(i => {
+                    let flag = true, s = 0
+                    categoryList.map((i2, k2) => {
+                        if (i.category_id = i2.category_id) {
+                            s = k2
+                            flag = false
+                            return
+                        }
+                    })
+                    if (flag) {
+                        categoryList.push({
+                            category_id: i.category_id,
+                            category_name: i.category_name,
+                            num: 1
+                        })
+                    } else {
+                        categoryList[s].num++
+                    }
+                })
+                item.categoryList = categoryList
+            })
+            console.log(this.bookList)
         },
         // 分页
         changePage(page) {
