@@ -2,13 +2,12 @@
     <div class="container">
         <header class="header">
             <div class="tag-list">
-                <el-tag size="small">古装</el-tag>
-                <el-tag size="small">古装</el-tag>
+                <el-tag size="small" v-for="(item, key) in categoryList" :key="key">{{item.category_name}}({{item.num}})</el-tag>
             </div>
-            <h3>变身小说合集</h3>
-            <p class="desc">整理一下这些年看的变文，算是留个回忆吧。</p>
+            <h3>{{bookListInfo.title}}</h3>
+            <p class="desc">{{bookListInfo.intro}}</p>
             <div class="header-bot">
-                <span>201-45-45</span>
+                <span>{{bookListInfo.update_time | timeFil}}</span>
             </div>
         </header>
         <div class="content">
@@ -17,38 +16,34 @@
                     <div class="store-sort-item">
                         <span :class="['item', query.sort == item.status ? 'active' : null]" v-for="(item, $key) in sortList" :key="$key" @click="changeSort(item.status)">{{item.name}}</span>
                     </div>
-                    <span class="sort-tip" v-show="['score', 'scorer'].indexOf(query.sort) != -1">评分和评分人数可以按照书龄来选择</span>
-                    <div class="store-sort-item" v-show="['score', 'scorer'].indexOf(query.sort) != -1">
-                        <span :class="['item', query.scoreSort == item.status ? 'active' : null]" v-for="(item, $key) in scoreSortList" :key="'score'+$key" v-show="query.sort == 'score'" @click="updateScore(item.status)">{{item.name}}</span>
-                        <span :class="['item', query.scoreSort == item.status ? 'active' : null]" v-for="(item, $key) in scorerSortList" :key="'scorer'+$key" v-show="query.sort == 'scorer'" @click="updateScore(item.status)">{{item.name}}</span>
-                    </div>
                 </div>
                 <div class="result-view">
-                    <div class="item">
+                    <div class="item" v-for="(item, $key) in novelList" :key="$key">
                         <div class="book-info">
                             <div class="info-left">
-                                <img src="https://qidian.qpic.cn/qdbimg/349573/1014907056/300" alt="">
+                                <img :src="item.novel.novel_img" alt="">
                             </div>
                             <div class="info-right">
                                 <div class="info-list">
-                                    <a href="" class="book-name">我的群员是大佬</a>
+                                    <a href="" class="book-name">{{item.novel.novel_name}}</a>
                                     <p class="info-item">
-                                        <span>只会敲键盘</span>
-                                        <span>199.8万字</span>
-                                        <span>连载</span>
+                                        <span>{{item.novel.author_name}}</span>
+                                        <span>{{item.novel.word_number | wordNumFilter}}</span>
+                                        <span>{{item.novel.update_status | updateStatusFil}}</span>
                                     </p>
                                     <p class="info-item">
                                         <span>更新时间:</span>
-                                        <span>1年</span>
+                                        <span>{{item.novel.update_time | timeFil}}</span>
                                     </p>
-                                    <p class="info-item">
+                                    <div class="info-item">
                                         <span>单主评分:</span>
                                         <el-rate
                                             class="novel-score"
                                             disabled
-                                            v-model="value">
+                                            :value="item.user_score/2"
+                                            text-color="#ff9900">
                                         </el-rate>
-                                    </p>
+                                    </div>
                                 </div>
                                 <el-dropdown :hide-on-click="false">
                                     <span class="el-dropdown-link">
@@ -61,50 +56,11 @@
                                 </el-dropdown>
                             </div>
                         </div>
-                        <p class="desc">整理一下这些年看的变文，算是留个回忆吧。</p>
-                        <p class="create-time">发表于2019-07-21 00:44</p>
-                        <DiscussActions replyNum="0" @setReplayShow="setReplayShow($key, item.id)" />
-                    </div>
-                    <div class="item">
-                        <div class="book-info">
-                            <div class="info-left">
-                                <img src="https://qidian.qpic.cn/qdbimg/349573/1014907056/300" alt="">
-                            </div>
-                            <div class="info-right">
-                                <div class="info-list">
-                                    <a href="" class="book-name">我的群员是大佬</a>
-                                    <p class="info-item">
-                                        <span>只会敲键盘</span>
-                                        <span>199.8万字</span>
-                                        <span>连载</span>
-                                    </p>
-                                    <p class="info-item">
-                                        <span>更新时间:</span>
-                                        <span>1年</span>
-                                    </p>
-                                    <p class="info-item">
-                                        <span>单主评分:</span>
-                                        <el-rate
-                                            class="novel-score"
-                                            disabled
-                                            v-model="value">
-                                        </el-rate>
-                                    </p>
-                                </div>
-                                <el-dropdown :hide-on-click="false">
-                                    <span class="el-dropdown-link">
-                                        正在追读<i class="el-icon-arrow-down el-icon--right"></i>
-                                    </span>
-                                    <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item>黄金糕</el-dropdown-item>
-                                        <el-dropdown-item>狮子头</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
-                            </div>
-                        </div>
-                        <p class="desc">整理一下这些年看的变文，算是留个回忆吧。</p>
-                        <p class="create-time">发表于2019-07-21 00:44</p>
-                        <DiscussActions replyNum="0" @setReplayShow="setReplayShow($key, item.id)" />
+                        <!-- <p class="desc">{{item.user_discuss}}</p>
+                        <p class="create-time">发表于{{item.update_time | timeFil}}</p> -->
+                        <DiscussContent :content="item.user_discuss" :status="item.moreStatus" :editTime="item.update_time" @checkShow="checkShow($key)" />
+                        <DiscussActions replyNum="0" @setReplayShow="setReplayShow($key, item.novel_id)" />
+                        <DiscussReplay :itemKey="$key" :replyNum="item.reply_num" :replyList="item.replyList" :page="item.page" :pageAll="item.pageAll" @changeReplayPage="changeReplayPage" @replayComment="replayComment" @replayItemComment="replayItemComment" v-show="item.replayShow" />
                     </div>
                 </div>
                 <pagination
@@ -137,6 +93,10 @@ export default {
                 sort: null,
                 scoreSort: 'score',
             },
+            booklistId: '',
+            bookListInfo: {},
+            categoryList: [],
+            novelList: [],
             value: 3.7,
             sortList: [
                 {
@@ -187,20 +147,124 @@ export default {
         // };
     },
     async activated() {
-        // this.novelId = this.$route.query.id
-        // await this.getNovelInfo()
-        // await this.getDiscussList()
-        // this.getDiscussInfo()
-        // this.getUserTagList()
-        // if (this.categoryList.length < 1) {
-        //     await this.getCategory()
-        //     await this.getNovelList()
-        // }
+        this.booklistId = this.$route.query.id
+        await this.getInfo()
+        await this.getNovelList()
     },
     methods: {
-        setReplayShow() {
+        async getInfo() {
+            const params = {
+                booklistId: this.booklistId
+            }
+            const res = await this.$api.booklistApi.getInfo(params)
+            this.bookListInfo = res.data
+            let categoryList = []
+            this.bookListInfo.novelList.map(item => {
+                let flag = true, k = 0
+                categoryList.map((item2, key2) => {
+                    if (item.category_id = item2.category_id) {
+                        k = key2
+                        flag = false
+                        return
+                    }
+                })
+                if (flag) {9  
+                    categoryList.push({
+                        category_id: item.category_id,
+                        category_name: item.category_name,
+                        num: 1
+                    })
+                } else {
+                    categoryList[k].num++
+                }
+            })
+            this.categoryList = categoryList
 
-        }
+        },
+        async getNovelList() {
+            const params = {
+                booklistId: this.booklistId
+            }
+            const res = await this.$api.booklistApi.getNovelList(params)
+            console.log(res);
+            this.novelList = res.data.data
+            this.novelList.map(item => {
+                item.moreStatus = false
+                item.replayShow = false
+                item.page = 1
+                item.pageAll = 1
+            })
+        },
+        // 切换
+        checkShow($key) {
+            this.novelList[$key].moreStatus = !this.novelList[$key].moreStatus
+            this.$set(this.novelList, $key, this.novelList[$key])
+        },
+        // 展开收起评论
+        async setReplayShow($key, novelId) {
+            this.novelList[$key].replayShow = !this.novelList[$key].replayShow
+            if (this.novelList[$key].replayShow) {
+                const params = {
+                    booklistId: this.booklistId,
+                    novelId
+                }
+                const res = await this.$api.booklistApi.getDiscussList(params)
+                const json = res.data
+                this.novelList[$key].replyList = json.data
+                this.novelList[$key].page = json.page
+                this.novelList[$key].pageAll = json.pageAll
+            }
+
+            this.$set(this.novelList, $key, this.novelList[$key])
+        },
+        // 发布子评论
+        async replayComment(content, itemKey) {
+            const params = {
+                parentId: this.novelList[itemKey].id,
+                novelId: this.novelId,
+                content: content,
+            }
+            try {
+                const res = await this.$api.discussApi.postReply(params)
+                if (res.code == '00') this.$message.success('评论发布成功');
+                this.changeReplayPage(1, itemKey)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        // 切换子评论页码
+        async changeReplayPage(page, $key) {
+            this.novelList[$key].page = page
+            const params = {
+                discussId: this.novelList[$key].id,
+                page: page
+            }
+            const res = await this.$api.discussApi.getReply(params)
+            const json = res.data
+            this.novelList[$key].replyList = json.data
+            // 更新数据状态
+            this.$set(this.novelList, $key, this.novelList[$key])
+        },
+        // 回复子评论
+        async replayItemComment(parentId, novelId, content, resId) {
+            const params = {
+                parentId: parentId,
+                novelId: novelId,
+                content: content,
+                resId: resId
+            }
+            try {
+                const res = await this.$api.discussApi.postReply(params)
+                if (res.code == '00') this.$message.success('评论发布成功');
+                this.changeReplayPage(1, itemKey)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        // 分页
+        changePage(page) {
+            this.page = page;
+        },
     }
 }
 </script>
@@ -268,10 +332,6 @@ export default {
                     font-weight: bold;
                 }
             }
-            .sort-tip {
-                color: #e96900;
-                padding: 0 10px;
-            }
         }
         .result-view {
             width: 100%;
@@ -287,13 +347,13 @@ export default {
                 margin-bottom: 20px;
                 .book-info{
                     display: flex;
-                    margin-bottom: 10px;
+                    margin-bottom: 20px;
                     .info-left{
                         width: 90px;
                         height: 120px;
                         border-radius: 4px;
                         overflow: hidden;
-                        margin-right: 10px;
+                        margin-right: 20px;
                         img{
                             width: 100%;
                             height: auto;
@@ -330,23 +390,6 @@ export default {
                             cursor: pointer;
                         }
                     }
-                }
-                .desc{
-                    font-size: 15px;
-                    line-height: 2em;
-                    color: #333;
-                    word-wrap: break-word;
-                    word-break: break-word;
-                    white-space: pre-line;
-                    overflow: hidden;
-                }
-                .create-time{
-                    color: #999;
-                    font-size: 12px;
-                    display: block;
-                    padding: 15px 0 20px;
-                    border-bottom: 1px solid #eee;
-                    margin-bottom: 20px;
                 }
             }
         }

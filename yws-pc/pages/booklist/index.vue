@@ -26,10 +26,9 @@
                 </div>
                 <div class="result-view">
                     <div class="item" v-for="(item, key) in bookList" :key="key">
-                        <p class="item-title">{{item.title}}</p>
+                        <p class="item-title"><nuxt-link :to="`/booklist/details?id=${item.id}`">{{item.title}}</nuxt-link></p>
                         <div class="item-tag">
-                            <span>测试</span>
-                            <span>测试</span>
+                            <span v-for="(item2, key2) in item.categoryList" :key="key2">{{item2.category_name}}({{item2.num}})</span>
                         </div>
                         <p class="item-desc">{{item.intro}}</p>
                         <div class="item-bot">
@@ -38,7 +37,7 @@
                                 <span>{{item.update_time | timeFil}}</span>
                             </div>
                             <div class="item-bot-right">
-                                <span>51本书</span>
+                                <span>{{item.novelList.length}}本书</span>
                                 <span>23赞</span>
                             </div>
                         </div>
@@ -107,28 +106,27 @@ export default {
             this.bookList = json.data;
             this.bookList.map((item, key) => {
                 let categoryList = []
-                item.novelList.map(i => {
-                    let flag = true, s = 0
-                    categoryList.map((i2, k2) => {
-                        if (i.category_id = i2.category_id) {
-                            s = k2
+                item.novelList.map(item2 => {
+                    let flag = true, k = 0
+                    categoryList.map((item3, key3) => {
+                        if (item2.category_id = item3.category_id) {
+                            k = key3
                             flag = false
                             return
                         }
                     })
                     if (flag) {
                         categoryList.push({
-                            category_id: i.category_id,
-                            category_name: i.category_name,
+                            category_id: item2.category_id,
+                            category_name: item2.category_name,
                             num: 1
                         })
                     } else {
-                        categoryList[s].num++
+                        categoryList[k].num++
                     }
                 })
                 item.categoryList = categoryList
             })
-            console.log(this.bookList)
         },
         // 分页
         changePage(page) {
@@ -267,8 +265,10 @@ export default {
                     color: #333;
                     font-weight: 700;
                     line-height: 1em;
-                    font-size: 18px;
                     padding-bottom: 10px;
+                    a{
+                        font-size: 18px;
+                    }
                 }
                 .item-tag{
                     color: #7d97e2;
@@ -285,7 +285,7 @@ export default {
                     display: flex;
                     justify-content: space-between;
                     font-size: 12px;
-                    margin-top: 10px;
+                    margin-top: 15px;
                     .item-bot-left{
                         span{
                             margin-right: 10px;
