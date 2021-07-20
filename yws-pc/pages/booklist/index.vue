@@ -28,7 +28,7 @@
                     <div class="item" v-for="(item, key) in bookList" :key="key">
                         <p class="item-title"><nuxt-link :to="`/booklist/details?id=${item.id}`">{{item.title}}</nuxt-link></p>
                         <div class="item-tag">
-                            <span v-for="(item2, key2) in item.categoryList" :key="key2">{{item2.category_name}}({{item2.num}})</span>
+                            <span v-for="(item2, key2) in item.categorys" :key="key2">{{item2.category_name}}({{item2.count}})</span>
                         </div>
                         <p class="item-desc">{{item.intro}}</p>
                         <div class="item-bot">
@@ -37,7 +37,7 @@
                                 <span>{{item.update_time | timeFil}}</span>
                             </div>
                             <div class="item-bot-right">
-                                <span>{{item.novelList.length}}本书</span>
+                                <span>{{item.bookTotal}}本书</span>
                                 <span>23赞</span>
                             </div>
                         </div>
@@ -104,28 +104,12 @@ export default {
             const json = res.data
             this.pageAll = json.pageAll;
             this.bookList = json.data;
-            this.bookList.map((item, key) => {
-                let categoryList = []
-                item.novelList.map(item2 => {
-                    let flag = true, k = 0
-                    categoryList.map((item3, key3) => {
-                        if (item2.category_id = item3.category_id) {
-                            k = key3
-                            flag = false
-                            return
-                        }
-                    })
-                    if (flag) {
-                        categoryList.push({
-                            category_id: item2.category_id,
-                            category_name: item2.category_name,
-                            num: 1
-                        })
-                    } else {
-                        categoryList[k].num++
-                    }
+            this.bookList.map(item => {
+                let bookTotal = 0
+                item.categorys.map(item2 => {
+                    bookTotal += item2.count
                 })
-                item.categoryList = categoryList
+                item.bookTotal = bookTotal
             })
         },
         // 分页

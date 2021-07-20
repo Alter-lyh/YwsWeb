@@ -2,7 +2,7 @@
     <div class="container">
         <header class="header">
             <div class="tag-list">
-                <el-tag size="small" v-for="(item, key) in categoryList" :key="key">{{item.category_name}}({{item.num}})</el-tag>
+                <el-tag size="small" v-for="(item, key) in bookListInfo.categorys" :key="key">{{item.category_name}}({{item.count}})</el-tag>
             </div>
             <h3>{{bookListInfo.title}}</h3>
             <p class="desc">{{bookListInfo.intro}}</p>
@@ -40,7 +40,7 @@
                                         <el-rate
                                             class="novel-score"
                                             disabled
-                                            :value="item.user_score/2"
+                                            :value="item.score/2"
                                             text-color="#ff9900">
                                         </el-rate>
                                     </div>
@@ -56,10 +56,8 @@
                                 </el-dropdown>
                             </div>
                         </div>
-                        <!-- <p class="desc">{{item.user_discuss}}</p>
-                        <p class="create-time">发表于{{item.update_time | timeFil}}</p> -->
-                        <DiscussContent :content="item.user_discuss" :status="item.moreStatus" :editTime="item.update_time" @checkShow="checkShow($key)" />
-                        <DiscussActions replyNum="0" @setReplayShow="setReplayShow($key, item.novel_id)" />
+                        <DiscussContent :content="item.content" :status="item.moreStatus" :editTime="item.update_time" @checkShow="checkShow($key)" />
+                        <DiscussActions :replyNum="item.reply_num" @setReplayShow="setReplayShow($key, item.id)" />
                         <DiscussReplay :itemKey="$key" :replyNum="item.reply_num" :replyList="item.replyList" :page="item.page" :pageAll="item.pageAll" @changeReplayPage="changeReplayPage" @replayComment="replayComment" @replayItemComment="replayItemComment" v-show="item.replayShow" />
                     </div>
                 </div>
@@ -95,7 +93,6 @@ export default {
             },
             booklistId: '',
             bookListInfo: {},
-            categoryList: [],
             novelList: [],
             value: 3.7,
             sortList: [
@@ -158,28 +155,6 @@ export default {
             }
             const res = await this.$api.booklistApi.getInfo(params)
             this.bookListInfo = res.data
-            let categoryList = []
-            this.bookListInfo.novelList.map(item => {
-                let flag = true, k = 0
-                categoryList.map((item2, key2) => {
-                    if (item.category_id = item2.category_id) {
-                        k = key2
-                        flag = false
-                        return
-                    }
-                })
-                if (flag) {9  
-                    categoryList.push({
-                        category_id: item.category_id,
-                        category_name: item.category_name,
-                        num: 1
-                    })
-                } else {
-                    categoryList[k].num++
-                }
-            })
-            this.categoryList = categoryList
-
         },
         async getNovelList() {
             const params = {
@@ -201,15 +176,15 @@ export default {
             this.$set(this.novelList, $key, this.novelList[$key])
         },
         // 展开收起评论
-        async setReplayShow($key, novelId) {
+        async setReplayShow($key, discussId) {
             this.novelList[$key].replayShow = !this.novelList[$key].replayShow
             if (this.novelList[$key].replayShow) {
                 const params = {
-                    booklistId: this.booklistId,
-                    novelId
+                    discussId
                 }
-                const res = await this.$api.booklistApi.getDiscussList(params)
+                const res = await this.$api.discussApi.getReply(params)
                 const json = res.data
+                console.log(json.data)
                 this.novelList[$key].replyList = json.data
                 this.novelList[$key].page = json.page
                 this.novelList[$key].pageAll = json.pageAll
