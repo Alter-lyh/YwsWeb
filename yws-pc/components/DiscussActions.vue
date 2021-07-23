@@ -1,8 +1,8 @@
 <template>
     <div class="discuss-actions">
         <div class="discuss-actions-left">
-            <div class="icon-btn"><thumbs-up theme="outline" size="16" fill="#333"/>赞</div>
-            <div class="icon-btn"><thumbs-down theme="outline" size="16" fill="#333"/>踩</div>
+            <div class="icon-btn" @click="setUpStatus"><thumbs-up theme="outline" size="16" fill="#333"/>{{dzNum > 0 ? dzNum : '赞'}}</div>
+            <div class="icon-btn" @click="setDownStatus"><thumbs-down theme="outline" size="16" fill="#333"/>{{cNum > 0 ? cNum : '踩'}}</div>
             <div class="icon-btn" @click="setReplayShow"><comments theme="outline" size="16" fill="#333"/>{{replyNum > 0 ? replyNum : "评论"}}</div>
             <div class="icon-btn"><share theme="outline" size="16" fill="#333"/>分享</div>
             <!-- <div class="icon-btn"><like theme="outline" size="16" fill="#333"/>收藏</div> -->
@@ -29,7 +29,7 @@ export default {
         Share,
         Like
     },
-    props: ['replyNum'],
+    props: ['dzNum', 'cNum', 'replyNum'],
     data() {
         return {
         };
@@ -41,6 +41,12 @@ export default {
     methods: {
         setReplayShow() {
             this.$emit('setReplayShow')
+        },
+        setUpStatus() {
+            this.$emit('setStatus', 1)
+        },
+        setDownStatus() {
+            this.$emit('setStatus', 2)
         }
     }
 };

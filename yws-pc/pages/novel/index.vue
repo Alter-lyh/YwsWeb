@@ -19,12 +19,12 @@
                             <el-dropdown-item v-for="(item, $key) in novelInfo.source" :key="$key"><a :href="item.bookPage">{{item.siteName}}</a></el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <el-dropdown :hide-on-click="false">
+                    <el-dropdown :hide-on-click="false" @command="addBookshelf">
                         <span class="el-dropdown-link">
-                            正在追读<i class="el-icon-arrow-down el-icon--right"></i>
+                            加入书架<i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>黄金糕</el-dropdown-item>
+                            <el-dropdown-item command="1">正在追读</el-dropdown-item>
                             <el-dropdown-item>狮子头</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
@@ -184,7 +184,7 @@
                             </div>
                         </div>
                         <DiscussContent :content="item.content" :status="item.moreStatus" :editTime="item.update_time" @checkShow="checkShow($key)" />
-                        <DiscussActions :replyNum="item.reply_num" @setReplayShow="setReplayShow($key, item.id)" />
+                        <DiscussActions :dzNum="item.dz_num" :cNum="item.c_num" :replyNum="item.reply_num" @setReplayShow="setReplayShow($key, item.id)" @setStatus="setStatus($event, item.id)"/>
                         <DiscussReplay :itemKey="$key" :replyNum="item.reply_num" :replyList="item.replyList" :page="item.page" :pageAll="item.pageAll" @changeReplayPage="changeReplayPage" @replayComment="replayComment" @replayItemComment="replayItemComment" v-show="item.replayShow" />
                     </div>
                 </div>
@@ -483,6 +483,32 @@ export default {
                 this.$message.success('发布成功');
                 this.getDiscussList()
                 this.commentFlag = false
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        // 点赞
+        async setStatus(type, targetId) {
+            console.log(type)
+            const params = {
+                type,
+                targetId
+            }
+            try {
+                const res = await this.$api.praiseApi.setStatus(params)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        // 添加到书架
+        async addBookshelf(type) {
+            const params = {
+                type,
+                novelId: this.novelId
+            }
+            try {
+                const res = await this.$api.bookshelfApi.setStatus(params)
+                this.$message.success('加入成功');
             } catch (error) {
                 console.log(error)
             }

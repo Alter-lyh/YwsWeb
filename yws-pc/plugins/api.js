@@ -5,6 +5,8 @@ import novleApi from '@/api/novleApi'
 import userApi from '@/api/userApi'
 import discussApi from '@/api/discussApi'
 import booklistApi from '@/api/booklistApi'
+import praiseApi from '@/api/praiseApi'
+import bookshelfApi from '@/api/bookshelfApi'
 export default function ({ $axios }, inject) {
     // 请求拦截
     $axios.onRequest(config => {
@@ -44,6 +46,8 @@ export default function ({ $axios }, inject) {
     api.userApi = userApi($axios)
     api.discussApi = discussApi($axios)
     api.booklistApi = booklistApi($axios)
+    api.praiseApi = praiseApi($axios)
+    api.bookshelfApi = bookshelfApi($axios)
 
     // Inject to context as $api
     inject('api', api)

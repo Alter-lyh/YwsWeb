@@ -8,27 +8,48 @@
                 <div class="item">正在追读</div>
             </div>
             <div class="result-view">
-                <p class="book-case-total">本书架共有1本书</p>
+                <p class="book-case-total">本书架共有{{novelList.length}}本书</p>
                 <el-table
                     ref="multipleTable"
-                    :data="tableData"
+                    :data="novelList"
                     tooltip-effect="dark"
                     style="width: 100%"
                 >
                     <el-table-column type="selection" width="55">
                     </el-table-column>
-                    <el-table-column label="日期" width="120">
-                        <template slot-scope="scope">{{
-                            scope.row.date
-                        }}</template>
+                    <el-table-column label="书名/作者" width="190" class-name="novel-title">
+                        <template slot-scope="scope">
+                            <span class="name">{{scope.row.novel.novel_name}}</span>
+                            <span>{{scope.row.novel.author_name}}</span>
+                        </template>
                     </el-table-column>
-                    <el-table-column prop="name" label="姓名" width="120">
+                    <el-table-column prop="name" label="我的评分" width="150">
+                        <template slot-scope="scope">
+                            <el-rate
+                                class="novel-score"
+                                disabled
+                                :value="scope.row.score/2">
+                            </el-rate>
+                        </template>
                     </el-table-column>
                     <el-table-column
                         prop="address"
-                        label="地址"
+                        label="最后更新"
                         show-overflow-tooltip
+                        class-name="more-actions"
                     >
+                        <template slot-scope="scope">
+                            <span class="time">{{scope.row.novel.update_time | timeFil}}</span>
+                            <a href="">立即阅读</a>
+                            <el-dropdown trigger="click" placement="bottom">
+                                <span class="el-dropdown-link">
+                                    <i slot="reference" class="el-icon-more discuss-actions-right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item>投诉</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </template>
                     </el-table-column>
                 </el-table>
             </div>
@@ -37,8 +58,10 @@
 </template>
 <script>
 export default {
+    name: 'bookshelf',
     data() {
         return {
+            novelList: [],
             tableData: [
                 {
                     date: "2016-05-03",
@@ -58,6 +81,28 @@ export default {
             ],
         };
     },
+    async asyncData({ app, query, params }) {
+    },
+    async activated() {
+        this.getNoverList()
+    },
+    methods: {
+        async getNoverList() {
+            const params = {
+                type: 1,
+                num: 100
+            }
+            try {
+                const res = await this.$api.bookshelfApi.getNoverList(params)
+                const json = res.data
+                this.novelList = json.data
+                console.log(this.novelList);
+            } catch (error) {
+                console.log(error);
+            }
+            
+        }
+    }
 };
 </script>
 <style lang="less" scoped>
@@ -105,6 +150,29 @@ export default {
                 color: #888;
                 margin-bottom: 0;
             }
+            .novel-title{
+                .name{
+                    font-size: 16px;
+                    color: #222;
+                    font-weight: bold;
+                    margin-right: 10px;
+                }
+                span{
+                    font-size: 12px;
+                }
+            }
+            .more-actions{
+                a{
+                    color: #567ceb;
+                    margin-left: 10px;
+                    flex: 1;
+                }
+                .discuss-actions-right {
+                    font-size: 20px;
+                    color: #a3b1d8;
+                    cursor: pointer;
+                }
+            }
         }
     }
 }
@@ -113,5 +181,11 @@ export default {
 }
 /deep/.el-table__row:nth-last-child(1) td{
     border: none;
+}
+/deep/.more-actions .cell{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    line-height: normal;
 }
 </style>

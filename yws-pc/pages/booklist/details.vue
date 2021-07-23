@@ -40,7 +40,7 @@
                                         <el-rate
                                             class="novel-score"
                                             disabled
-                                            :value="item.score/2"
+                                            :value="item.discussInfo.score/2"
                                             text-color="#ff9900">
                                         </el-rate>
                                     </div>
@@ -56,9 +56,9 @@
                                 </el-dropdown>
                             </div>
                         </div>
-                        <DiscussContent :content="item.content" :status="item.moreStatus" :editTime="item.update_time" @checkShow="checkShow($key)" />
-                        <DiscussActions :replyNum="item.reply_num" @setReplayShow="setReplayShow($key, item.id)" />
-                        <DiscussReplay :itemKey="$key" :replyNum="item.reply_num" :replyList="item.replyList" :page="item.page" :pageAll="item.pageAll" @changeReplayPage="changeReplayPage" @replayComment="replayComment" @replayItemComment="replayItemComment" v-show="item.replayShow" />
+                        <DiscussContent :content="item.discussInfo.content" :status="item.discussInfo.moreStatus" :editTime="item.discussInfo.update_time" @checkShow="checkShow($key)" />
+                        <DiscussActions :dzNum="item.discussInfo.dz_num" :cNum="item.discussInfo.c_num" :replyNum="item.discussInfo.reply_num" @setReplayShow="setReplayShow($key, item.discussInfo.id)" />
+                        <DiscussReplay :itemKey="$key" :replyNum="item.discussInfo.reply_num" :replyList="item.discussInfo.replyList" :page="item.discussInfo.page" :pageAll="item.discussInfo.pageAll" @changeReplayPage="changeReplayPage" @replayComment="replayComment" @replayItemComment="replayItemComment" v-show="item.discussInfo.replayShow" />
                     </div>
                 </div>
                 <pagination
@@ -164,30 +164,30 @@ export default {
             console.log(res);
             this.novelList = res.data.data
             this.novelList.map(item => {
-                item.moreStatus = false
-                item.replayShow = false
-                item.page = 1
-                item.pageAll = 1
+                item.discussInfo.moreStatus = false
+                item.discussInfo.replayShow = false
+                item.discussInfo.page = 1
+                item.discussInfo.pageAll = 1
             })
         },
         // 切换
         checkShow($key) {
-            this.novelList[$key].moreStatus = !this.novelList[$key].moreStatus
+            this.novelList[$key].discussInfo.moreStatus = !this.novelList[$key].discussInfo.moreStatus
             this.$set(this.novelList, $key, this.novelList[$key])
         },
         // 展开收起评论
         async setReplayShow($key, discussId) {
-            this.novelList[$key].replayShow = !this.novelList[$key].replayShow
-            if (this.novelList[$key].replayShow) {
+            this.novelList[$key].discussInfo.replayShow = !this.novelList[$key].discussInfo.replayShow
+            if (this.novelList[$key].discussInfo.replayShow) {
                 const params = {
                     discussId
                 }
                 const res = await this.$api.discussApi.getReply(params)
                 const json = res.data
                 console.log(json.data)
-                this.novelList[$key].replyList = json.data
-                this.novelList[$key].page = json.page
-                this.novelList[$key].pageAll = json.pageAll
+                this.novelList[$key].discussInfo.replyList = json.data
+                this.novelList[$key].discussInfo.page = json.page
+                this.novelList[$key].discussInfo.pageAll = json.pageAll
             }
 
             this.$set(this.novelList, $key, this.novelList[$key])
@@ -195,8 +195,8 @@ export default {
         // 发布子评论
         async replayComment(content, itemKey) {
             const params = {
-                parentId: this.novelList[itemKey].id,
-                novelId: this.novelId,
+                parentId: this.novelList[itemKey].discussInfo.id,
+                novelId: this.novelList[itemKey].novel_id,
                 content: content,
             }
             try {
@@ -211,12 +211,12 @@ export default {
         async changeReplayPage(page, $key) {
             this.novelList[$key].page = page
             const params = {
-                discussId: this.novelList[$key].id,
+                discussId: this.novelList[$key].discussInfo.id,
                 page: page
             }
             const res = await this.$api.discussApi.getReply(params)
             const json = res.data
-            this.novelList[$key].replyList = json.data
+            this.novelList[$key].discussInfo.replyList = json.data
             // 更新数据状态
             this.$set(this.novelList, $key, this.novelList[$key])
         },

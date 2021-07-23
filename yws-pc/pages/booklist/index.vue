@@ -33,7 +33,7 @@
                         <p class="item-desc">{{item.intro}}</p>
                         <div class="item-bot">
                             <div class="item-bot-left">
-                                <span class="nick-name">昵称</span>
+                                <span class="nick-name">{{item.userInfo.name}}</span>
                                 <span>{{item.update_time | timeFil}}</span>
                             </div>
                             <div class="item-bot-right">
