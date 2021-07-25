@@ -1,20 +1,6 @@
 <template>
     <div class="container">
-        <div>
-            <NuxtLogo />
-            <h1 class="title">Welcome to the Vant + Nuxt.js template</h1>
-            <div class="links">
-                <van-button type="primary" url="https://nuxtjs.org/">
-                    Documentation
-                </van-button>
-                <van-button url="https://github.com/nuxt/nuxt.js">
-                    GitHub
-                </van-button>
-                <van-button url="https://vant-contrib.gitee.io/vant">
-                    Vant UI
-                </van-button>
-            </div>
-        </div>
+        <!-- <Loading :show="true"/> -->
     </div>
 </template>
 
