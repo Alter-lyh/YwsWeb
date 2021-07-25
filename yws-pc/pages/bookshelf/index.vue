@@ -4,8 +4,8 @@
         <div class="book-case-right">
             <div class="book-case-tap">
                 <div class="item active">正在追读</div>
-                <div class="item">正在追读</div>
-                <div class="item">正在追读</div>
+                <div class="item">养肥待看</div>
+                <div class="item">已经看过</div>
             </div>
             <div class="result-view">
                 <p class="book-case-total">本书架共有{{novelList.length}}本书</p>
@@ -164,8 +164,10 @@ export default {
             .more-actions{
                 a{
                     color: #567ceb;
-                    margin-left: 10px;
+                    margin-left: 15px;
                     flex: 1;
+                    font-size: 14px;
+                    font-weight: bold;
                 }
                 .discuss-actions-right {
                     font-size: 20px;

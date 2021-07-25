@@ -25,7 +25,8 @@
                         </span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item command="1">正在追读</el-dropdown-item>
-                            <el-dropdown-item>狮子头</el-dropdown-item>
+                            <el-dropdown-item command="2">养肥待看</el-dropdown-item>
+                            <el-dropdown-item command="2">已经看过</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                     <el-dropdown :hide-on-click="false">
