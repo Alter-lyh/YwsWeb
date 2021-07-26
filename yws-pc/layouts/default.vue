@@ -8,6 +8,7 @@
         />
         <Sidebar/>
         <Login/>
+        <Coin/>
     </div>
 </template>
 <script>
@@ -29,10 +30,10 @@ export default {
 html,
 body {
     background-color: #f3f4f7;
-    overflow-x: hidden;
+    min-width: 1100px;
 }
 #app {
-    width: 100vw;
+    width: 100%;
     padding-top: 68px;
 }
 .container {

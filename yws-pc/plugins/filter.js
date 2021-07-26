@@ -61,7 +61,7 @@ Vue.filter('novelBookshelfFil', function (novelBookshelfStatus) {
             novelBookshelfStatus = '养肥待看'
             break;
         
-        case 1:
+        case 3:
             novelBookshelfStatus = '已经看过'
             break;
     }
