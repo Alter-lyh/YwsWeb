@@ -3,9 +3,9 @@
         <div class="book-case-side"></div>
         <div class="book-case-right">
             <div class="book-case-tap">
-                <div class="item active">正在追读</div>
-                <div class="item">养肥待看</div>
-                <div class="item">已经看过</div>
+                <div :class="['item', type == 1 ? 'active' : '']" @click="setType(1)">正在追读</div>
+                <div :class="['item', type == 2 ? 'active' : '']" @click="setType(2)">养肥待看</div>
+                <div :class="['item', type == 3 ? 'active' : '']" @click="setType(3)">已经看过</div>
             </div>
             <div class="result-view">
                 <p class="book-case-total">本书架共有{{novelList.length}}本书</p>
@@ -41,18 +41,26 @@
                         <template slot-scope="scope">
                             <span class="time">{{scope.row.novel.update_time | timeFil}}</span>
                             <a href="">立即阅读</a>
-                            <el-dropdown trigger="click" placement="bottom">
+                            <el-dropdown trigger="click" placement="bottom" @command="addBookshelf">
                                 <span class="el-dropdown-link">
                                     <i slot="reference" class="el-icon-more discuss-actions-right"></i>
                                 </span>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item>投诉</el-dropdown-item>
+                                    <el-dropdown-item v-show="scope.row.type != 1" :command="composeValue(1, scope.row.novel.id)">正在追读</el-dropdown-item>
+                                    <el-dropdown-item v-show="scope.row.type != 2" :command="composeValue(2, scope.row.novel.id)">养肥待看</el-dropdown-item>
+                                    <el-dropdown-item v-show="scope.row.type != 3" :command="composeValue(3, scope.row.novel.id)">已经看过</el-dropdown-item>
+                                    <el-dropdown-item :command="composeValue(0, scope.row.novel.id)" :divided="true">取消收藏</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
                         </template>
                     </el-table-column>
                 </el-table>
             </div>
+            <Pagination
+                :currentPage="page"
+                :pageAll="pageAll"
+                @changePage="changePage"
+            />
         </div>
     </div>
 </template>
@@ -61,24 +69,10 @@ export default {
     name: 'bookshelf',
     data() {
         return {
+            type: 1,
+            page: 1,
+            pageAll: 1,
             novelList: [],
-            tableData: [
-                {
-                    date: "2016-05-03",
-                    name: "王小虎",
-                    address: "上海市普陀区金沙江路 1518 弄",
-                },
-                {
-                    date: "2016-05-02",
-                    name: "王小虎",
-                    address: "上海市普陀区金沙江路 1518 弄",
-                },
-                {
-                    date: "2016-05-04",
-                    name: "王小虎",
-                    address: "上海市普陀区金沙江路 1518 弄",
-                },
-            ],
         };
     },
     async asyncData({ app, query, params }) {
@@ -89,18 +83,52 @@ export default {
     methods: {
         async getNoverList() {
             const params = {
-                type: 1,
-                num: 100
+                type: this.type,
+                page: this.page,
             }
             try {
                 const res = await this.$api.bookshelfApi.getNoverList(params)
                 const json = res.data
                 this.novelList = json.data
+                this.pageAll = json.pageAll
                 console.log(this.novelList);
             } catch (error) {
                 console.log(error);
             }
             
+        },
+        async setType(type) {
+            this.type = type
+            this.getNoverList()
+        },
+        changePage(page) {
+            this.page = page;
+            this.getNoverList()
+        },
+        composeValue(type, novelId) {
+            return {
+                type,
+                novelId
+            };
+        },
+        // 添加到书架
+        async addBookshelf({type, novelId}) {
+            const params = {
+                type: type == 0 ? 0 : type,
+                status: type == 0 ? 2 : 1,
+                novelId
+            }
+            try {
+                const res = await this.$api.bookshelfApi.setStatus(params)
+                if (res.code != '00') return
+                if (type != 0) {
+                    this.$message.success('加入成功');
+                } else {
+                    this.$message.success('取消成功');
+                }
+            } catch (error) {
+                console.log(error)
+            }
         }
     }
 };

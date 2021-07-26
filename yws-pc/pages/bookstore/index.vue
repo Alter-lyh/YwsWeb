@@ -130,7 +130,7 @@
                 </div>
             </div>
         </div>
-        <pagination
+        <Pagination
             :currentPage="query.page"
             :pageAll="pageAll"
             @changePage="changePage"

@@ -46,3 +46,24 @@ Vue.filter('updateStatusFil', function (updateStatus) {
     }
     return updateStatus
 })
+
+Vue.filter('novelBookshelfFil', function (novelBookshelfStatus) {
+    switch (novelBookshelfStatus*1) {
+        case 0:
+            novelBookshelfStatus = '加入书架'
+            break;
+
+        case 1:
+            novelBookshelfStatus = '正在追读'
+            break;
+    
+        case 2:
+            novelBookshelfStatus = '养肥待看'
+            break;
+        
+        case 1:
+            novelBookshelfStatus = '已经看过'
+            break;
+    }
+    return novelBookshelfStatus
+})

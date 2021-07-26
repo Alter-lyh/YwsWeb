@@ -21,12 +21,13 @@
                     </el-dropdown>
                     <el-dropdown :hide-on-click="false" @command="addBookshelf">
                         <span class="el-dropdown-link">
-                            加入书架<i class="el-icon-arrow-down el-icon--right"></i>
+                            {{novelBookshelfStatus | novelBookshelfFil}}<i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="1">正在追读</el-dropdown-item>
-                            <el-dropdown-item command="2">养肥待看</el-dropdown-item>
-                            <el-dropdown-item command="2">已经看过</el-dropdown-item>
+                            <el-dropdown-item v-show="novelBookshelfStatus != 1" command="1">正在追读</el-dropdown-item>
+                            <el-dropdown-item v-show="novelBookshelfStatus != 2" command="2">养肥待看</el-dropdown-item>
+                            <el-dropdown-item v-show="novelBookshelfStatus != 3" command="3">已经看过</el-dropdown-item>
+                            <el-dropdown-item v-show="novelBookshelfStatus != 0" command="0" :divided="true">取消收藏</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                     <el-dropdown :hide-on-click="false">
@@ -255,7 +256,8 @@ export default {
             userScoreValue: 0,
             userContent: null,
             discussList: [],
-            value: 3.5,
+            // 用户书籍在书架状态
+            novelBookshelfStatus: 0
         }
     },
     watch: {
@@ -291,6 +293,7 @@ export default {
         await this.getDiscussList()
         this.getDiscussInfo()
         this.getUserTagList()
+        this.getNoverStatus()
         // if (this.categoryList.length < 1) {
         //     await this.getCategory()
         //     await this.getNovelList()
@@ -501,15 +504,34 @@ export default {
                 console.log(error)
             }
         },
+        // 获取书籍在书架状态
+        async getNoverStatus() {
+            const params = {
+                novelId: this.novelId
+            }
+            try {
+                console.log(params);
+                const res = await this.$api.bookshelfApi.getNoverStatus(params)
+                res.data.status == 1 ? this.novelBookshelfStatus = res.data.type : this.novelBookshelfStatus = 0
+            } catch (error) {
+                console.log(error)
+            }
+        },
         // 添加到书架
         async addBookshelf(type) {
             const params = {
-                type,
+                type: type == 0 ? 0 : type,
+                status: type == 0 ? 2 : 1,
                 novelId: this.novelId
             }
             try {
                 const res = await this.$api.bookshelfApi.setStatus(params)
-                this.$message.success('加入成功');
+                if (res.code != '00') return
+                if (type != 0) {
+                    this.$message.success('加入成功');
+                } else {
+                    this.$message.success('取消成功');
+                }
             } catch (error) {
                 console.log(error)
             }
