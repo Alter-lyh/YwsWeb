@@ -200,6 +200,7 @@
             </div>
         </section>
         <Coin @insertCoin="insertCoin"/>
+        <BooklistAdd />
     </div>
 </template>
 <script>

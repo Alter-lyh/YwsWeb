@@ -4,7 +4,8 @@ export const state = () => ({
     userInfo: {
         name: '默认用户'
     },
-    coinFlag: false
+    coinFlag: false,
+    bookListAddFlag: false
 })
 
 export const getters = {
@@ -29,5 +30,8 @@ export const mutations = {
     },
     updateCoinView(state, flag = false) {
         state.coinFlag = flag
+    },
+    updateBookListAdd(state, flag = false) {
+        state.bookListAddFlag = flag
     },
 }
