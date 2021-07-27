@@ -1,140 +1,70 @@
 <template>
     <el-dialog
-        :visible.sync="loginFlag"
+        :visible.sync="coinFlag"
         :show-close="false"
         top="40vh"
         width="300px">
         <div class="coin-view">
             <h3 class="title">投币以资鼓励</h3>
-            <p class="desc">账户余额20</p>
+            <p class="desc">账户余额{{coinNum}}</p>
             <div class="coin-center">
                 <el-input-number v-model="num" @change="handleChange" :min="1" :max="10" label="描述文字"></el-input-number>
             </div>
             <div class="coin-bot">
-                <el-button size="small" type="info">信息按钮</el-button>
-                <el-button size="small" type="primary">主要按钮</el-button>
+                <el-button size="small" type="info" @click="closeCoin">算了</el-button>
+                <el-button size="small" type="primary" @click="insertCoin">确认</el-button>
             </div>
         </div>
     </el-dialog>
 </template>
 
 <script>
-import {setToken, setUserInfo} from "@/plugins/auth";
+import {getToken, setUserInfo} from "@/plugins/auth";
 export default {
     name:'Login',
     data() {
         return {
-            loginType: 2,
-            name: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-            yzCode: '',
-            loginFlag: true,
+            coinNum: 0,
             num: 1
         };
     },
     computed: {
-    //   loginFlag:{
-    //       get: function() {
-    //           return this.$store.state.loginFlag
-    //       },
-    //       set: function (flag) {
-    //           this.$store.commit('updateLoginView', flag)
-    //       }
-    //   }
+      coinFlag:{
+          get: function() {
+              return this.$store.state.coinFlag
+          },
+          set: function (flag) {
+              this.$store.commit('updateCoinView', flag)
+          }
+      }
     },
     created() {
-        this.$store.commit('updateLoginView', false)
+        this.$store.commit('updateCoinView', false)
     },
     mounted() {
+        if(getToken()) this.getUserInfo()
     },
     methods: {
-        // 登录
-        async signIn() {
-            if (!this.email || !this.password) {
-                this.$message('请输入完整数据');
-                return
-            }
-            const params = {
-                email: this.email,
-                password: this.password
-            }
+        // 获取用户信息
+        async getUserInfo() {
             try {
-                const res = await this.$api.userApi.signIn(params)
-                const json = res.data
-                setToken(json.token);
-                setUserInfo(json)
-                this.$store.commit('updateLoginStatus', true)
-                this.$store.commit('updateLoginView', false)
-                this.$store.commit('setUserInfo', json)
+                const res = await this.$api.userApi.getInfo()
+                this.coinNum = res.data.point
+                setUserInfo(res.data)
+                this.$store.commit('setUserInfo', res.data)
             } catch (error) {
-                console.log(error)
+                console.log(error);
             }
         },
-        // 发送验证码
-        async sendYZcode() {
-            let emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;
-            if (!emailReg.test(this.email)) {
-                this.$message('请输入正确邮箱');
-                return
-            }
-            const params = {
-                email: this.email
-            }
-            try {
-                const res = await this.$api.userApi.sendMail(params)
-                if (res != undefined) {
-                    this.$message({
-                        message: '验证码已发送',
-                        type: 'success'
-                    })
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        },
-        // 注册
-        async register() {
-            let emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;
-            if (!emailReg.test(this.email)) {
-                this.$message('请输入正确邮箱');
-                return
-            }
-            if (!this.name ||!this.email || !this.password || !this.confirmPassword || !this.yzCode) {
-                this.$message('请输入完整数据');
-                return
-            }
-            if (this.password != this.confirmPassword) {
-                this.$message('两次输入密码不一致');
-                return
-            }
-            const params = {
-                name: this.name,
-                email: this.email,
-                password: this.password,
-                confirmPassword: this.confirmPassword,
-                yzCode: this.yzCode
-            }
-            try {
-                const res = await this.$api.userApi.register(params)
-                const json = res.data
-                const userInfo = json[0]
-                setToken(userInfo.token);
-                setUserInfo(userInfo)
-                this.$store.commit('updateLoginStatus', true)
-                this.$store.commit('updateLoginView', false)
-                this.$store.commit('setUserInfo', userInfo)
-                this.$message({
-                    message: '注册成功，正在登录',
-                    type: 'success'
-                })
-            } catch (error) {
-                console.log(error)
-            }
-        },
+        // 切换硬币数量
         handleChange(value) {
             console.log(value);
+        },
+        closeCoin() {
+            this.$store.commit('updateCoinView', false)
+        },
+        insertCoin() {
+            this.$emit('insertCoin', this.num)
         }
     }
 };

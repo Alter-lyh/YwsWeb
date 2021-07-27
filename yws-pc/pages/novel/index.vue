@@ -30,8 +30,8 @@
                             <el-dropdown-item v-show="novelBookshelfStatus != 0" command="0" :divided="true">取消收藏</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <el-dropdown :hide-on-click="false">
-                        <div class="point">
+                    <el-dropdown :hide-on-click="false" @command="showCoin">
+                        <div class="point" @click="showCoin">
                             <bitcoin theme="filled" size="24" fill="#FF6F59"/>
                             <i>{{novelInfo.point}}</i>
                         </div>
@@ -44,7 +44,9 @@
                             <i slot="reference" class="el-icon-more discuss-actions-right"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>创建书单</el-dropdown-item>
                             <el-dropdown-item>加入书单</el-dropdown-item>
+                            <el-dropdown-item>错误反馈</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </div>
@@ -197,6 +199,7 @@
                 />
             </div>
         </section>
+        <Coin @insertCoin="insertCoin"/>
     </div>
 </template>
 <script>
@@ -257,7 +260,9 @@ export default {
             userContent: null,
             discussList: [],
             // 用户书籍在书架状态
-            novelBookshelfStatus: 0
+            novelBookshelfStatus: 0,
+            // 投币类型
+            coinType: 1
         }
     },
     watch: {
@@ -535,6 +540,26 @@ export default {
             } catch (error) {
                 console.log(error)
             }
+        },
+        showCoin() {
+            this.coinType = 1
+            this.$store.commit('updateCoinView', true)
+        },
+        // 投币
+        async insertCoin(coinNum) {
+            const params = {
+                target: this.coinType,
+                targetId: this.novelId,
+                changeNum: coinNum
+            }
+            // 打赏书籍
+            if (this.coinType == 1) {
+                const res = await this.$api.novel.addPoint(params)
+                if (res.code != '00') return
+                this.$message.success('谢谢打赏');
+                this.getNovelInfo()
+                this.$store.commit('updateCoinView', false)
+            }
         }
     }
 }
@@ -598,6 +623,7 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
+            cursor: pointer;
             i{
                 font-size: 12px;
                 font-weight: bold;

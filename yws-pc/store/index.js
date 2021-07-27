@@ -3,7 +3,8 @@ export const state = () => ({
     loginStatus: false,
     userInfo: {
         name: '默认用户'
-    }
+    },
+    coinFlag: false
 })
 
 export const getters = {
@@ -25,5 +26,8 @@ export const mutations = {
     },
     setUserInfo(state, info) {
         state.userInfo = info
-    }
+    },
+    updateCoinView(state, flag = false) {
+        state.coinFlag = flag
+    },
 }

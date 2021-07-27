@@ -1,4 +1,4 @@
-const novleApi = ($axios) => {
+const novelApi = ($axios) => {
     return {
         // 获取分类
         getCategory(params) {
@@ -44,7 +44,11 @@ const novleApi = ($axios) => {
                 params: params        
             })
         },
+        // 打赏书籍
+        addPoint(params) {
+            return $axios.post(`/novel/addPoint`, params)
+        },
     }
 }
 
-export default novleApi
+export default novelApi

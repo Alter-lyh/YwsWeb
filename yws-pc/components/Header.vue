@@ -21,7 +21,7 @@
                 <div class="navbar-side-item" @click="login" v-show="!loginStatus">登录/注册</div>
                 
                 <div class="navbar-side-item" v-show="loginStatus"><i class="el-icon-notebook-2"></i></div>
-                <div class="navbar-side-item" v-show="loginStatus">
+                <div class="navbar-side-item" v-show="loginStatus" @click="taskSignIn">
                     <el-tooltip class="item" effect="dark" content="签到" placement="bottom">
                         <i class="el-icon-date"></i>
                     </el-tooltip>
@@ -90,6 +90,10 @@ export default {
             clearUserInfo()
             this.$store.commit('updateLoginStatus', false)
             this.$store.commit('setUserInfo', {name: '默认用户'})
+        },
+        taskSignIn() {
+            const res = this.$api.taskApi.signIn()
+            console.log(res);
         }
     }
 };
@@ -97,8 +101,7 @@ export default {
 
 <style scoped lang="less">
 .navbar-wrap{
-    width: 100%;
-    min-width: 1000px;
+    width: 100vw;
     height: 58px;
     background: #fff;
     box-shadow: 0 0 1px 0 rgba(0,0,0,.15);
@@ -116,6 +119,7 @@ export default {
 
 .navbar-inner{
     width: 1000px;
+    min-width: 1000px;
     display: flex;
     justify-content: space-between;
     align-items: center;

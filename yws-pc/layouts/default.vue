@@ -8,7 +8,6 @@
         />
         <Sidebar/>
         <Login/>
-        <Coin/>
     </div>
 </template>
 <script>
@@ -39,5 +38,8 @@ body {
 .container {
     width: 1000px;
     margin: 0 auto;
+}
+.el-button{
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif!important;
 }
 </style>

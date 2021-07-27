@@ -1,12 +1,13 @@
 import { Message } from 'element-ui';
 import { getToken, clearToken } from './auth'
 
-import novleApi from '@/api/novleApi'
+import novelApi from '@/api/novelApi'
 import userApi from '@/api/userApi'
 import discussApi from '@/api/discussApi'
 import booklistApi from '@/api/booklistApi'
 import praiseApi from '@/api/praiseApi'
 import bookshelfApi from '@/api/bookshelfApi'
+import taskApi from '@/api/taskApi'
 export default function ({ $axios }, inject) {
     // 请求拦截
     $axios.onRequest(config => {
@@ -42,12 +43,13 @@ export default function ({ $axios }, inject) {
             }
         }
     })
-    api.novel = novleApi($axios)
+    api.novel = novelApi($axios)
     api.userApi = userApi($axios)
     api.discussApi = discussApi($axios)
     api.booklistApi = booklistApi($axios)
     api.praiseApi = praiseApi($axios)
     api.bookshelfApi = bookshelfApi($axios)
+    api.taskApi = taskApi($axios)
 
     // Inject to context as $api
     inject('api', api)
