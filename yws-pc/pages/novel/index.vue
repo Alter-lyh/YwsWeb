@@ -106,7 +106,7 @@
                     <el-rate
                         class="novel-score"
                         disabled
-                        v-model="userScoreValue"
+                        v-model="userScore.score"
                         :colors="colors">
                     </el-rate>
                 </div>
@@ -167,7 +167,7 @@
                         v-model="content">
                     </el-input>
                     <div class="post-comment-tools">
-                        <el-button type="primary" size="small" @click="postDiscuss">{{userScoreValue >0 && discussType == 2 ? '修改评论' : '发送评论'}}</el-button>
+                        <el-button type="primary" size="small" @click="postDiscuss">{{userScore.score >0 && discussType == 2 ? '修改评论' : '发送评论'}}</el-button>
                     </div>
                 </div>
                 <!-- 评论列表 -->
@@ -201,7 +201,7 @@
         </section>
         <Coin @insertCoin="insertCoin"/>
         <BooklistAdd />
-        <BooklistChoice :userBooklist="userBooklist" :novelId="novelId" :categoryId="novelInfo.category_id" :userDiscussId="userDiscussId" :userScoreValue="userScoreValue" :userContent="userContent"/>
+        <BooklistChoice :userBooklist="userBooklist" :userScore="userScore" @addToBooklist="addToBooklist"/>
     </div>
 </template>
 <script>
@@ -259,8 +259,7 @@ export default {
             content: '',
             // 用户评分
             userDiscussId: '',
-            userScoreValue: 0,
-            userContent: null,
+            userScore: {},
             discussList: [],
             // 用户书籍在书架状态
             novelBookshelfStatus: 0,
@@ -273,8 +272,8 @@ export default {
     watch: {
         discussType(type) {
             if (type == 2) {
-                this.scoreValue = this.userScoreValue
-                this.content = this.userContent
+                this.scoreValue = this.userScore.score
+                this.content = this.userScore.content
             } else {
                 this.scoreValue = null
                 this.content = null
@@ -358,8 +357,10 @@ export default {
                 const res = await this.$api.novel.getDiscussInfo(params)
                 const json = res.data
                 this.userDiscussId = json.id
-                this.userScoreValue = json.score/2
-                this.userContent = json.content
+                this.userScore = {
+                    score: json.score/2,
+                    content: json.content
+                }
             } catch (error) {
                 console.log(error)
             }
@@ -485,7 +486,7 @@ export default {
             if (this.content.length < 5) return this.$message.error('评论必须大于5个字');
             if (this.scoreValue <= 0) return this.$message.error('评分必须大于0');
 
-            const type = this.userScoreValue > 0 && this.discussType == 2 ? 2 : 1
+            const type = this.userScore.score > 0 && this.discussType == 2 ? 2 : 1
             const params = {
                 novelId: this.novelId,
                 type: type, // 1 发布评论 2修改评论
@@ -494,7 +495,7 @@ export default {
             }
             try {
                 const res = await this.$api.novel.postDiscuss(params)
-                if (this.discussType == 2) this.userScoreValue = res.data.score
+                if (this.discussType == 2) this.userScore.score = res.data.score
                 this.$message.success('发布成功');
                 this.getDiscussList()
                 this.commentFlag = false
@@ -585,6 +586,28 @@ export default {
                 this.userBooklist = res.data.data
                 this.$store.commit("updateBookListChoice", true);
             }
+        },
+        // 加入到书单
+        async addToBooklist(booklistId) {
+            const params = {
+                booklistId,
+                novelId: this.novelId,
+                discussId: this.userDiscussId,
+                categoryId: this.novelInfo.category_id,
+                score: this.userScore.score,
+                content: this.userScore.content
+            }
+            try {
+                const res = await this.$api.booklistApi.addBooklistNovel(params)
+                if (res.code != '00') {
+                    this.$message.error('加入失败');
+                } else {
+                    this.$message.success('加入成功');
+                }
+            } catch (error) {
+                console.log(error);
+            }
+            this.$store.commit("updateBookListChoice", false);
         }
     }
 }

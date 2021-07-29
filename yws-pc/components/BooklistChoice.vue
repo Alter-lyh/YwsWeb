@@ -9,7 +9,7 @@
             <h3 class="title">加入书单</h3>
             <div class="item">
                 <span class="item-tilte">书单:</span>
-                <el-select v-model="bookListId" clearable placeholder="请选择">
+                <el-select v-model="booklistId" clearable placeholder="请选择">
                     <el-option
                         v-for="item in userBooklist"
                         :key="item.id"
@@ -23,7 +23,7 @@
                 <span class="item-tilte">评分:</span>
                 <el-rate
                     class="novel-score"
-                    :value="userScoreValue"
+                    v-model="userScore.score"
                     :colors="colors">
                 </el-rate>
             </div>
@@ -34,7 +34,7 @@
                     :rows="5"
                     resize="none"
                     placeholder="请输入内容"
-                    v-model="userContent">
+                    v-model="userScore.content">
                 </el-input>
             </div>
             <el-button type="primary" size="small" class="btn" @click="addToBooklist">加入书单</el-button>
@@ -53,20 +53,24 @@ export default {
                 return []
             }
         },
-        novelId: '',
-        userDiscussId: '',
-        categoryId: '',
-        userScoreValue: {
-            type: Number,
-            default: 0
-        },
-        userContent: ''
+        userScore: {
+            type: Object,
+            default: {
+                score: 0,
+                content: ''
+            }
+        }
     },
     data() {
         return {
-            bookListId: "",
+            booklistId: "",
             colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
         };
+    },
+    watch: {
+        userBooklist(data) {
+            this.booklistId = data[0].id
+        }
     },
     computed: {
         bookListChoiceFlag: {
@@ -85,23 +89,8 @@ export default {
     },
     methods: {
         async addToBooklist() {
-            const params = {
-                booklistId: this.bookListId,
-                novelId: this.novelId,
-                discussId: this.userDiscussId,
-                categoryId: this.categoryId,
-            }
-            try {
-                const res = await this.$api.booklistApi.addBooklistNovel(params)
-                if (res.code != '00') {
-                    this.$message.error('加入失败');
-                } else {
-                    this.$message.success('加入成功');
-                }
-            } catch (error) {
-                console.log(error);
-            }
-            this.$store.commit("updateBookListChoice", false);
+            console.log(this.userScore);
+            this.$emit('addToBooklist', this.booklistId)
         }
     },
 };
