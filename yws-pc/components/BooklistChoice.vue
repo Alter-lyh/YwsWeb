@@ -1,39 +1,43 @@
 <template>
     <el-dialog
-        :visible.sync="bookListAddFlag"
+        :visible.sync="bookListChoiceFlag"
         :show-close="false"
         top="30vh"
         width="320px"
     >
-        <div class="booklist-view">
-            <h3 class="title">创建书单</h3>
+        <div class="view">
+            <h3 class="title">加入书单</h3>
             <div class="item">
-                <span class="item-tilte">频道:</span>
-                <el-select v-model="type" clearable placeholder="请选择">
+                <span class="item-tilte">书单:</span>
+                <el-select v-model="bookListId" clearable placeholder="请选择">
                     <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        v-for="item in userBooklist"
+                        :key="item.id"
+                        :label="item.title"
+                        :value="item.id"
                     >
                     </el-option>
                 </el-select>
             </div>
             <div class="item">
-                <span class="item-tilte">名称:</span>
-                <el-input v-model="title" placeholder="请输入内容"></el-input>
+                <span class="item-tilte">评分:</span>
+                <el-rate
+                    class="novel-score"
+                    :value="userScoreValue"
+                    :colors="colors">
+                </el-rate>
             </div>
             <div class="item textarea">
-                <span class="item-tilte">简介:</span>
+                <span class="item-tilte">评论:</span>
                 <el-input
                     type="textarea"
                     :rows="5"
                     resize="none"
                     placeholder="请输入内容"
-                    v-model="intro">
+                    v-model="userContent">
                 </el-input>
             </div>
-            <el-button type="primary" size="small" class="btn" @click="createBooklist">创建书单</el-button>
+            <el-button type="primary" size="small" class="btn" @click="addToBooklist">加入书单</el-button>
         </div>
     </el-dialog>
 </template>
@@ -42,62 +46,69 @@
 import { getToken, setUserInfo } from "@/plugins/auth";
 export default {
     name: "Login",
+    props: {
+        userBooklist: {
+            type: Array,
+            default: () => {
+                return []
+            }
+        },
+        novelId: '',
+        userDiscussId: '',
+        categoryId: '',
+        userScoreValue: {
+            type: Number,
+            default: 0
+        },
+        userContent: ''
+    },
     data() {
         return {
-            options: [
-                {
-                    value: "1",
-                    label: "男频",
-                },
-                {
-                    value: "2",
-                    label: "女频",
-                }
-            ],
-            type: "",
-            title: "",
-            intro: ""
+            bookListId: "",
+            colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
         };
     },
     computed: {
-        bookListAddFlag: {
+        bookListChoiceFlag: {
             get: function () {
-                return this.$store.state.bookListAddFlag;
+                return this.$store.state.bookListChoiceFlag;
             },
             set: function (flag) {
-                this.$store.commit("updateBookListAdd", flag);
+                this.$store.commit("updateBookListChoice", flag);
             },
         },
     },
     created() {
-        this.$store.commit("updateBookListAdd", false);
     },
-    mounted() {},
+    mounted() {
+        this.$store.commit("updateBookListChoice", false);
+    },
     methods: {
-        async createBooklist() {
+        async addToBooklist() {
             const params = {
-                title: this.title,
-                type: this.type,
-                intro: this.intro
+                booklistId: this.bookListId,
+                novelId: this.novelId,
+                discussId: this.userDiscussId,
+                categoryId: this.categoryId,
             }
             try {
-                const res = await this.$api.booklistApi.createBooklist(params)
+                const res = await this.$api.booklistApi.addBooklistNovel(params)
                 if (res.code != '00') {
-                    this.$message.error('创建失败');
+                    this.$message.error('加入失败');
                 } else {
-                    this.$message.success('创建成功');
+                    this.$message.success('加入成功');
                 }
             } catch (error) {
                 console.log(error);
             }
-            this.$store.commit("updateBookListAdd", false);
+            this.$store.commit("updateBookListChoice", false);
         }
     },
 };
 </script>
 
 <style scoped lang="less">
-.booklist-view {
+.view {
     width: 100%;
     box-sizing: border-box;
     padding: 20px;
@@ -118,6 +129,9 @@ export default {
         padding-left: 10px;
         .item-tilte{
             min-width: 36px;
+        }
+        .novel-score{
+            margin-left: 10px;
         }
     }
     /deep/.el-input__inner{

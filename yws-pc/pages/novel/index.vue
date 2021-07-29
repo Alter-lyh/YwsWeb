@@ -39,14 +39,14 @@
                             <el-dropdown-item>投币</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <el-dropdown trigger="click">
+                    <el-dropdown trigger="click" placement="bottom" @command="moreActions">
                         <span class="el-dropdown-link">
                             <i slot="reference" class="el-icon-more discuss-actions-right"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>创建书单</el-dropdown-item>
-                            <el-dropdown-item>加入书单</el-dropdown-item>
-                            <el-dropdown-item>错误反馈</el-dropdown-item>
+                            <el-dropdown-item command="1">创建书单</el-dropdown-item>
+                            <el-dropdown-item command="2">加入书单</el-dropdown-item>
+                            <el-dropdown-item command="3">错误反馈</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </div>
@@ -201,6 +201,7 @@
         </section>
         <Coin @insertCoin="insertCoin"/>
         <BooklistAdd />
+        <BooklistChoice :userBooklist="userBooklist" :novelId="novelId" :categoryId="novelInfo.category_id" :userDiscussId="userDiscussId" :userScoreValue="userScoreValue" :userContent="userContent"/>
     </div>
 </template>
 <script>
@@ -257,13 +258,16 @@ export default {
             colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
             content: '',
             // 用户评分
+            userDiscussId: '',
             userScoreValue: 0,
             userContent: null,
             discussList: [],
             // 用户书籍在书架状态
             novelBookshelfStatus: 0,
             // 投币类型
-            coinType: 1
+            coinType: 1,
+            // 用户书单
+            userBooklist: []
         }
     },
     watch: {
@@ -353,6 +357,7 @@ export default {
             try {
                 const res = await this.$api.novel.getDiscussInfo(params)
                 const json = res.data
+                this.userDiscussId = json.id
                 this.userScoreValue = json.score/2
                 this.userContent = json.content
             } catch (error) {
@@ -560,6 +565,25 @@ export default {
                 this.$message.success('谢谢打赏');
                 this.getNovelInfo()
                 this.$store.commit('updateCoinView', false)
+            }
+        },
+        // 更多区域
+        async moreActions(command) {
+            if (command == 1) {
+                this.$store.commit("updateBookListAdd", true);
+            } else if (command == 2) {
+                const params = {
+                    num: 100,
+                    userId: this.$store.getters.getUserInfo.id,
+                }
+                const res = await this.$api.booklistApi.getBooklist(params)
+                if (res.code != '00') {
+                    this.$message.success('请先新建书单');
+                    this.$store.commit("updateBookListAdd", true);
+                    return
+                }
+                this.userBooklist = res.data.data
+                this.$store.commit("updateBookListChoice", true);
             }
         }
     }

@@ -23,7 +23,15 @@ const booklistApi = ($axios) => {
             return $axios.get(`/booklist/getDiscussList`, {
                 params: params        
             })
-        }
+        },
+        // 创建
+        createBooklist(params) {
+            return $axios.post(`/booklist/create`, params)
+        },
+        // 创建
+        addBooklistNovel(params) {
+            return $axios.post(`/booklist/addNovel`, params)
+        },
     }
 }
 

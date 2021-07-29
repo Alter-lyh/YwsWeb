@@ -8,6 +8,7 @@
         />
         <Sidebar/>
         <Login/>
+        <BooklistAdd/>
     </div>
 </template>
 <script>
@@ -32,7 +33,7 @@ body {
     min-width: 1100px;
 }
 #app {
-    width: 100%;
+    width: 100vw;
     padding-top: 68px;
 }
 .container {
