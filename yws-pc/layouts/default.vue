@@ -31,6 +31,7 @@ html,
 body {
     background-color: #f3f4f7;
     min-width: 1100px;
+    overflow-x: hidden;
 }
 #app {
     width: 100vw;
