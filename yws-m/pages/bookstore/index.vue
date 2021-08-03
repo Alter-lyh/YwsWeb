@@ -101,18 +101,19 @@
                     <div class="item-info-head">
                         <nuxt-link class="book-name" :to="`/novel?id=${item.id}`">
                             {{item.novel_name}}
-                            <i>{{item.author_name}}</i>
                         </nuxt-link>
                         <span class="add-btn">加入书架</span>
                     </div>
                     <div class="book-info">
+                        <span class="book-info-item">作者:{{item.author_name}}</span>
+                    </div>
+                    <div class="book-info">
                         <span class="book-info-item">{{item.word_number | wordNumFilter}}</span>
                         <span class="book-info-item">{{item.update_time | timeFil}}</span>
-                        
                     </div>
                     <div class="book-sore-list">
                         <span class="book-sore">当前评分：<em>{{ item.score }}</em>（{{ item.scorer }}人）</span>
-                        <!-- <span class="book-info-item">{{item.update_status | updateStatusFil}}</span> -->
+                        <span class="book-info-item"></span>
                     </div>
                     <div class="book-tag">
                         <span class="book-tag-title">本书标签:</span>
@@ -448,6 +449,7 @@ export default {
         padding: 40px 0;
         display: flex;
         align-items: center;
+        justify-content: flex-start;
         border-bottom: 1px solid #eee;
         overflow: hidden;
         .book-img {
@@ -467,46 +469,42 @@ export default {
             }
         }
         .item-info {
-            flex: 1;
+            width: 100%;
             height: auto;
             .item-info-head {
                 width: 100%;
-                height: 80px;
+                height: 70px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 .book-name {
-                    font-size: 36px;
+                    width: 310px;
+                    font-size: 32px;
                     font-weight: 700;
                     color: #333;
-                    display: flex;
-                    align-items: center;
-                    i{
-                        width: 170px;
-                        display: block;
-                        margin-left: 10px;
-                        font-size: 24px;
-                        color: #999;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                    }
+                    display: block;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
                 .add-btn {
                     color: #567ceb;
                 }
             }
             .book-info {
-                line-height: 60px;
+                line-height: 50px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 .book-info-item {
                     margin-right: 20px;
                 }
+                .book-info-item:nth-last-child(1){
+                    margin-right: 0;
+                }
             }
             .book-sore {
-                line-height: 60px;
+                line-height: 50px;
             }
             .book-sore{
                 margin-right: 20px;

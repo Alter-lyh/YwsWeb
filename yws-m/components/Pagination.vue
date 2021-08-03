@@ -1,6 +1,6 @@
 <template>
     <div class="pagination">
-        <van-pagination v-model="currentPage" :page-count="pageAll" @change="changePage"/>
+        <van-pagination :value="currentPage" :page-count="pageAll" @change="changePage"/>
     </div>
 </template>
 
