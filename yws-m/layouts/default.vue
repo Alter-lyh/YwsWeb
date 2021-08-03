@@ -3,6 +3,7 @@
         <!-- <Loading :show="true"/> -->
         <Nuxt />
         <Tabbar />
+        <Sidebar />
     </div>
 </template>
 

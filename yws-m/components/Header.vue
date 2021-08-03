@@ -1,5 +1,22 @@
 <template>
     <header class="header">
+        <nuxt-link to="/" class="logo"></nuxt-link>
+        <div class="header-right">
+            <div class="item">
+                <van-icon name="search" size="1.2em"/>
+            </div>
+            <div class="item">
+                <van-icon name="notes-o" size="1.2em"/>
+            </div>
+            <div class="item">
+                <van-badge dot>
+                    <van-icon name="bell" size="1.2em"/>
+                </van-badge>
+            </div>
+            <div class="item">
+                <img class="user-img" src="https://s2.ax1x.com/2019/10/14/KSoO3T.png" alt=""/>
+            </div>
+        </div>
     </header>
 </template>
 
@@ -42,7 +59,40 @@ export default {
 <style scoped lang="less">
 .header{
     width: 100%;
-    height: 80px;
+    height: 100px;
     background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    .logo{
+        width: 200px;
+        height: 60px;
+        background: coral;
+    }
+    .header-right{
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        .item{
+            margin-left: 30px;
+            /deep/.van-badge--dot{
+                width: 18px;
+                height: 18px;
+                background: #F56C6C;
+            }
+            .user-img{
+                width: 60px;
+                height: auto;
+                display: block;
+                border-radius: 50%;
+            }
+        }
+    }
 }
 </style>

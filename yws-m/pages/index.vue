@@ -132,6 +132,7 @@ export default {
 
 <style lang="less" scoped>
 .container {
+    padding-top: 100px;
     padding-bottom: 110px;
 }
 .my-swipe {

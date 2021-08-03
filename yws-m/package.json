@@ -13,8 +13,10 @@
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/pwa": "^3.3.5",
     "core-js": "^3.15.1",
+    "js-cookie": "^2.2.1",
     "nuxt": "^2.15.7",
-    "vant": "^2.12.22"
+    "vant": "^2.12.22",
+    "vuex-persistedstate": "^4.0.0-beta.3"
   },
   "devDependencies": {
     "@nuxt/types": "^2.15.7",

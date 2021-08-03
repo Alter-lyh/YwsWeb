@@ -10,7 +10,7 @@
         </nuxt-link>
         <nuxt-link to="/bookstore" :class="['item', this.$route.path == '/bookstore' ? 'active' : '']">
             <i class="iconfont icon-faxian3"></i>
-            <span>发现</span>
+            <span>书库</span>
         </nuxt-link>
         <div class="item">
             <i class="iconfont icon-biaoqing2"></i>
