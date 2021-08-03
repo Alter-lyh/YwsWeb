@@ -310,6 +310,7 @@ export default {
         await this.getNovelList()
     },
     methods: {
+        // 获取分类
         async getCategory() {
             const params = { 
                 type: this.query.type 
@@ -317,6 +318,7 @@ export default {
             const res = await this.$api.novel.getCategory(params)
             this.categoryList = res.data
         },
+        // 获取小说列表
         async getNovelList() {
             const params = {...this.query}
             if (['score','scorer'].indexOf(this.query.sort) != -1) {
