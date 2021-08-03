@@ -10,7 +10,7 @@
                             item.type == query.type ? 'active' : '',
                         ]"
                         v-for="(item, $key) in channelList"
-                        :key="$key"
+                        :key="`sort0${$key}`"
                         @click="changeType(item.type)"
                         >{{ item.name }}</span
                     >
@@ -25,7 +25,7 @@
                             item.id == query.categoryId ? 'active' : '',
                         ]"
                         v-for="(item, $key) in categoryList"
-                        :key="$key"
+                        :key="`sort1${$key}`"
                         @click="changeCategoryId(item.id)"
                         >{{ item.cate_name }}</span
                     >
@@ -40,7 +40,7 @@
                             item.status == query.countWord ? 'active' : '',
                         ]"
                         v-for="(item, $key) in countWordList"
-                        :key="$key"
+                        :key="`sort2${$key}`"
                         @click="changeCountWord(item.status)"
                         >{{ item.name }}</span
                     >
@@ -55,7 +55,7 @@
                             item.status == query.updateStatus ? 'active' : '',
                         ]"
                         v-for="(item, $key) in statusList"
-                        :key="$key"
+                        :key="`sort3${$key}`"
                         @click="changeUpdateStatus(item.status)"
                         >{{ item.name }}</span
                     >
@@ -70,13 +70,67 @@
                             item.status == query.update ? 'active' : '',
                         ]"
                         v-for="(item, $key) in updateList"
-                        :key="$key"
+                        :key="`sort4${$key}`"
                         @click="changeUpdate(item.status)"
                         >{{ item.name }}</span
                     >
                 </div>
             </div>
         </div>
+        <div class="store-sort">
+            <div class="store-sort-item">
+                <span :class="['item', query.sort == item.status ? 'active' : null]" v-for="(item, $key) in sortList" :key="`sort5${$key}`" @click="changeSort(item.status)">{{item.name}}</span>
+            </div>
+            <span class="sort-tip" v-show="['score', 'scorer'].indexOf(query.sort) != -1">评分和评分人数可以按照书龄来选择</span>
+            <div class="store-sort-item" v-show="['score', 'scorer'].indexOf(query.sort) != -1">
+                <span :class="['item', query.scoreSort == item.status ? 'active' : null]" v-for="(item, $key) in scoreSortList" :key="'score'+$key" v-show="query.sort == 'score'" @click="updateScore(item.status)">{{item.name}}</span>
+                <span :class="['item', query.scoreSort == item.status ? 'active' : null]" v-for="(item, $key) in scorerSortList" :key="'scorer'+$key" v-show="query.sort == 'scorer'" @click="updateScore(item.status)">{{item.name}}</span>
+            </div>
+        </div>
+        <div class="result-view">
+            <div
+                class="item"
+                url="/pages/book/index"
+                v-for="(item, $key) in novelList"
+                :key="`book${$key}`"
+            >
+                <div class="book-img">
+                    <img :src="item.novel_img" alt="" />
+                </div>
+                <div class="item-info">
+                    <div class="item-info-head">
+                        <nuxt-link class="book-name" :to="`/novel?id=${item.id}`">
+                            {{item.novel_name}}
+                            <i>{{item.author_name}}</i>
+                        </nuxt-link>
+                        <span class="add-btn">加入书架</span>
+                    </div>
+                    <div class="book-info">
+                        <span class="book-info-item">{{item.word_number | wordNumFilter}}</span>
+                        <span class="book-info-item">{{item.update_time | timeFil}}</span>
+                        
+                    </div>
+                    <div class="book-sore-list">
+                        <span class="book-sore">当前评分：<em>{{ item.score }}</em>（{{ item.scorer }}人）</span>
+                        <!-- <span class="book-info-item">{{item.update_status | updateStatusFil}}</span> -->
+                    </div>
+                    <div class="book-tag">
+                        <span class="book-tag-title">本书标签:</span>
+                        <span
+                            class="book-tag-item"
+                            v-for="(item, $key) in item.novel_tags"
+                            :key="$key"
+                            >{{ item.tag_name }}</span
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+        <Pagination
+            :currentPage="query.page"
+            :pageAll="pageAll"
+            @changePage="changePage"
+        />
     </div>
 </template>
 
@@ -230,10 +284,12 @@ export default {
             novelList: [],
         };
     },
-    async activated() {
-        console.log(1);
-        // await this.getCategory()
-        // await this.getNovelList()
+    asyncData() {
+        console.log(3);
+    },
+    async mounted() {
+        await this.getCategory()
+        await this.getNovelList()
     },
     methods: {
         // 获取分类
@@ -255,11 +311,58 @@ export default {
             this.pageAll = json.pageAll;
             this.novelList = json.data;
         },
+        // 分页
+        changePage(page) {
+            this.query.page = page;
+            this.getNovelList();
+        },
+        // 男频 女频
+        changeType(type) {
+            this.query.type = type;
+            this.getCategory()
+            this.query.categoryId = null
+            this.getNovelList();
+        },
+        // 分类
+        changeCategoryId(id) {
+            this.query.categoryId = id;
+            this.getNovelList();
+        },
+        // 字数
+        changeCountWord(status) {
+            this.query.countWord = status;
+            this.getNovelList();
+        },
+        // 更新状态
+        changeUpdateStatus(status) {
+            this.query.updateStatus = status;
+            this.getNovelList();
+        },
+        // 更新时间
+        changeUpdate(status) {
+            this.query.update = status;
+            this.getNovelList();
+        },
+        // 更新筛选状态
+        changeSort(status) {
+            this.query.sort = status;
+            if (['score', 'scorer'].indexOf(status) != -1) {
+                this.query.scoreSort = status;
+            }
+            this.getNovelList();
+        },
+        updateScore(status) {
+            this.query.scoreSort = status;
+            this.getNovelList();
+        }
     },
 };
 </script>
 
 <style lang="less" scoped>
+.main{
+    padding-bottom: 130px;
+}
 .select-view {
     width: 100%;
     height: auto;
@@ -296,6 +399,143 @@ export default {
                 font-weight: bold;
             }
         }
+    }
+}
+.store-sort {
+    width: 100%;
+    height: auto;
+    background: #fff;
+    padding: 30px 30px 30px 20px;
+    box-sizing: border-box;
+    font-size: 28px;
+    color: #aaa;
+    margin-bottom: 20px;
+    .store-sort-item {
+        display: flex;
+        line-height: 1em;
+        padding: 20px 0;
+        .item {
+            padding: 0 20px;
+            border-right: 1px solid #ddd;
+            cursor: pointer;
+            color: #aaa;
+            padding: 0 20px;
+        }
+        .item:nth-last-of-type(1) {
+            border-right: none;
+        }
+        .active {
+            color: #5DA7FF;
+            font-weight: bold;
+        }
+    }
+    .sort-tip {
+        color: #e96900;
+        padding: 0 20px;
+    }
+}
+.result-view {
+    width: 100%;
+    height: auto;
+    background: #fff;
+    padding: 0 40px;
+    box-sizing: border-box;
+    font-size: 28px;
+    color: #999;
+    .item {
+        width: 100%;
+        height: auto;
+        padding: 40px 0;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        overflow: hidden;
+        .book-img {
+            width: 200px;
+            min-width: 200px;
+            height: 264px;
+            border-radius: 8px;
+            cursor: pointer;
+            overflow: hidden;
+            margin-right: 30px;
+            display: flex;
+            align-items: center;
+            background: #eee;
+            img {
+                width: 100%;
+                height: auto;
+            }
+        }
+        .item-info {
+            flex: 1;
+            height: auto;
+            .item-info-head {
+                width: 100%;
+                height: 80px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                .book-name {
+                    font-size: 36px;
+                    font-weight: 700;
+                    color: #333;
+                    display: flex;
+                    align-items: center;
+                    i{
+                        width: 170px;
+                        display: block;
+                        margin-left: 10px;
+                        font-size: 24px;
+                        color: #999;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                }
+                .add-btn {
+                    color: #567ceb;
+                }
+            }
+            .book-info {
+                line-height: 60px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                .book-info-item {
+                    margin-right: 20px;
+                }
+            }
+            .book-sore {
+                line-height: 60px;
+            }
+            .book-sore{
+                margin-right: 20px;
+                color: #333;
+                em{
+                    color: #FF6F59;
+                    font-weight: bold;
+                }
+            }
+            .book-tag{
+                line-height: 50px;
+                display: -webkit-box;
+                overflow-x: auto;
+                margin-top: 10px;
+                .book-tag-title,
+                .book-tag-item {
+                    margin-right: 20px;
+                }
+            }
+            .book-tag-item{
+                display: block;
+                padding: 0 8px;
+                background-color: #f8f9fa;
+                font-size: 24px;
+            }
+        }
+    }
+    .item:nth-last-child(1) {
+        border: none;
     }
 }
 </style>

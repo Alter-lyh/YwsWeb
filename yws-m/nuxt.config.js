@@ -25,7 +25,7 @@ export default {
         '@/plugins/filter',
         '@/plugins/api',
         { src: '@/assets/iconfont/iconfont.js', ssr: false },
-        { src: '@/plugins/localStorage.js', ssr: false }
+        // { src: '@/plugins/localStorage.js', ssr: false }
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components

@@ -111,7 +111,8 @@ export default {
             value: 3,
         };
     },
-    mounted() {},
+    async mounted() {
+    },
     methods: {
         login() {
             this.$store.commit("updateLoginView", true);
