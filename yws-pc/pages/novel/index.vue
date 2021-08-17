@@ -90,7 +90,8 @@
                             <p>评分人数</p>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="七年上" class="tab-pane"><div class="item">
+                    <el-tab-pane label="七年上" class="tab-pane">
+                        <div class="item">
                             <p class="score" v-if="novelInfo.scorer_3 > 10">{{novelInfo.score_3}}</p>
                             <p class="no-score" v-else>暂无评分</p>
                             <p>评分</p>
@@ -99,7 +100,8 @@
                             <p class="score" v-if="novelInfo.scorer_3 > 10">{{novelInfo.scorer_3}}</p>
                             <p class="no-score" v-else>人数不足</p>
                             <p>评分人数</p>
-                        </div></el-tab-pane>
+                        </div>
+                    </el-tab-pane>
                 </el-tabs>
                 <div class="user-score" @click="commentFlag = !commentFlag">
                     <span>我的评分</span>
