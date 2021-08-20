@@ -102,6 +102,7 @@
 <script>
 import {Modify, AddPrint} from '@icon-park/vue'
 export default {
+    name:'home',
     components:{
         Modify,
         AddPrint

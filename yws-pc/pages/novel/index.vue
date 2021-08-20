@@ -463,7 +463,7 @@ export default {
             this.$set(this.discussList, $key, this.discussList[$key])
         },
         // 回复子评论
-        async replayItemComment(parentId, novelId, content, resId) {
+        async replayItemComment(parentId, novelId, content, resId, itemKey) {
             const params = {
                 parentId: parentId,
                 novelId: novelId,
@@ -745,12 +745,15 @@ export default {
     background: #FFFFFF;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     .el-tag{
         cursor: pointer;
         margin-right: 8px;
+        margin-bottom: 8px;
     }
     /deep/.el-button{
         padding: 5.4px 10px;
+        margin-bottom: 8px;
     }
     /deep/.el-input{
         width: 70px;

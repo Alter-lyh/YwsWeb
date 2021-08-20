@@ -14,14 +14,7 @@
                     <div class="icon-btn"><thumbs-up theme="outline" size="16" fill="#333"/>{{ item.dz_num > 0 ? item.dz_num : '赞'}}</div>
                     <div class="icon-btn"><thumbs-down theme="outline" size="16" fill="#333"/>{{ item.c_num > 0 ? item.c_num : '踩'}}</div>
                 </div>
-                <el-dropdown trigger="click" placement="bottom">
-                    <span class="el-dropdown-link">
-                        <i slot="reference" class="el-icon-more discuss-actions-right"></i>
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>投诉</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
+                <van-icon name="weapp-nav" @click="show = true"/>
             </div>
             <div class="replay-item-post" v-show="replayShowList.indexOf($key) != -1">
                 <div class="replay-div" contenteditable="plaintext-only" placeholder="内容不得少于5个字"></div>
@@ -29,18 +22,13 @@
             </div>
         </div>
         <div class="discuss-pagination">
-            <el-pagination
-                background
-                layout="prev, pager, next"
-                :current-page="page"
-                :page-count="pageAll"
-                @current-change="changePage">
-            </el-pagination>
+            <van-pagination :value="page" :page-count="pageAll" @change="changePage"/>
         </div>
         <div class="replay-foot">
             <div class="replay-div" contenteditable="plaintext-only" placeholder="内容不得少于5个字"></div>
             <div class="replay-btn" @click="replayComment($event, itemKey)">发布评论</div>
         </div>
+        <van-action-sheet v-model="show" cancel-text="取消" close-on-click-action :actions="actions" @select="onSelect" />
     </div>
 </template>
 
@@ -56,7 +44,10 @@ export default {
     data() {
         return {
             cd: null,
-            replayShowList: []
+            replayShowList: [],
+            // 更多选项
+            show: false,
+            actions: [{ name: '选项一' }, { name: '选项二' }, { name: '选项三' }],
         };
     },
     computed: {
@@ -82,8 +73,7 @@ export default {
 
             let content = obj.previousElementSibling.innerHTML
             content = content.replace(/\s+$/, '')
-            if (content.length < 5) return this.$message.error('评论必须大于5个字');
-
+            if (content.length < 5) return this.$toast('评论必须大于5个字');
             this.$emit('replayComment', content, itemKey)
         },
         replayItemComment(event, parentId, novelId, $key, resId) {
@@ -92,11 +82,17 @@ export default {
 
             let content = obj.previousElementSibling.innerHTML
             content = content.replace(/\s+$/, '')
-            if (content.length < 5) return this.$message.error('评论必须大于5个字');
+            if (content.length < 5) return this.$toast('评论必须大于5个字');
             
             this.$emit('replayItemComment', parentId, novelId, content, resId, this.itemKey)
             this.setReplayShow($key)
-        }
+        },
+        // 点击更多选项的参数
+        onSelect(item) {
+            // 默认情况下点击选项时不会自动收起
+            // 可以通过 close-on-click-action 属性开启自动收起
+            this.show = false;
+        },
     }
 };
 </script>
@@ -108,12 +104,12 @@ export default {
     box-sizing: border-box;
     padding: 20px;
     box-shadow: 0 0 4px 0 rgba(0, 0, 0, .1);
-    border-radius: 3px;
+    border-radius: 4px;
     margin: 18px 0;
     .replay-header{
         padding-bottom: 20px;
         color: #999;
-        font-size: 14px;
+        font-size: 28px;
     }
     .replay-item{
         border-top: 1px solid #ddd;
@@ -121,26 +117,26 @@ export default {
         box-sizing: border-box;
         padding: 0 20px;
         .replay-item-header{
-            height: 50px;
+            height: 100px;
             display: flex;
             align-items: center;
             .author-img{
-                width: 26px;
-                height: 26px;
+                width: 40px;
+                height: 40px;
                 border-radius: 50%;
-                margin-right: 10px;
+                margin-right: 20px;
             }
             .author-info{
-                font-size: 14px;
+                font-size: 28px;
                 color: #616161;
                 font-weight: 700;
             }
         }
         .replay-item-content{
-            font-size: 14px;
+            font-size: 28px;
             color: #333;
             letter-spacing: 2px;
-            line-height: 24px;
+            line-height: 40px;
             .replay-title{
                 color: #8590a6;
                 font-weight: bold;
@@ -148,46 +144,44 @@ export default {
         }
         .replay-item-foot{
             width: 100%;
-            height: 40px;
+            height: 80px;
             line-height: normal;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 12px;
+            font-size: 24px;
             color: #999;
             .replay-item-foot-left {
                 display: flex;
                 align-items: center;
                 line-height: normal;
                 span{
-                    font-size: 14px;
+                    font-size: 28px;
                     margin: 0 20px;
-                    cursor: pointer;
                 }
                 .icon-btn {
-                    cursor: pointer;
-                    margin-right: 20px;
                     display: flex;
                     align-items: center;
                     .i-icon{
-                        margin-right: 4px;
+                        margin-right: 8px;
                         display: flex;
                         align-items: center;
                         line-height: normal;
                     }
                 }
             }
-            .discuss-actions-right {
-                font-size: 18px;
+            .van-popover__wrapper{
+                font-size: 32px;
                 color: #606266;
-                cursor: pointer;
+                display: flex;
+                align-items: center;
             }
         }
         .replay-item-post{
             display: flex;
             align-items: flex-end;
             line-height: normal;
-            margin-top: 10px;
+            margin-top: 20px;
         }
     }
     .discuss-pagination{
@@ -210,12 +204,12 @@ export default {
         display: block;
         white-space: pre;
         box-sizing: border-box;
-        padding: 5px 14px;
+        padding: 12px 28px;
         border: 1px solid #DCDFE6;
-        margin-right: 10px;
-        font-size: 14px;
-        line-height: 20px;
-        border-radius: 2px;
+        margin-right: 20px;
+        font-size: 28px;
+        line-height: 40px;
+        border-radius: 4px;
     }
     .replay-div:empty:before {
         content: attr(placeholder);
@@ -225,17 +219,16 @@ export default {
         border-color: #567ceb;
     }
     .replay-btn{
-        width: 70px;
-        height: 32px;
+        width: 180px;
+        height: 64px;
         display: flex;
         justify-content: center;
         align-items: center;
         line-height: normal;
-        border-radius: 2px;
+        border-radius: 4px;
         background-color: #567ceb;
         color: #fff;
-        font-size: 12px;
-        cursor: pointer;
+        font-size: 24px;
     }
 }
 </style>

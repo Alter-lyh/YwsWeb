@@ -1,5 +1,5 @@
 <template>
-    <div class="tabbar">
+    <div class="tabbar" v-show="[1,2,3,4,5].indexOf(routeIndex) != -1">
         <div class="item">
             <i class="iconfont icon-dingdan1"></i>
             <span>书架</span>
@@ -21,6 +21,29 @@
 
 <script>
 export default {
+    computed: {
+        routeIndex() {
+            let routeIndex;
+            switch (this.$route.path) {
+                case "/":
+                    routeIndex = 1;
+                    break;
+                case "/bookstore":
+                    routeIndex = 2;
+                    break;
+                case "/rank":
+                    routeIndex = 3;
+                    break;
+                case "/category":
+                    routeIndex = 4;
+                    break;
+                case "/user":
+                    routeIndex = 5;
+                    break;
+            }
+            return routeIndex;
+        },
+    },
 };
 </script>
 

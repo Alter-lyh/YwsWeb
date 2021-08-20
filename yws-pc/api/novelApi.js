@@ -36,7 +36,7 @@ const novelApi = ($axios) => {
         },
         // 修改书籍标签
         editTag(params) {
-            return $axios.post(`/novel/addTag`, params)
+            return $axios.post(`/novel/editTag`, params)
         },
         // 获取用户小说标签
         getUserTagList(params) {
