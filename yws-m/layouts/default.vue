@@ -28,4 +28,7 @@ html,body {
 p{
     margin: 0;
 }
+a{
+    color: #333;
+}
 </style>
