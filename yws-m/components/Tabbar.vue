@@ -31,7 +31,7 @@ export default {
                 case "/bookshelf":
                     routeIndex = 2;
                     break;
-                case "/rank":
+                case "/bookstore":
                     routeIndex = 3;
                     break;
                 case "/category":

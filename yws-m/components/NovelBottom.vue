@@ -66,8 +66,11 @@
             };
         },
         mounted() {
-            this.getBookShelfNoverStatus()
-            this.coinNum = getUserInfo().point || 0
+            const userInfo = getUserInfo()
+            if (userInfo) {
+                this.getBookShelfNoverStatus()
+                this.coinNum = userInfo.point || 0
+            }
         },
         methods: {
             toRead(action) {

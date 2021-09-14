@@ -19,61 +19,17 @@
                             <span>{{item.novel.update_time | timeFil}}</span>
                         </div>
                         <div class="bot-right">
-                            <span class="to-read" @click="show = true">立即阅读</span>
-                            <van-icon class="more-actions" name="weapp-nav" @click="show = true"/>
+                            <span class="to-read" @click="readMore(item)">立即阅读</span>
+                            <van-icon class="more-actions" name="weapp-nav" @click="statusMore(item)"/>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- <el-table
-                ref="multipleTable"
-                :data="novelList"
-                tooltip-effect="dark"
-                style="width: 100%"
-            >
-                <el-table-column type="selection" width="55">
-                </el-table-column>
-                <el-table-column label="书名/作者" width="190" class-name="novel-title">
-                    <template slot-scope="scope">
-                        <span class="name">{{scope.row.novel.novel_name}}</span>
-                        <span>{{scope.row.novel.author_name}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="name" label="我的评分" width="150">
-                    <template slot-scope="scope">
-                        <el-rate
-                            class="novel-score"
-                            disabled
-                            :value="scope.row.score/2">
-                        </el-rate>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                    prop="address"
-                    label="最后更新"
-                    show-overflow-tooltip
-                    class-name="more-actions"
-                >
-                    <template slot-scope="scope">
-                        <span class="time">{{scope.row.novel.update_time | timeFil}}</span>
-                        <a href="">立即阅读</a>
-                        <el-dropdown trigger="click" placement="bottom" @command="addBookshelf">
-                            <span class="el-dropdown-link">
-                                <i slot="reference" class="el-icon-more discuss-actions-right"></i>
-                            </span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item v-show="scope.row.type != 1" :command="composeValue(1, scope.row.novel.id)">正在追读</el-dropdown-item>
-                                <el-dropdown-item v-show="scope.row.type != 2" :command="composeValue(2, scope.row.novel.id)">养肥待看</el-dropdown-item>
-                                <el-dropdown-item v-show="scope.row.type != 3" :command="composeValue(3, scope.row.novel.id)">已经看过</el-dropdown-item>
-                                <el-dropdown-item :command="composeValue(0, scope.row.novel.id)" :divided="true">取消收藏</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
-                    </template>
-                </el-table-column>
-            </el-table> -->
         </div>
         <!-- 阅读的更多操作 -->
-        <van-action-sheet v-model="show" :actions="actions" @select="onSelect" />
+        <van-action-sheet v-model="show1" :actions="actions1" @select="onSelect1" cancel-text="取消" close-on-click-action @cancel="show1 = false"/>
+        <!-- 书架状态的更多操作 -->
+        <van-action-sheet v-model="show2" :actions="actions2" @select="onSelect2" />
         <Pagination
             :currentPage="page"
             :pageAll="pageAll"
@@ -90,8 +46,11 @@ export default {
             page: 1,
             pageAll: 1,
             novelList: [],
-            show: false,
-            actions: [{ name: '选项一' }, { name: '选项二' }, { name: '选项三' }],
+            show1: false,
+            actions1: [],
+            novelId: '',
+            show2: false,
+            actions2: [],
         };
     },
     async asyncData({ app, query, params }) {
@@ -120,27 +79,40 @@ export default {
             this.type = type
             this.getNoverList()
         },
-        onSelect(item) {
+        // 阅读的更多操作
+        async readMore(item) {
+            console.log(item.novel.source);
+            this.actions1 = []
+            const source = JSON.parse(item.novel.source)
+            source.map(item => {
+                this.actions1.push({
+                    name: item. siteName,
+                    ...item
+                })
+            })
+            this.show1 = true
+        },
+        // 书架状态的更多操作
+        async statusMore(item) {
+            this.actions2 = [{name: '正在追读', type: 1}, {name: '养肥待看', type: 2}, {name: '已经看过', type: 3}, {name: '取消收藏', type: 0}]
+            this.actions2 = this.actions2.filter(i => i.type != item.type)
+            this.show2 = true
+            this.novelId = item.novel_id
+        },
+        onSelect1(item) {
             // 默认情况下点击选项时不会自动收起
             // 可以通过 close-on-click-action 属性开启自动收起
-            this.show = false;
+            this.show1 = false;
+            window.location.href = item.bookPage
         },
-        changePage(page) {
-            this.page = page;
-            this.getNoverList()
-        },
-        composeValue(type, novelId) {
-            return {
-                type,
-                novelId
-            };
-        },
-        // 添加到书架
-        async addBookshelf({type, novelId}) {
+        async onSelect2(item) {
+            // 默认情况下点击选项时不会自动收起
+            // 可以通过 close-on-click-action 属性开启自动收起
+            const {type} = item
             const params = {
                 type: type == 0 ? 0 : type,
                 status: type == 0 ? 2 : 1,
-                novelId
+                novelId: this.novelId
             }
             try {
                 const res = await this.$api.bookshelfApi.setStatus(params)
@@ -153,6 +125,12 @@ export default {
             } catch (error) {
                 console.log(error)
             }
+            this.getNoverList()
+            this.show2 = false;
+        },
+        changePage(page) {
+            this.page = page;
+            this.getNoverList()
         }
     }
 };

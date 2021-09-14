@@ -272,8 +272,8 @@ export default {
         this.novelId = this.$route.query.id
         await this.getNovelInfo()
         await this.getDiscussList()
-        this.getDiscussInfo()
-        this.getUserTagList()
+        // this.getDiscussInfo()
+        // this.getUserTagList()
         // if (this.categoryList.length < 1) {
         //     await this.getCategory()
         //     await this.getNovelList()
