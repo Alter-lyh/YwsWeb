@@ -1,21 +1,21 @@
 <template>
-    <el-dialog
-        :visible.sync="coinFlag"
-        :show-close="false"
-        top="40vh"
-        width="300px">
+    <van-dialog
+        v-model="coinFlag"
+        :closeOnClickOverlay="true"
+        :showConfirmButton="false"
+        :showCancelButton="false">
         <div class="coin-view">
             <h3 class="title">投币以资鼓励</h3>
             <p class="desc">账户余额：{{coinNum}}</p>
             <div class="coin-center">
-                <el-input-number v-model="num" @change="handleChange" :min="1" :max="10" label="描述文字"></el-input-number>
+                <van-stepper v-model="num" @change="handleChange" :min="1" :max="10" />
             </div>
             <div class="coin-bot">
-                <el-button size="small" type="info" @click="closeCoin">算了</el-button>
-                <el-button size="small" type="primary" @click="insertCoin">确认</el-button>
+                <van-button type="default" size="normal" @click="closeCoin">算了</van-button>
+                <van-button type="primary" size="normal" @click="insertCoin">确认</van-button>
             </div>
         </div>
-    </el-dialog>
+    </van-dialog>
 </template>
 
 <script>
@@ -72,40 +72,34 @@ export default {
 
 <style scoped lang="less">
 .coin-view{
-    width: 300px;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 20px;
+    padding-bottom: 40px;
     .title{
         text-align: center;
-        font-size: 22px;
+        font-size: 44px;
         color: #f35656;
     }
     .desc{
         text-align: center;
-        font-size: 12px;
+        font-size: 28px;
         color: #E6A23C;
-        margin: 10px 0;
+        margin: 20px 0;
     }
     .coin-center{
         display: flex;
         justify-content: center;
+        margin-top: 30px;
     }
     .coin-bot{
         display: flex;
         justify-content: space-between;
         box-sizing: border-box;
-        padding: 0 50px;
-        margin-top: 20px;
+        padding: 0 40px;
+        margin-top: 40px;
+        /deep/.van-button{
+            width: 240px;
+        }
     }
-}
-/deep/.el-dialog{
-    border-radius: 4px;
-    overflow: hidden;
-}
-/deep/.el-dialog__header{
-    display: none;
-}
-/deep/.el-dialog__body{
-    padding: 0;
 }
 </style>

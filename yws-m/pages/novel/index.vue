@@ -36,8 +36,8 @@
                 <bitcoin theme="filled" size="24" fill="#FF6F59"/>
                 <i>{{novelInfo.point}}</i>
             </div>
-            <div class="item">创建书单</div>
-            <div class="item">加入书单</div>
+            <div class="item" @click="createBooklist">创建书单</div>
+            <div class="item" @click="addBooklist">加入书单</div>
         </div>
         <!-- 评分区域 -->
         <div class="book-score-view">
@@ -154,18 +154,13 @@
             @changePage="changePage"
         />
         <!-- 底部按钮 -->
-        <div class="page-bottom">
-            <nuxt-link to="/" class="item">
-                <i class="iconfont icon-shuchengxuanzhong"></i>
-                <span>首页</span>
-            </nuxt-link>
-            <div class="item">
-                <bitcoin theme="filled" size="24" fill="#FF6F59"/>
-                <span>0</span>
-            </div>
-            <van-button plain color="#409EFF" class="bookinfo-button">加入书架</van-button>
-            <van-button color="#409EFF" class="bookinfo-button">立即阅读</van-button>
-        </div>
+        <NovelBottom :novelId="novelId" :sourceList="sourceList"/>
+        <!-- 创建书单 -->
+        <BooklistAdd />
+        <!-- 加入书单 -->
+        <BooklistChoice :userBooklist="userBooklist" :userScore="userScore" @addToBooklist="addToBooklist"/>
+        <!-- 投币 -->
+        <Coin @insertCoin="insertCoin"/>
     </div>
 </template>
 <script>
@@ -181,6 +176,8 @@ export default {
             novelInfo: {
                 synTitle: '简介：'
             },
+            // 书源
+            sourceList: [],
             tagList: [],
             tagInputFlag: false,
             tagText: '',
@@ -227,8 +224,6 @@ export default {
             userDiscussId: '',
             userScore: {},
             discussList: [],
-            // 用户书籍在书架状态
-            novelBookshelfStatus: 0,
             // 投币类型
             coinType: 1,
             // 用户书单
@@ -279,7 +274,6 @@ export default {
         await this.getDiscussList()
         this.getDiscussInfo()
         this.getUserTagList()
-        this.getNoverStatus()
         // if (this.categoryList.length < 1) {
         //     await this.getCategory()
         //     await this.getNovelList()
@@ -295,6 +289,12 @@ export default {
             this.novelInfo['synTitle'] = '简介：'
             this.novelInfo.synopsis.length > 16 ? this.novelInfo['synTitle'] += this.novelInfo.synopsis.slice(0, 16) + '...' : this.novelInfo['synTitle'] += this.novelInfo.synopsis
             this.novelInfo.source = JSON.parse(this.novelInfo.source)
+            this.novelInfo.source.map(item => {
+                this.sourceList.push({
+                    text: item. siteName,
+                    ...item
+                })
+            })
             this.tagList = this.novelInfo.novel_tags
         },
         async getDiscussList() {
@@ -496,19 +496,6 @@ export default {
                 console.log(error)
             }
         },
-        // 获取书籍在书架状态
-        async getNoverStatus() {
-            const params = {
-                novelId: this.novelId
-            }
-            try {
-                console.log(params);
-                const res = await this.$api.bookshelfApi.getNoverStatus(params)
-                res.data.status == 1 ? this.novelBookshelfStatus = res.data.type : this.novelBookshelfStatus = 0
-            } catch (error) {
-                console.log(error)
-            }
-        },
         // 添加到书架
         async addBookshelf(type) {
             const params = {
@@ -527,10 +514,6 @@ export default {
             } catch (error) {
                 console.log(error)
             }
-        },
-        showCoin() {
-            this.coinType = 1
-            this.$store.commit('updateCoinView', true)
         },
         // 投币
         async insertCoin(coinNum) {
@@ -593,6 +576,25 @@ export default {
         onSelect(action) {
             // Toast(action.text);
         },
+        // 创建书单
+        createBooklist() {
+            this.$store.commit("updateBookListAdd", true);
+        },
+        // 加入书单
+        async addBooklist() {
+            const params = {
+                num: 100,
+                userId: this.$store.getters.getUserInfo.id,
+            }
+            const res = await this.$api.booklistApi.getBooklist(params)
+            if (res.code != '00') {
+                this.$message.success('请先新建书单');
+                this.$store.commit("updateBookListAdd", true);
+                return
+            }
+            this.userBooklist = res.data.data
+            this.$store.commit("updateBookListChoice", true);
+        }
     }
 }
 </script>
@@ -875,37 +877,6 @@ export default {
                 }
             }
         }
-    }
-}
-/* 底部操作菜单 */
-.page-bottom{
-    width: 100%;
-	height: 100px;
-	position:fixed;
-	left: 0;
-	bottom:0;
-	z-index: 1;
-	display: flex;
-	justify-content: space-around;
-	align-items: center;
-	box-sizing: border-box;
-	padding: 0 20px;
-    background: #fff;
-	box-shadow: 0 0 20px 0 rgba(0,0,0,.5);
-    .item{
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        font-size: 24px;
-        color: #fc725f;
-        i{
-            font-size: 48px;
-        }
-    }
-    .bookinfo-button{
-        height: 80px;
     }
 }
 </style>

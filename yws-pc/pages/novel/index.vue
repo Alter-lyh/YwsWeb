@@ -304,7 +304,7 @@ export default {
         await this.getDiscussList()
         this.getDiscussInfo()
         this.getUserTagList()
-        this.getNoverStatus()
+        this.getBookShelfNoverStatus()
         // if (this.categoryList.length < 1) {
         //     await this.getCategory()
         //     await this.getNovelList()
@@ -519,7 +519,7 @@ export default {
             }
         },
         // 获取书籍在书架状态
-        async getNoverStatus() {
+        async getBookShelfNoverStatus() {
             const params = {
                 novelId: this.novelId
             }

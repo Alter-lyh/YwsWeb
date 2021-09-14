@@ -1,9 +1,9 @@
 <template>
     <div class="tabbar" v-show="[1,2,3,4,5].indexOf(routeIndex) != -1">
-        <div class="item">
+        <nuxt-link to="/bookshelf" :class="['item', this.$route.path == '/bookshelf' ? 'active' : '']">
             <i class="iconfont icon-dingdan1"></i>
             <span>书架</span>
-        </div>
+        </nuxt-link>
         <nuxt-link to="/" :class="['item', this.$route.path == '/' ? 'active' : '']">
             <i class="iconfont icon-shuchengxuanzhong"></i>
             <span>首页</span>
@@ -28,7 +28,7 @@ export default {
                 case "/":
                     routeIndex = 1;
                     break;
-                case "/bookstore":
+                case "/bookshelf":
                     routeIndex = 2;
                     break;
                 case "/rank":

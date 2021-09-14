@@ -23,6 +23,7 @@ html,body {
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif!important;
     /* 淘票票 */
     /* font-family: 'Chinese Quote','Segoe UI',Roboto,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Helvetica Neue',Helvetica,Arial,sans-serif!important; */
+    font-size: 28px;
 }
 p{
     margin: 0;
