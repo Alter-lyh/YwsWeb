@@ -299,7 +299,7 @@ export default {
         // };
     },
     async activated() {
-        this.novelId = this.$route.query.id
+        this.novelId = this.$route.params.id
         await this.getNovelInfo()
         await this.getDiscussList()
         this.getDiscussInfo()

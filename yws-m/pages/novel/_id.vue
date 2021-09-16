@@ -269,7 +269,7 @@ export default {
         // };
     },
     async mounted() {
-        this.novelId = this.$route.query.id
+        this.novelId = this.$route.params.id
         await this.getNovelInfo()
         await this.getDiscussList()
         // this.getDiscussInfo()
@@ -588,7 +588,7 @@ export default {
             }
             const res = await this.$api.booklistApi.getBooklist(params)
             if (res.code != '00') {
-                this.$message.success('请先新建书单');
+                this.$toast('请先新建书单');
                 this.$store.commit("updateBookListAdd", true);
                 return
             }

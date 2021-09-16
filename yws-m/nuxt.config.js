@@ -9,7 +9,11 @@ export default {
             { name: 'format-detection', content: 'telephone=no' }
         ],
         link: [
-            { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+            { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+            {
+                rel: 'stylesheet',
+                href: '//at.alicdn.com/t/font_1703717_x5x84zyhig.css',
+            },
         ]
     },
 
@@ -24,8 +28,8 @@ export default {
         '@/plugins/vant',
         '@/plugins/filter',
         '@/plugins/api',
-        { src: '@/assets/iconfont/iconfont.js', ssr: false },
-        // { src: '@/plugins/localStorage.js', ssr: false }
+        // { src: '@/assets/iconfont/iconfont.js', ssr: false },
+        { src: '@/plugins/localStorage.js', ssr: false }
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components

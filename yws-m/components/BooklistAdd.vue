@@ -81,9 +81,9 @@ export default {
             try {
                 const res = await this.$api.booklistApi.createBooklist(params)
                 if (res.code != '00') {
-                    this.$message.error('创建失败');
+                    this.$toast('创建失败');
                 } else {
-                    this.$message.success('创建成功');
+                    this.$toast('创建成功');
                 }
             } catch (error) {
                 console.log(error);

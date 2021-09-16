@@ -24,7 +24,7 @@
         </div>
         <div class="result-view">
             <div class="item" v-for="(item, key) in bookList" :key="key">
-                <p class="item-title"><nuxt-link :to="`/booklist/details?id=${item.id}`">{{item.title}}</nuxt-link></p>
+                <p class="item-title"><nuxt-link :to="`/booklist/${item.id}.html`">{{item.title}}</nuxt-link></p>
                 <div class="item-tag">
                     <span v-for="(item2, key2) in item.categorys" :key="key2">{{item2.category_name}}({{item2.count}})</span>
                 </div>
@@ -36,7 +36,7 @@
                     </div>
                     <div class="item-bot-right">
                         <span>{{item.bookTotal}}本书</span>
-                        <span>23赞</span>
+                        <!-- <span>23赞</span> -->
                     </div>
                 </div>
             </div>
@@ -110,34 +110,34 @@ export default {
         // 分页
         changePage(page) {
             this.query.page = page;
-            this.getNovelList();
+            this.getBooklist();
         },
         // 男频 女频
         changeType(type) {
             this.query.type = type;
             this.getCategory()
             this.query.categoryId = null
-            this.getNovelList();
+            this.getBooklist();
         },
         // 分类
         changeCategoryId(id) {
             this.query.categoryId = id;
-            this.getNovelList();
+            this.getBooklist();
         },
         // 字数
         changeCountWord(status) {
             this.query.countWord = status;
-            this.getNovelList();
+            this.getBooklist();
         },
         // 更新状态
         changeUpdateStatus(status) {
             this.query.updateStatus = status;
-            this.getNovelList();
+            this.getBooklist();
         },
         // 更新时间
         changeUpdate(status) {
             this.query.update = status;
-            this.getNovelList();
+            this.getBooklist();
         },
         // 更新筛选状态
         changeSort(status) {
@@ -145,11 +145,11 @@ export default {
             if (['score', 'scorer'].indexOf(status) != -1) {
                 this.query.scoreSort = status;
             }
-            this.getNovelList();
+            this.getBooklist();
         },
         updateScore(status) {
             this.query.scoreSort = status;
-            this.getNovelList();
+            this.getBooklist();
         }
     },
 };

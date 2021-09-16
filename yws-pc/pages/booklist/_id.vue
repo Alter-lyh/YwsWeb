@@ -144,7 +144,7 @@ export default {
         // };
     },
     async activated() {
-        this.booklistId = this.$route.query.id
+        this.booklistId = this.$route.params.id
         await this.getInfo()
         await this.getNovelList()
     },
@@ -248,7 +248,7 @@ export default {
 	width: 100%;
 	height: auto;
 	box-sizing: border-box;
-    padding: 20px 30px;
+    padding: 20px 20px;
 	background: #FFFFFF;
 	position: relative;
     margin-bottom: 10px;

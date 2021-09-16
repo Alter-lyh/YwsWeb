@@ -30,5 +30,12 @@ export default {
     align-items: center;
     background: #fff;
     margin-top: 20px;
+    /deep/.van-pagination{
+        height: 70px;
+        overflow: hidden;
+        li{
+            height: 100%;
+        }
+    }
 }
 </style>

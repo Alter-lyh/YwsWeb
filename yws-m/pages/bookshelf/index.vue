@@ -118,9 +118,9 @@ export default {
                 const res = await this.$api.bookshelfApi.setStatus(params)
                 if (res.code != '00') return
                 if (type != 0) {
-                    this.$message.success('加入成功');
+                    this.$toast('加入成功');
                 } else {
-                    this.$message.success('取消成功');
+                    this.$toast('取消成功');
                 }
             } catch (error) {
                 console.log(error)

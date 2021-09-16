@@ -12,10 +12,14 @@
             <i class="iconfont icon-faxian3"></i>
             <span>书库</span>
         </nuxt-link>
-        <div class="item">
+        <nuxt-link to="/booklist" :class="['item', this.$route.path == '/booklist' ? 'active' : '']">
+            <i class="iconfont icon-text"></i>
+            <span>书单</span>
+        </nuxt-link>
+        <nuxt-link to="/user" :class="['item', this.$route.path == '/user' ? 'active' : '']">
             <i class="iconfont icon-biaoqing2"></i>
             <span>我的</span>
-        </div>
+        </nuxt-link>
     </div>
 </template>
 
@@ -34,7 +38,7 @@ export default {
                 case "/bookstore":
                     routeIndex = 3;
                     break;
-                case "/category":
+                case "/booklist":
                     routeIndex = 4;
                     break;
                 case "/user":

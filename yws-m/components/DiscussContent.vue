@@ -1,12 +1,13 @@
 <template>
     <div class="discuss-content">
         <div class="content-inner">
-            <span class="content-inner-details" v-if="status || content.length <= 140">{{content}}</span>
-            <span class="content-inner-details" v-show="!status && content.length > 140">{{content | titleFilter(140)}}</span>
+            <span class="content-inner-details" v-if="status || content.length <= 80">{{content}}</span>
+            <span class="content-inner-details" v-show="!status && content.length > 80">{{content | titleFilter(80)}}</span>
             <span class="show-more" v-if="content.length > 140" @click="checkShow(status)">{{!status ? '展开全部' : '收起全部'}}</span>
         </div>
         <div class="createdAt-source">
-            编辑于{{editTime | timeFil}}
+            <span>编辑于{{editTime | timeFil}}</span>
+            <van-rate v-if="scoreNum" class="user-score" readonly :value="scoreNum" color="#ff9900"/>
         </div>
     </div>
 </template>
@@ -17,7 +18,8 @@ export default {
     props: {
         content: '',
         status: false,
-        editTime: ''
+        editTime: '',
+        scoreNum: 0
     },
     data() {
         return {
@@ -59,6 +61,13 @@ export default {
         line-height: 96px;
         font-size: 28px;
         color: #999;
+        display: flex;
+        justify-content: space-between;
+        /deep/.van-rate__item{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     }
 }
 </style>

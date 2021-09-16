@@ -88,18 +88,19 @@
             </div>
         </div>
         <div class="result-view">
-            <div
+            <nuxt-link
                 class="item"
                 url="/pages/book/index"
                 v-for="(item, $key) in novelList"
                 :key="`book${$key}`"
+                :to="`/novel/${item.id}.html`"
             >
                 <div class="book-img">
                     <img :src="item.novel_img" alt="" />
                 </div>
                 <div class="item-info">
                     <div class="item-info-head">
-                        <nuxt-link class="book-name" :to="`/novel?id=${item.id}`">
+                        <nuxt-link class="book-name" :to="`/novel/${item.id}.html`">
                             {{item.novel_name}}
                         </nuxt-link>
                         <span class="add-btn">加入书架</span>
@@ -125,7 +126,7 @@
                         >
                     </div>
                 </div>
-            </div>
+            </nuxt-link>
         </div>
         <Pagination
             :currentPage="query.page"

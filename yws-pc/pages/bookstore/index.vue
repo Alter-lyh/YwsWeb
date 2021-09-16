@@ -99,7 +99,7 @@
                 </div>
                 <div class="item-info">
                     <div class="item-info-head">
-                        <nuxt-link class="book-name" :to="`/novel?id=${item.id}`">{{
+                        <nuxt-link class="book-name" :to="`/novel/${item.id}.html`">{{
                             item.novel_name
                         }}</nuxt-link>
                         <span class="add-btn">加入书架</span>
