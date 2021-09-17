@@ -6,7 +6,8 @@ export const state = () => ({
     },
     coinFlag: false,
     bookListAddFlag: false,
-    bookListChoiceFlag: false
+    bookListChoiceFlag: false,
+    loadingShow: false
 })
 
 export const getters = {
@@ -38,4 +39,7 @@ export const mutations = {
     updateBookListChoice(state, flag = false) {
         state.bookListChoiceFlag = flag
     },
+    updateLoadingShow(state, flag = false) {
+        state.loadingShow = flag
+    }
 }

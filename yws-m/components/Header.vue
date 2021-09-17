@@ -2,14 +2,14 @@
     <header class="header">
         <nuxt-link to="/" class="logo"></nuxt-link>
         <div class="header-right">
-            <div class="item">
+            <nuxt-link to="/search" class="item">
                 <van-icon name="search" size="1.2em"/>
-            </div>
+            </nuxt-link>
             <div class="item" v-show="!loginStatus" @click="login">登录/注册</div>
-            <div class="item" v-show="loginStatus">
+            <div class="item" v-show="loginStatus" @click="toastTips">
                 <van-icon name="notes-o" size="1.2em"/>
             </div>
-            <div class="item" v-show="loginStatus">
+            <div class="item" v-show="loginStatus" @click="toastTips">
                 <van-badge dot>
                     <van-icon name="bell" size="1.2em"/>
                 </van-badge>
@@ -69,6 +69,9 @@ export default {
         taskSignIn() {
             // const res = this.$api.taskApi.signIn()
             console.log(res);
+        },
+        toastTips() {
+            this.$toast('正在开发中');
         }
     }
 };

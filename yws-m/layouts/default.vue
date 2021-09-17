@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <!-- <Loading :show="true"/> -->
+        <Loading/>
         <Nuxt keep-alive :keep-alive-props="{ include: includeArr }"/>
         <Tabbar />
         <Sidebar />
@@ -11,7 +11,7 @@
 export default {
   data(){
     return{
-      includeArr:['home','novel','bookstore','bookshelf',],// 包括在内的组件，是否刷新
+      includeArr:['home','novel','bookstore','bookshelf','search'],// 包括在内的组件，是否刷新
     }
   },
 }

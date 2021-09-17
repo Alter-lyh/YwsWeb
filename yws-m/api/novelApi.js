@@ -1,5 +1,11 @@
 const novelApi = ($axios) => {
     return {
+        // 搜索
+        search(params) {
+            return $axios.get(`/novel/search`, {            
+                params: params        
+            })
+        },
         // 获取分类
         getCategory(params) {
             return $axios.get(`/novel/getCategory`, {            
@@ -21,6 +27,12 @@ const novelApi = ($axios) => {
         // 获取评论列表
         getDiscussList(params) {
             return $axios.get(`/novel/getDiscussList`, {            
+                params: params        
+            })
+        },
+        // 获取评论列表
+        getRandomDiscuss(params) {
+            return $axios.get(`/novel/getRandomDiscuss`, {            
                 params: params        
             })
         },

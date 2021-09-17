@@ -90,7 +90,9 @@ export default {
     async asyncData({ app, query, params }) {
     },
     async activated() {
+        this.$store.commit('updateLoadingShow', true)
         this.getBooklist()
+        this.$store.commit('updateLoadingShow', false)
     },
     methods: {
         async getBooklist() {

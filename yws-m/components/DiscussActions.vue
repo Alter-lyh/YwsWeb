@@ -1,8 +1,8 @@
 <template>
     <div class="discuss-actions">
         <div class="discuss-actions-left">
-            <div class="icon-btn" @click="setUpStatus"><thumbs-up theme="outline" size="16" fill="#333"/>{{dzNum > 0 ? dzNum : '赞'}}</div>
-            <div class="icon-btn" @click="setDownStatus"><thumbs-down theme="outline" size="16" fill="#333"/>{{cNum > 0 ? cNum : '踩'}}</div>
+            <div class="icon-btn" @click="setUpStatus(1)"><thumbs-up theme="outline" size="16" fill="#333"/>{{dzNum > 0 ? dzNum : '赞'}}</div>
+            <div class="icon-btn" @click="setUpStatus(2)"><thumbs-down theme="outline" size="16" fill="#333"/>{{cNum > 0 ? cNum : '踩'}}</div>
             <div class="icon-btn" @click="setReplayShow"><comments theme="outline" size="16" fill="#333"/>{{replyNum > 0 ? replyNum : "评论"}}</div>
             <div class="icon-btn"><share theme="outline" size="16" fill="#333"/>分享</div>
             <!-- <div class="icon-btn"><like theme="outline" size="16" fill="#333"/>收藏</div> -->
@@ -23,14 +23,12 @@ export default {
         Share,
         Like
     },
-    props: ['dzNum', 'cNum', 'replyNum'],
+    props: ['dzNum', 'cNum', 'replyNum', 'discussId'],
     data() {
         return {
             show: false,
             actions: [{ name: '选项一' }, { name: '选项二' }, { name: '选项三' }],
         };
-    },
-    computed: {
     },
     mounted() {
     },
@@ -38,11 +36,18 @@ export default {
         setReplayShow() {
             this.$emit('setReplayShow')
         },
-        setUpStatus() {
-            this.$emit('setStatus', 1)
-        },
-        setDownStatus() {
-            this.$emit('setStatus', 2)
+        async setUpStatus(type) {
+            const params = {
+                type,
+                targetId: this.discussId
+            }
+            try {
+                const res = await this.$api.praiseApi.setStatus(params)
+                if (res.code != '00') return
+                this.$emit('setStatus', res.data)
+            } catch (error) {
+                console.log(error)
+            }
         },
         onSelect(item) {
             // 默认情况下点击选项时不会自动收起

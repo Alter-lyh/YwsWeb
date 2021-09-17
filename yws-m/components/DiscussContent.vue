@@ -17,12 +17,12 @@ export default {
     name: "DiscussContent",
     props: {
         content: '',
-        status: false,
         editTime: '',
         scoreNum: 0
     },
     data() {
         return {
+            status: false,
         };
     },
     computed: {
@@ -31,7 +31,7 @@ export default {
     },
     methods: {
         checkShow() {
-            this.$emit('checkShow')
+            this.status = !this.status
         }
     }
 };

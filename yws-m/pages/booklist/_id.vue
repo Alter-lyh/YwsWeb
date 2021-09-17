@@ -35,8 +35,8 @@
                     </div>
                 </div>
                 <DiscussContent :content="item.discussInfo.content" :status="item.discussInfo.moreStatus" :editTime="item.discussInfo.update_time" :scoreNum="item.discussInfo.score/2" @checkShow="checkShow($key)" />
-                <DiscussActions :dzNum="item.discussInfo.dz_num" :cNum="item.discussInfo.c_num" :replyNum="item.discussInfo.reply_num" @setReplayShow="setReplayShow($key, item.discussInfo.id)" @setStatus="setStatus($event, item.discuss_id, $key)"/>
-                <DiscussReplay :itemKey="$key" :replyNum="item.discussInfo.reply_num" :replyList="item.discussInfo.replyList" :page="item.discussInfo.page" :pageAll="item.discussInfo.pageAll" @changeReplayPage="changeReplayPage" @replayComment="replayComment" @replayItemComment="replayItemComment" v-show="item.discussInfo.replayShow" />
+                <DiscussActions :dzNum="item.discussInfo.dz_num" :cNum="item.discussInfo.c_num" :replyNum="item.discussInfo.reply_num" :discussId="item.discussInfo.id" @setReplayShow="setReplayShow($key)" @setStatus="setStatus($event, $key)"/>
+                <DiscussReplay v-show="item.replayShow" :replayShow="item.replayShow" :novelId="item.novel_id" :discussId="item.discuss_id" />
             </div>
         </div>
         <Pagination
@@ -125,9 +125,11 @@ export default {
         // };
     },
     async activated() {
-        this.booklistId = this.$route.params.id
+        this.booklistId = this.$route.params.id.replace('.html', '')
+        this.$store.commit('updateLoadingShow', true)
         await this.getInfo()
         await this.getNovelList()
+        this.$store.commit('updateLoadingShow', false)
     },
     methods: {
         async getInfo() {
@@ -142,11 +144,9 @@ export default {
                 booklistId: this.booklistId
             }
             const res = await this.$api.booklistApi.getNovelList(params)
-            console.log(res);
             this.novelList = res.data.data
             this.novelList.map(item => {
-                item.discussInfo.moreStatus = false
-                item.discussInfo.replayShow = false
+                item.replayShow = false
                 item.discussInfo.page = 1
                 item.discussInfo.pageAll = 1
             })
@@ -158,98 +158,31 @@ export default {
         // 切换
         checkShow($key) {
             this.novelList[$key].discussInfo.moreStatus = !this.novelList[$key].discussInfo.moreStatus
-            this.$set(this.novelList, $key, this.novelList[$key])
+            this.$set(this.novelList, $key, this.novelList[$key].discussInfo)
         },
         // 展开收起评论
-        async setReplayShow($key, discussId) {
-            this.novelList[$key].discussInfo.replayShow = !this.novelList[$key].discussInfo.replayShow
-            if (this.novelList[$key].discussInfo.replayShow) {
-                const params = {
-                    discussId
-                }
-                const res = await this.$api.discussApi.getReply(params)
-                const json = res.data
-                console.log(json.data)
-                this.novelList[$key].discussInfo.replyList = json.data
-                this.novelList[$key].discussInfo.page = json.page
-                this.novelList[$key].discussInfo.pageAll = json.pageAll
-            }
-
+        async setReplayShow($key) {
+            this.novelList[$key].replayShow = !this.novelList[$key].replayShow
             this.$set(this.novelList, $key, this.novelList[$key])
-        },
-        // 发布子评论
-        async replayComment(content, itemKey) {
-            const params = {
-                parentId: this.novelList[itemKey].discussInfo.id,
-                novelId: this.novelList[itemKey].novel_id,
-                content: content,
-            }
-            try {
-                const res = await this.$api.discussApi.postReply(params)
-                if (res.code == '00') this.$toast('评论发布成功');
-                this.changeReplayPage(1, itemKey)
-            } catch (error) {
-                console.log(error)
-            }
-        },
-        // 切换子评论页码
-        async changeReplayPage(page, $key) {
-            this.novelList[$key].page = page
-            const params = {
-                discussId: this.novelList[$key].discussInfo.id,
-                page: page
-            }
-            const res = await this.$api.discussApi.getReply(params)
-            const json = res.data
-            this.novelList[$key].discussInfo.replyList = json.data
-            // 更新数据状态
-            this.$set(this.novelList, $key, this.novelList[$key])
-        },
-        // 回复子评论
-        async replayItemComment(parentId, novelId, content, resId) {
-            const params = {
-                parentId: parentId,
-                novelId: novelId,
-                content: content,
-                resId: resId
-            }
-            try {
-                const res = await this.$api.discussApi.postReply(params)
-                if (res.code == '00') this.$toast('评论发布成功');
-                this.changeReplayPage(1, itemKey)
-            } catch (error) {
-                console.log(error)
-            }
         },
         // 点赞
-        async setStatus(type, targetId, $key) {
-            console.log(type, targetId, $key)
-            const params = {
-                type,
-                targetId
-            }
-            try {
-                const res = await this.$api.praiseApi.setStatus(params)
-                if (res.code != '00') return
-                if (res.data.type == 1) {
-                    if (res.data.status == 1) {
-                        this.$notify({ type: 'success', message: '点赞成功' });
-                        this.novelList[$key].discussInfo.dz_num++
-                    } else {
-                        this.$notify({ type: 'success', message: '取消成功' });
-                        this.novelList[$key].discussInfo.dz_num--
-                    }
+        async setStatus(json, $key) {
+            if (json.type == 1) {
+                if (json.status == 1) {
+                    this.$notify({ type: 'success', message: '点赞成功' });
+                    this.novelList[$key].discussInfo.dz_num++
                 } else {
-                    if (res.data.status == 1) {
-                        this.$notify({ type: 'success', message: '点踩成功' });
-                        this.novelList[$key].discussInfo.c_num++
-                    } else {
-                        this.$notify({ type: 'success', message: '取消成功' });
-                        this.novelList[$key].discussInfo.c_num--
-                    }
+                    this.$notify({ type: 'success', message: '取消成功' });
+                    this.novelList[$key].discussInfo.dz_num--
                 }
-            } catch (error) {
-                console.log(error)
+            } else {
+                if (json.status == 1) {
+                    this.$notify({ type: 'success', message: '点踩成功' });
+                    this.novelList[$key].discussInfo.c_num++
+                } else {
+                    this.$notify({ type: 'success', message: '取消成功' });
+                    this.novelList[$key].discussInfo.c_num--
+                }
             }
         },
         // 分页

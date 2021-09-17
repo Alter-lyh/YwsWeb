@@ -1,17 +1,24 @@
 <template>
     <transition name="fade">
-        <div class="loading-mask" v-show="show"><van-loading color="#0094ff" /></div>
+        <div class="loading-mask" v-show="loadingShow"><van-loading color="#0094ff" /></div>
      </transition>
 </template>
 
 <script>
     export default {
-        props: {
-            show: {
-                type: Boolean,
-                default: true
+        name:'Loading',
+        data() {
+            return {
+            };
+        },
+        computed: {
+            loadingShow() {
+                return this.$store.state.loadingShow
             }
         },
+        created() {
+            this.$store.commit('updateLoadingShow', false)
+        }
     }
 </script>
 

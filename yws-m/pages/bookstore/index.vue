@@ -287,11 +287,12 @@ export default {
         };
     },
     asyncData() {
-        console.log(3);
     },
     async mounted() {
+        this.$store.commit('updateLoadingShow', true)
         await this.getCategory()
         await this.getNovelList()
+        this.$store.commit('updateLoadingShow', false)
     },
     methods: {
         // 获取分类
