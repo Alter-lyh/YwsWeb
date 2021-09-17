@@ -245,6 +245,13 @@ export default {
         align-items: center;
         justify-content: center;
         margin-bottom: 20px;
+        /deep/.van-pagination{
+            height: 70px;
+            overflow: hidden;
+            li{
+                height: 100%;
+            }
+        }
     }
     .replay-foot{
         display: flex;

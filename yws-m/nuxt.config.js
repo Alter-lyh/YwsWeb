@@ -28,7 +28,6 @@ export default {
         '@/plugins/vant',
         '@/plugins/filter',
         '@/plugins/api',
-        // { src: '@/assets/iconfont/iconfont.js', ssr: false },
         { src: '@/plugins/localStorage.js', ssr: false }
     ],
 

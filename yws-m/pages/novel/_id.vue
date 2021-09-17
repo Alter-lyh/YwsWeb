@@ -549,6 +549,9 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.container{
+    padding-bottom: 120px;
+}
 .header{
 	width: 100%;
 	height: auto;

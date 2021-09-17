@@ -15,8 +15,8 @@ export const clearToken = () => {
 }
 
 export const getUserInfo = () => {
-    let token = window.localStorage.getItem(PLATFORM + 'UserInfo')
-    return JSON.parse(token)
+    let userInfo = window.localStorage.getItem(PLATFORM + 'UserInfo')
+    return JSON.parse(userInfo)
 }
 
 export const setUserInfo= (userinfo) => {

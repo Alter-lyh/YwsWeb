@@ -12,7 +12,7 @@ export default function ({ $axios }, inject) {
     // 请求拦截
     $axios.onRequest(config => {
         // console.log('Making request to ' + config.url)
-        if(getToken()) config.headers['authorization'] = getToken();
+        if(process.client && getToken()) config.headers['authorization'] = getToken();
     })
     // 响应拦截
     $axios.onResponse(res => {

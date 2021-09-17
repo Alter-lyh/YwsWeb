@@ -13,6 +13,14 @@
                 </van-swipe-item>
             </van-swipe>
         </div>
+        <div class="notice">
+            <!-- 公告 -->
+            <van-notice-bar
+                left-icon="volume-o"
+                text="初次见面，你好！"
+                mode="link"
+            />
+        </div>
         <div class="home-desk">
             <div class="item">
                 <modify class="icon" theme="filled" size="18" fill="#567ceb"/>
@@ -96,7 +104,7 @@
                 <div class="novel-info">
                     <div class="novel-name">《{{item.noverInfo.novel_name}}》</div>
                     <van-rate
-                        v-model="value"
+                        :value="item.score/2"
                         :size="18"
                         color="#ffd21e"
                         void-icon="star"
@@ -124,10 +132,36 @@ export default {
             value: 3,
             discussList: [],
             page: 1,
-            pageAll: 1
+            pageAll: 1,
+            beforeUrl: ''
         };
     },
+    async asyncData({ app, query, params }) {
+        if (!process.server) return
+        console.time()
+        const res = await app.$api.novel.getRandomDiscuss({page: 1});
+        if (res.code != '00') return {}
+        const json = res.data
+        let discussList = json.data
+        discussList.map(item => {
+            item.replayShow = false
+            item.page = 1
+            item.pageAll = 1
+        })
+        const pageAll = json.pageAll
+        console.timeEnd()
+        return {
+            discussList,
+            pageAll
+        };
+    },
+    beforeRouteEnter(to, from, next) {
+        next(vm => {
+            if(from.name) vm.beforeUrl = from.path
+        });
+    },
     async mounted() {
+        if (this.beforeUrl == '') return
         this.$store.commit('updateLoadingShow', true)
         await this.getRandomDiscuss()
         this.$store.commit('updateLoadingShow', false)
@@ -195,7 +229,7 @@ export default {
     margin-top: 10px;
     .item {
         width: 100%;
-        height: 250px;
+        height: 220px;
         background: #fff;
         img {
             width: 100%;
