@@ -11,7 +11,7 @@
                     <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">APP下载</nuxt-link>
                 </div>
                 <div class="search-view">
-                    <el-input v-model="input" placeholder="请输入内容">
+                    <el-input v-model="input" placeholder="请输入内容" @change="onSearch">
                         <i slot="suffix" class="el-input__icon el-icon-search"></i>
                     </el-input>
                 </div>
@@ -94,7 +94,16 @@ export default {
         taskSignIn() {
             const res = this.$api.taskApi.signIn()
             console.log(res);
-        }
+        },
+        // 搜索
+        async onSearch() {
+            if (this.input.trim() == '') {
+                this.$toast('关键词不可为空')
+                return
+            }
+            this.input = this.input.trim()
+            window.location.href = `/search?keyword=${this.input}`
+        },
     }
 };
 </script>

@@ -30,7 +30,7 @@ const novelApi = ($axios) => {
                 params: params        
             })
         },
-        // 获取评论列表
+        // 随机获取评论列表
         getRandomDiscuss(params) {
             return $axios.get(`/novel/getRandomDiscuss`, {            
                 params: params        

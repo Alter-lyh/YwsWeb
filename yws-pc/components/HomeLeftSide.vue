@@ -1,71 +1,68 @@
 <template>
     <div class="bookpage-layout-main-left">
-        <div class="item">
+        <div class="item" v-for="(item, $key) in discussList" :key="$key">
             <div class="item-header">
                 <div class="item-header-left">
                     <img
                         class="author-img"
-                        src="https://avatar.lkong.com/avatar/000/33/33/16_avatar_small.jpg"
+                        src="@/assets/img/user_defalut.png"
                         alt=""
                     />
-                    <div class="author-info">曲调有氧</div>
+                    <div class="author-info">{{item.userInfo.name}}</div>
                 </div>
-                <div class="item-header-right">官方推荐</div>
+                <div class="item-header-right">随机推荐</div>
             </div>
             <div class="novel-info">
-                <div class="novel-name">《穿到民国吃瓜看戏》</div>
+                <nuxt-link class="novel-name" :to="`/novel/${item.novel_id}.html`">《{{item.noverInfo.novel_name}}》</nuxt-link>
                 <el-rate
-                    v-model="value"
+                    :value="item.score/2"
                     disabled
-                    show-score
                     text-color="#ff9900"
-                    score-template="{value}"
                 >
                 </el-rate>
             </div>
-            <DiscussContent content="好文。日常角度写那个特殊的年代，从家里到社会，画卷逐渐展开。优点包括但不限于：" status="false" />
-            <DiscussActions />
-        </div>
-        <div class="item">
-            <div class="item-header">
-                <div class="item-header-left">
-                    <img
-                        class="author-img"
-                        src="https://avatar.lkong.com/avatar/000/33/33/16_avatar_small.jpg"
-                        alt=""
-                    />
-                    <div class="author-info">曲调有氧</div>
-                </div>
-                <div class="item-header-right">官方推荐</div>
-            </div>
-            <div class="novel-info">
-                <div class="novel-name">《穿到民国吃瓜看戏》</div>
-                <el-rate
-                    v-model="value"
-                    disabled
-                    show-score
-                    text-color="#ff9900"
-                    score-template="{value}"
-                >
-                </el-rate>
-            </div>
-            <DiscussContent content="好文。日常角度写那个特殊的年代，从家里到社会，画卷逐渐展开。优点包括但不限于：" status="false" />
-            <DiscussActions />
+            <DiscussContent :content="item.content" :editTime="item.update_time" />
+            <DiscussActions :dzNum="item.dz_num" :cNum="item.c_num" :replyNum="item.reply_num" :discussId="item.id" @setStatus="setStatus($event, $key)" @setReplayShow="setReplayShow($key)"/>
+            <DiscussReplay v-show="item.replayShow" :replayShow="item.replayShow" :novelId="item.noverInfo.id" :discussId="item.id" />
         </div>
     </div>
 </template>
 
 <script>
 export default {
+    name: "HomeLeftSide",
+    props: ['page', 'pageAll', 'discussList'],
     data() {
         return {
-            value: 3.7
         };
     },
-    mounted() {
-    },
     methods: {
-    }
+        // 点赞或点踩
+        async setStatus(json, $key) {
+            if (json.type == 1) {
+                if (json.status == 1) {
+                    this.$notify({ type: 'success', message: '点赞成功' });
+                    this.discussList[$key].dz_num++
+                } else {
+                    this.$notify({ type: 'success', message: '取消成功' });
+                    this.discussList[$key].dz_num--
+                }
+            } else {
+                if (json.status == 1) {
+                    this.$notify({ type: 'success', message: '点踩成功' });
+                    this.discussList[$key].c_num++
+                } else {
+                    this.$notify({ type: 'success', message: '取消成功' });
+                    this.discussList[$key].c_num--
+                }
+            }
+        },
+        // 展开收起评论
+        async setReplayShow($key) {
+            this.discussList[$key].replayShow = !this.discussList[$key].replayShow
+            this.$set(this.discussList, $key, this.discussList[$key])
+        },
+    },
 };
 </script>
 

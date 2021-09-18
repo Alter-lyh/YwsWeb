@@ -20,7 +20,8 @@ export default {
                 'home',
                 'bookstore',
                 'bookshelf',
-                'novel'
+                'novel',
+                'search'
             ], // 包括在内的组件，是否keepalive
         };
     },

@@ -16,11 +16,11 @@ export default {
     name: "DiscussContent",
     props: {
         content: '',
-        status: false,
         editTime: ''
     },
     data() {
         return {
+            status: false,
         };
     },
     computed: {
@@ -29,7 +29,7 @@ export default {
     },
     methods: {
         checkShow() {
-            this.$emit('checkShow')
+            this.status = !this.status
         }
     }
 };

@@ -4,12 +4,12 @@
         <div class="my-swipe">
             <van-swipe :autoplay="3000" indicator-color="#1989fa">
                 <van-swipe-item>
-                    <div class="item">
+                    <nuxt-link class="item" :to="`/bookstore`">
                         <img
                             src="https://i.loli.net/2020/04/20/1GE9Lv78nJ4YoqA.png"
                             alt=""
                         />
-                    </div>
+                    </nuxt-link>
                 </van-swipe-item>
             </van-swipe>
         </div>
@@ -129,7 +129,6 @@ export default {
     },
     data() {
         return {
-            value: 3,
             discussList: [],
             page: 1,
             pageAll: 1,

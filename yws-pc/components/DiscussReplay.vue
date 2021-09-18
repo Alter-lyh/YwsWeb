@@ -1,9 +1,9 @@
 <template>
     <div class="discuss-replay">
-        <div class="replay-header">共{{replyNum}}条评论</div>
+        <div class="replay-header">共{{replyList.length}}条评论</div>
         <div class="replay-item" v-for="(item, $key) in replyList" :key="$key">
             <div class="replay-item-header">
-                <img class="author-img" src="https://avatar.lkong.com/avatar/000/68/77/17_avatar_small.jpg" alt=""/>
+                <img class="author-img" src="@/assets/img/user_defalut.png" alt=""/>
                 <div class="author-info">{{item.userInfo.name}}</div>
             </div>
             <div class="replay-item-content"><span v-if="item.resInfo" class="replay-title">回复{{item.resInfo.name}} </span>{{item.content}}</div>
@@ -39,7 +39,7 @@
         </div>
         <div class="replay-foot">
             <div class="replay-div" contenteditable="plaintext-only" placeholder="内容不得少于5个字"></div>
-            <div class="replay-btn" @click="replayComment($event, itemKey)">发布评论</div>
+            <div class="replay-btn" @click="replayComment($event)">发布评论</div>
         </div>
     </div>
 </template>
@@ -52,19 +52,34 @@ export default {
         ThumbsUp,
         ThumbsDown
     },
-    props: ['itemKey', 'replyNum', 'replyList', 'page', 'pageAll'],
+    props: ['replayShow', 'novelId', 'discussId'],
     data() {
         return {
-            cd: null,
+            replyList: [],
+            page: 1,
+            pageAll: 1,
             replayShowList: []
         };
+    },
+    watch: {
+        async replayShow(flag) {
+            if (!flag) return
+            const params = {
+                discussId: this.discussId
+            }
+            const res = await this.$api.discussApi.getReply(params)
+            const json = res.data
+            this.replyList = json.data
+            this.page = json.page
+            this.pageAll = json.pageAll
+        }
     },
     computed: {
     },
     mounted() {
     },
     methods: {
-        // 是否显示回复按钮
+        // 是否显示子评论的回复按钮
         setReplayShow($key) {
             let k = this.replayShowList.indexOf($key)
             if (k == -1) {
@@ -73,10 +88,24 @@ export default {
                 this.replayShowList.splice(k, 1)
             }
         },
-        changePage(page) {
-            this.$emit('changeReplayPage', page, this.itemKey)
+        // 切换子评论页码
+        async changePage(page) {
+            this.page = page
+            const params = {
+                discussId: this.discussId,
+                page: this.page
+            }
+            try {
+                const res = await this.$api.discussApi.getReply(params)
+                if (res.code != '00') return
+                const json = res.data
+                this.replyList = json.data
+            } catch (error) {
+                console.log(error);
+            }
         },
-        replayComment(event, itemKey) {
+        // 回复子评论
+        async replayComment(event) {
             event = event ? event : window.event; 
             const obj = event.srcElement ? event.srcElement : event.target;
 
@@ -84,19 +113,44 @@ export default {
             content = content.replace(/\s+$/, '')
             if (content.length < 5) return this.$message.error('评论必须大于5个字');
 
-            this.$emit('replayComment', content, itemKey)
+            const params = {
+                parentId: this.discussId,
+                novelId: this.novelId,
+                content: content,
+            }
+            try {
+                const res = await this.$api.discussApi.postReply(params)
+                if (res.code != '00') return
+                this.$message.success('评论发布成功');
+                this.changePage(1)
+            } catch (error) {
+                console.log(error)
+            }
         },
-        replayItemComment(event, parentId, novelId, $key, resId) {
+        // 回复子评论的评论
+        async replayItemComment(event, parentId, novelId, $key, resId) {
             event = event ? event : window.event; 
             const obj = event.srcElement ? event.srcElement : event.target;
 
             let content = obj.previousElementSibling.innerHTML
             content = content.replace(/\s+$/, '')
             if (content.length < 5) return this.$message.error('评论必须大于5个字');
-            
-            this.$emit('replayItemComment', parentId, novelId, content, resId, this.itemKey)
+            const params = {
+                parentId: parentId,
+                novelId: novelId,
+                content: content,
+                resId: resId
+            }
+            try {
+                const res = await this.$api.discussApi.postReply(params)
+                if (res.code != '00') return
+                this.$message.success('评论发布成功');
+                this.changePage(1)
+            } catch (error) {
+                console.log(error)
+            }
             this.setReplayShow($key)
-        }
+        },
     }
 };
 </script>

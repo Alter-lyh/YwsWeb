@@ -142,7 +142,7 @@
                         <van-rate readonly  :value="item.score/2" color="#ff9900"/>
                     </div>
                 </div>
-                <DiscussContent :content="item.content" :status="item.moreStatus" :editTime="item.update_time" @checkShow="checkShow($key)" />
+                <DiscussContent :content="item.content" :editTime="item.update_time" />
                 <DiscussActions :dzNum="item.dz_num" :cNum="item.c_num" :replyNum="item.reply_num" :discussId="item.id" @setReplayShow="setReplayShow($key)" @setStatus="setStatus($event, $key)"/>
                 <DiscussReplay v-show="item.replayShow" :replayShow="item.replayShow" :novelId="novelId" :discussId="item.id" />
             </div>
@@ -388,11 +388,6 @@ export default {
         changePage(page) {
             this.page = page;
             this.getDiscussList();
-        },
-        // 切换
-        checkShow($key) {
-            this.discussList[$key].moreStatus = !this.discussList[$key].moreStatus
-            this.$set(this.discussList, $key, this.discussList[$key])
         },
         // 展开收起评论
         async setReplayShow($key) {
