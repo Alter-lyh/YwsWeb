@@ -46,7 +46,7 @@
                 </div> -->
             </div>
             <div class="books-main">
-                <a class="books-item" href="/novel/1.html">
+                <nuxt-link  class="books-item" to="/novel/1.html">
                     <div class="img-box">
                         <img src="https://qidian.qpic.cn/qdbimg/349573/1010868264/300" alt="" />
                     </div>
@@ -55,8 +55,8 @@
                         <p class="update-time">更新：2020-11-15 16:00:00</p>
                     </div>
                     <div class="score">8.6</div>
-                </a>
-                <a class="books-item" href="/novel/3.html">
+                </nuxt-link >
+                <nuxt-link  class="books-item" to="/novel/3.html">
                     <div class="img-box">
                         <img src="https://qidian.qpic.cn/qdbimg/349573/2597043/300" alt="" />
                     </div>
@@ -65,8 +65,8 @@
                         <p class="update-time">更新：2017-11-27 16:00:00</p>
                     </div>
                     <div class="score">8.1</div>
-                </a>
-                <a class="books-item" href="/novel/2.html">
+                </nuxt-link >
+                <nuxt-link  class="books-item" to="/novel/2.html">
                     <div class="img-box">
                         <img src="http://static.zongheng.com/upload/cover/82/c6/82c6df86f584c266b99c038e707000691567581295408.jpeg" alt="" />
                     </div>
@@ -75,8 +75,8 @@
                         <p class="update-time">更新：2019-2-3 16:00:00</p>
                     </div>
                     <div class="score">8.2</div>
-                </a>
-                <a class="books-item" href="/novel/4.html">
+                </nuxt-link >
+                <nuxt-link  class="books-item" to="/novel/4.html">
                     <div class="img-box">
                         <img src="https://qidian.qpic.cn/qdbimg/349573/2643379/300" alt="" />
                     </div>
@@ -85,7 +85,7 @@
                         <p class="update-time">更新：2020-11-15 16:00:00</p>
                     </div>
                     <div class="score">8.3</div>
-                </a>
+                </nuxt-link >
             </div>
         </div>
         <div class="home-list">
@@ -160,6 +160,7 @@ export default {
         });
     },
     async mounted() {
+        console.log(1);
         if (this.beforeUrl == '') return
         this.$store.commit('updateLoadingShow', true)
         await this.getRandomDiscuss()

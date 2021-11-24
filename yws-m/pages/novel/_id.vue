@@ -92,7 +92,7 @@
                 </van-tab>
             </van-tabs>
             <van-divider>我的评分</van-divider>
-            <div @click="commentFlag = !commentFlag"><van-rate class="user-score" readonly v-model="userScore.score"/></div>
+            <div @click="showAddScore"><van-rate class="user-score" readonly v-model="userScore.score"/></div>
         </div>
         <!-- 简介 -->
         <van-collapse v-model="introNames" class="book-intro">
@@ -165,6 +165,7 @@
 </template>
 <script>
 import {Bitcoin} from '@icon-park/vue'
+import { getToken } from "@/plugins/auth";
 export default {
     name: 'novel',
     components:{
@@ -273,12 +274,8 @@ export default {
         this.$store.commit('updateLoadingShow', true)
         await this.getNovelInfo()
         await this.getDiscussList()
-        // this.getDiscussInfo()
-        // this.getUserTagList()
-        // if (this.categoryList.length < 1) {
-        //     await this.getCategory()
-        //     await this.getNovelList()
-        // }
+        this.getDiscussInfo()
+        this.getUserTagList()
         this.$store.commit('updateLoadingShow', false)
     },
     methods: {
@@ -342,6 +339,11 @@ export default {
             } catch (error) {
                 console.log(error)
             }
+        },
+        // 展示用户评分区域
+        showAddScore() {
+            this.commentFlag = !this.commentFlag
+            this.discussType = 2
         },
         // 显示输入新标签
         showAddTag() {
@@ -523,10 +525,12 @@ export default {
         },
         // 创建书单
         createBooklist() {
+            if(!getToken()) return this.$notify({ type: 'warning', message: '请先登录' });
             this.$store.commit("updateBookListAdd", true);
         },
         // 加入书单
         async addBooklist() {
+            if(!getToken()) return this.$notify({ type: 'warning', message: '请先登录' })
             const params = {
                 num: 100,
                 userId: this.$store.getters.getUserInfo.id,
@@ -763,8 +767,6 @@ export default {
                 font-size: 28px;
                 padding: 0 20px;
                 border-right: 1px solid #ddd;
-                cursor: pointer;
-                color: #333;
             }
             .item:nth-child(2){
                 border-right: none;
