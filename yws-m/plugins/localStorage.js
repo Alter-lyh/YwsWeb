@@ -7,7 +7,7 @@ let cookieStorage = {
     return Cookies.getJSON(key);
   },
   setItem: function(key, value) {
-    return Cookies.set(key, value, {expires: 3, secure: false});
+    return Cookies.set(key, value, {expires: 365, secure: false});
   },
   removeItem: function(key) {
     return Cookies.remove(key);

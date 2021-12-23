@@ -83,12 +83,12 @@ export default {
     created() {
     },
     mounted() {
-        console.log(this.userBooklist);
+        // console.log(this.userBooklist);
         this.$store.commit("updateBookListChoice", false);
     },
     methods: {
         async addToBooklist() {
-            console.log(this.userScore);
+            // console.log(this.userScore);
             this.$emit('addToBooklist', this.booklistId)
         }
     },

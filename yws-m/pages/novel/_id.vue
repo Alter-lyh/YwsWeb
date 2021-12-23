@@ -154,7 +154,7 @@
             @changePage="changePage"
         />
         <!-- 底部按钮 -->
-        <NovelBottom :novelId="novelId" :sourceList="sourceList"/>
+        <NovelBottom :novelId="novelId" :sourceList="sourceList" ref="novelBottom"/>
         <!-- 创建书单 -->
         <BooklistAdd />
         <!-- 加入书单 -->
@@ -256,26 +256,64 @@ export default {
     async asyncData({ app, query, params }) {
         // 请检查您是否在服务器端
         if (!process.server) return;
-        // query.page = query.page * 1 || 1;
+        const {id} = params
+        const novelId = id.replace('.html', '')
 
-        // const result = await Promise.all([
-        //     app.$api.novel.getNovelInfo({ novelId: query.id }),
-        // ]);
+        const result = await Promise.all([
+            app.$api.novel.getNovelInfo({ novelId }),
+            app.$api.novel.getDiscussList({ novelId, page: 1, num: 20, score: 0 })
+        ]);
+        // 书籍信息
+        let novelInfo = result[0].data
+        novelInfo['synTitle'] = '简介：'
+        novelInfo.synopsis.length > 16 ? novelInfo['synTitle'] += novelInfo.synopsis.slice(0, 16) + '...' : novelInfo['synTitle'] += novelInfo.synopsis
+        novelInfo.source = JSON.parse(novelInfo.source)
+        // 书源信息
+        let sourceList = []
+        novelInfo.source.map(item => {
+            sourceList.push({
+                text: item. siteName,
+                ...item
+            })
+        })
+        // 标签
+        const tagList = novelInfo.novel_tags
 
-        // return {
-        //     query: query,
-        //     categoryList: result[0],
-        //     pageAll: result[1].pageAll,
-        //     novelList: result[1].data,
-        // };
+        // 当前页
+        const page = result[1].data.page*1
+        const pageAll = result[1].data.pageAll
+        let discussList = result[1].data.data
+        discussList.map(item => {
+            item.replayShow = false
+            item.page = 1
+            item.pageAll = 1
+        })
+
+        return {
+            novelInfo,
+            sourceList,
+            tagList,
+            page,
+            pageAll,
+            discussList
+        };
     },
-    async mounted() {
+    async activated() {
         this.novelId = this.$route.params.id.replace('.html', '')
         this.$store.commit('updateLoadingShow', true)
-        await this.getNovelInfo()
-        await this.getDiscussList()
-        this.getDiscussInfo()
-        this.getUserTagList()
+
+        if (!this.novelInfo.novel_name) {
+            await this.getNovelInfo()
+            await this.getDiscussList()
+        }
+
+        setTimeout(() => {
+            this.$refs.novelBottom.getBookShelfNoverStatus()
+        }, 100)
+        if(getToken()) {
+            this.getDiscussInfo()
+            this.getUserTagList()
+        }
         this.$store.commit('updateLoadingShow', false)
     },
     methods: {
@@ -415,7 +453,7 @@ export default {
             }
             try {
                 const res = await this.$api.novel.postDiscuss(params)
-                if (this.discussType == 2) this.userScore.score = res.data.score
+                if (this.discussType == 2) this.userScore.score = res.data.score/2
                 this.$toast('发布成功');
                 this.getDiscussList()
                 this.commentFlag = false
@@ -536,7 +574,7 @@ export default {
                 userId: this.$store.getters.getUserInfo.id,
             }
             const res = await this.$api.booklistApi.getBooklist(params)
-            if (res.code != '00') {
+            if (res.data.data.length < 1) {
                 this.$toast('请先新建书单');
                 this.$store.commit("updateBookListAdd", true);
                 return

@@ -68,7 +68,6 @@
         mounted() {
             const userInfo = getUserInfo()
             if (userInfo) {
-                this.getBookShelfNoverStatus()
                 this.coinNum = userInfo.point || 0
             }
         },

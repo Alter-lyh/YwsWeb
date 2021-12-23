@@ -2,7 +2,7 @@
     <div class="container">
         <header class="header">
             <div class="tag-list">
-                <van-tag type="warning" size="medium" v-for="(item, key) in bookListInfo.categorys" :key="key">{{item.category_name}}({{item.count}})</van-tag>
+                <van-tag class="tag" type="warning" size="medium" v-for="(item, key) in bookListInfo.categorys" :key="key">{{item.category_name}}({{item.count}})</van-tag>
             </div>
             <h3>{{bookListInfo.title}}</h3>
             <p class="desc">{{bookListInfo.intro}}</p>
@@ -17,7 +17,7 @@
         </div>
         <div class="result-view">
             <div class="item" v-for="(item, $key) in novelList" :key="$key">
-                <div class="book-info">
+                <nuxt-link :to="`/novel/${item.novel.id}.html`" class="book-info">
                     <div class="info-left">
                         <img :src="item.novel.novel_img" alt="">
                     </div>
@@ -29,11 +29,11 @@
                             <div class="book-status">状态：{{item.novel.update_status | updateStatusFil}}</div>
                             <div class="update-time">更新时间：{{item.novel.update_time | timeFil}}</div>
                         </div>
-                        <div class="more-nav" @click="showPopover = true">
+                        <div class="more-nav" @click.prevent="showPopover = true">
                             <van-icon name="weapp-nav"/>
                         </div>
                     </div>
-                </div>
+                </nuxt-link>
                 <DiscussContent :content="item.discussInfo.content" :status="item.discussInfo.moreStatus" :editTime="item.discussInfo.update_time" :scoreNum="item.discussInfo.score/2" @checkShow="checkShow($key)" />
                 <DiscussActions :dzNum="item.discussInfo.dz_num" :cNum="item.discussInfo.c_num" :replyNum="item.discussInfo.reply_num" :discussId="item.discussInfo.id" @setReplayShow="setReplayShow($key)" @setStatus="setStatus($event, $key)"/>
                 <DiscussReplay v-show="item.replayShow" :replayShow="item.replayShow" :novelId="item.novel_id" :discussId="item.discuss_id" />
@@ -52,7 +52,7 @@
 <script>
 import {Bitcoin} from '@icon-park/vue'
 export default {
-    name: 'novel',
+    name: 'booklistItem',
     components:{
         Bitcoin
     },
@@ -111,20 +111,29 @@ export default {
     async asyncData({ app, query, params }) {
         // 请检查您是否在服务器端
         if (!process.server) return;
-        // query.page = query.page * 1 || 1;
+        const {id} = params
+        const booklistId = id.replace('.html', '')
 
-        // const result = await Promise.all([
-        //     app.$api.novel.getNovelInfo({ novelId: query.id }),
-        // ]);
+        const result = await Promise.all([
+            app.$api.booklistApi.getInfo({ booklistId }),
+            app.$api.booklistApi.getNovelList({ booklistId })
+        ]);
 
-        // return {
-        //     query: query,
-        //     categoryList: result[0],
-        //     pageAll: result[1].pageAll,
-        //     novelList: result[1].data,
-        // };
+        const bookListInfo = result[0].data
+
+        let novelList = result[1].data.data
+        novelList.map(item => {
+            item.replayShow = false
+            item.discussInfo.page = 1
+            item.discussInfo.pageAll = 1
+        })
+        return {
+            bookListInfo,
+            novelList
+        };
     },
     async activated() {
+        if (this.bookListInfo.title) return
         this.booklistId = this.$route.params.id.replace('.html', '')
         this.$store.commit('updateLoadingShow', true)
         await this.getInfo()
@@ -202,7 +211,7 @@ export default {
 	position: relative;
     margin-bottom: 20px;
     .tag-list{
-        .el-tag{
+        .tag{
             cursor: pointer;
             margin-right: 16px;
         }

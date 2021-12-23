@@ -100,9 +100,7 @@
                 </div>
                 <div class="item-info">
                     <div class="item-info-head">
-                        <nuxt-link class="book-name" :to="`/novel/${item.id}.html`">
-                            {{item.novel_name}}
-                        </nuxt-link>
+                        <span class="book-name" :to="`/novel/${item.id}.html`">{{item.novel_name}}</span>
                         <span class="add-btn">加入书架</span>
                     </div>
                     <div class="book-info">
@@ -122,8 +120,7 @@
                             class="book-tag-item"
                             v-for="(item, $key) in item.novel_tags"
                             :key="$key"
-                            >{{ item.tag_name }}</span
-                        >
+                            >{{ item.tag_name }}</span>
                     </div>
                 </div>
             </nuxt-link>
@@ -141,6 +138,7 @@ export default {
     name: 'bookstore',
     data() {
         return {
+            beforeUrl: '',
             query: {
                 page: 1,
                 type: null,
@@ -286,9 +284,32 @@ export default {
             novelList: [],
         };
     },
-    asyncData() {
+    async asyncData({ app, query, params }) {
+        // 请检查您是否在服务器端
+        if (!process.server) return;
+
+        const result = await Promise.all([
+            app.$api.novel.getCategory(),
+            app.$api.novel.getNovelList({ page: 1, scoreSort: 'score' })
+        ]);
+
+        const categoryList = result[0].data
+
+        const pageAll = result[1].data.pageAll;
+        const novelList = result[1].data.data;
+        return {
+            categoryList,
+            pageAll,
+            novelList
+        };
+    },
+    beforeRouteEnter(to, from, next) {
+        next(vm => {
+            if(from.name) vm.beforeUrl = from.path
+        });
     },
     async mounted() {
+        if (this.beforeUrl == '') return
         this.$store.commit('updateLoadingShow', true)
         await this.getCategory()
         await this.getNovelList()

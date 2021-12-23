@@ -33,7 +33,7 @@
 </template>
 
 <script>
-// import {clearToken, clearUserInfo} from "@/plugins/auth";
+import {clearToken, clearUserInfo} from "@/plugins/auth";
 export default {
     data() {
         return {
@@ -55,7 +55,11 @@ export default {
     },
     methods: {
         onSelect(action) {
-            // Toast(action.text);
+            if (action.text == '退出') {
+                this.logout()
+                return
+            }
+            this.$toast(action.text);
         },
         login() {
             this.$store.commit('updateLoginView', true)

@@ -23,8 +23,8 @@
             </div>
         </div>
         <div class="result-view">
-            <div class="item" v-for="(item, key) in bookList" :key="key">
-                <p class="item-title"><nuxt-link :to="`/booklist/${item.id}.html`">{{item.title}}</nuxt-link></p>
+            <nuxt-link :to="`/booklist/${item.id}.html`" class="item" v-for="(item, key) in bookList" :key="key">
+                <p class="item-title"><span>{{item.title}}</span></p>
                 <div class="item-tag">
                     <span v-for="(item2, key2) in item.categorys" :key="key2">{{item2.category_name}}({{item2.count}})</span>
                 </div>
@@ -39,7 +39,7 @@
                         <!-- <span>23赞</span> -->
                     </div>
                 </div>
-            </div>
+            </nuxt-link>
         </div>
         <pagination
             class="pagin-ation"
@@ -51,7 +51,7 @@
 </template>
 <script>
 export default {
-    name: 'bookstore',
+    name: 'booklist',
     data() {
         return {
             query: {
@@ -85,11 +85,37 @@ export default {
             ],
             pageAll: 1,
             bookList: [],
+            beforeUrl: ''
         };
     },
     async asyncData({ app, query, params }) {
+        // 请检查您是否在服务器端
+        if (!process.server) return;
+
+        const result = await app.$api.booklistApi.getBooklist({ page: 1, type: 1})
+        const json = result.data
+        const pageAll = json.pageAll;
+        let bookList = json.data;
+        bookList.map(item => {
+            let bookTotal = 0
+            item.categorys.map(item2 => {
+                bookTotal += item2.count
+            })
+            item.bookTotal = bookTotal
+        })
+
+        return {
+            pageAll,
+            bookList
+        }
     },
-    async activated() {
+    beforeRouteEnter(to, from, next) {
+        next(vm => {
+            if(from.name) vm.beforeUrl = from.path
+        });
+    },
+    async mounted() {
+        if (this.beforeUrl == '') return
         this.$store.commit('updateLoadingShow', true)
         this.getBooklist()
         this.$store.commit('updateLoadingShow', false)
@@ -236,13 +262,14 @@ export default {
         width: 100%;
         height: auto;
         padding: 20px 0;
+        display: block;
         border-bottom: 1px solid #eee;
         .item-title{
             color: #333;
             font-weight: 700;
             line-height: 1em;
             padding-bottom: 20px;
-            a{
+            span{
                 font-size: 36px;
             }
         }

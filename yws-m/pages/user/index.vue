@@ -8,8 +8,8 @@
                     <p class="user-id">{{userInfo.id ? `ID: ${userInfo.id}` :'暂无登录'}}</p>
                 </div>
             </div>
-            <div v-if="!loginStatus" class="mine-header-login" @click="login"><span>登录/注册</span></div>
-            <div v-else class="sign-img" @click="taskSignIn"><img src="@/assets/img/sign.png" alt=""></div>
+            <div v-show="!loginStatus" class="mine-header-login" @click="login"><span>登录/注册</span></div>
+            <div v-show="loginStatus" class="sign-img" @click="taskSignIn"><img src="@/assets/img/sign.png" alt=""></div>
         </div>
         <div class="mine-account">
             <div class="mine-account-button">我的账户</div>
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import {clearToken, clearUserInfo} from "@/plugins/auth";
+import {clearToken, clearUserInfo, setUserInfo} from "@/plugins/auth";
 export default {
     name: 'user',
     data() {
@@ -64,16 +64,17 @@ export default {
             return this.$store.getters.getLoginStatus
         },
         userInfo() {
-            console.log(this.$store.getters.getUserInfo);
             return this.$store.getters.getUserInfo
         }
     },
     async mounted() {
     },
     methods: {
-        taskSignIn() {
-            const res = this.$api.taskApi.signIn()
-            console.log(res);
+        async taskSignIn() {
+            const res = await this.$api.taskApi.signIn()
+            if (res.code != '00') return
+            this.$toast('签到成功');
+            this.getUserInfo()
         },
         login() {
             this.$store.commit('updateLoginView', true)
@@ -84,6 +85,16 @@ export default {
             this.$store.commit('updateLoginStatus', false)
             this.$store.commit('setUserInfo', {name: '默认用户'})
             this.$toast('退出成功');
+        },
+        // 获取用户信息
+        async getUserInfo() {
+            try {
+                const res = await this.$api.userApi.getInfo()
+                setUserInfo(res.data)
+                this.$store.commit('setUserInfo', res.data)
+            } catch (error) {
+                console.log(error);
+            }
         },
         toastTips() {
             this.$toast('正在开发中');

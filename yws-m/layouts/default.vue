@@ -11,7 +11,7 @@
 export default {
   data(){
     return{
-      includeArr:['home','novel','bookstore','bookshelf','search'],// 包括在内的组件，是否刷新
+      includeArr:['home','novel','bookstore','bookshelf','booklist', 'booklistItem', 'search'],// 包括在内的组件，是否刷新
     }
   },
 }
