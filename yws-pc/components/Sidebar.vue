@@ -1,7 +1,9 @@
 <template>
     <div class="sidebar">
         <el-tooltip class="item" effect="dark" content="QQ咨询" placement="left">
-            <i class="el-icon-s-comment"></i>
+            <a href="tencent://message/?Menu=yes&uin=1031908340" target="_blank">
+                <i class="el-icon-s-comment"></i>
+            </a>
         </el-tooltip>
         <el-tooltip class="item" effect="dark" content="返回顶部" placement="left" v-if="backTopFlag">
             <i class="el-icon-top" @click="backtop"></i>
