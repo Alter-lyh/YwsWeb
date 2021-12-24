@@ -5,6 +5,7 @@
 </template>
 
 <script>
+// import VueClipboard from 'vue-clipboard2'
 export default {
     name:'sidebar',
     data() {
@@ -49,7 +50,7 @@ export default {
     width: 100px;
     height: 100px;
     position: fixed;
-    bottom: 140px;
+    bottom: 280px;
     right: 34px;
     cursor: pointer;
     z-index: 99;
