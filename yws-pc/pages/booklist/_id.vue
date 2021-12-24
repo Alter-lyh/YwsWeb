@@ -24,8 +24,8 @@
                                 <img :src="item.novel.novel_img" alt="">
                             </div>
                             <div class="info-right">
-                                <div class="info-list">
-                                    <a href="" class="book-name">{{item.novel.novel_name}}</a>
+                                <nuxt-link :to="`/novel/${item.novel.id}.html`" class="info-list">
+                                    <span class="book-name">{{item.novel.novel_name}}</span>
                                     <p class="info-item">
                                         <span>{{item.novel.author_name}}</span>
                                         <span>{{item.novel.word_number | wordNumFilter}}</span>
@@ -44,7 +44,7 @@
                                             text-color="#ff9900">
                                         </el-rate>
                                     </div>
-                                </div>
+                                </nuxt-link>
                                 <el-dropdown :hide-on-click="false">
                                     <span class="el-dropdown-link">
                                         正在追读<i class="el-icon-arrow-down el-icon--right"></i>
@@ -75,7 +75,7 @@
 <script>
 import {Bitcoin} from '@icon-park/vue'
 export default {
-    name: 'novel',
+    name: 'booklistItem',
     components:{
         Bitcoin
     },
@@ -114,6 +114,7 @@ export default {
                 },
             ],
             pageAll: 1,
+            isServer: true
         }
     },
     watch: {
@@ -129,21 +130,31 @@ export default {
     },
     async asyncData({ app, query, params }) {
         // 请检查您是否在服务器端
-        if (!process.server) return;
-        // query.page = query.page * 1 || 1;
+        if (!process.server) return {isServer: false};
+        
+        const {id} = params
+        const booklistId = id.replace('.html', '')
 
-        // const result = await Promise.all([
-        //     app.$api.novel.getNovelInfo({ novelId: query.id }),
-        // ]);
+        const result = await Promise.all([
+            app.$api.booklistApi.getInfo({ booklistId }),
+            app.$api.booklistApi.getNovelList({ booklistId })
+        ]);
 
-        // return {
-        //     query: query,
-        //     categoryList: result[0],
-        //     pageAll: result[1].pageAll,
-        //     novelList: result[1].data,
-        // };
+        const bookListInfo = result[0].data
+
+        let novelList = result[1].data.data
+        novelList.map(item => {
+            item.replayShow = false
+            item.discussInfo.page = 1
+            item.discussInfo.pageAll = 1
+        })
+        return {
+            bookListInfo,
+            novelList
+        };
     },
     async activated() {
+        if (this.bookListInfo.title || this.isServer) return
         this.booklistId = this.$route.params.id.replace('.html', '')
         await this.getInfo()
         await this.getNovelList()

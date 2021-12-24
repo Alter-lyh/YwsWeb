@@ -38,7 +38,7 @@
                             </div>
                             <div class="item-bot-right">
                                 <span>{{item.bookTotal}}本书</span>
-                                <span>23赞</span>
+                                <!-- <span>23赞</span> -->
                             </div>
                         </div>
                     </div>
@@ -93,8 +93,27 @@ export default {
         };
     },
     async asyncData({ app, query, params }) {
+        // 请检查您是否在服务器端
+        if (!process.server) return;
+        const result = await app.$api.booklistApi.getBooklist({ page: 1, type: 1})
+        const json = result.data
+        const pageAll = json.pageAll;
+        let bookList = json.data;
+        bookList.map(item => {
+            let bookTotal = 0
+            item.categorys.map(item2 => {
+                bookTotal += item2.count
+            })
+            item.bookTotal = bookTotal
+        })
+
+        return {
+            pageAll,
+            bookList
+        }
     },
-    async activated() {
+    async mounted() {
+        if (this.bookList.length > 0) return
         this.getBooklist()
     },
     methods: {

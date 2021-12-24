@@ -138,7 +138,6 @@ export default {
     name: 'bookstore',
     data() {
         return {
-            beforeUrl: '',
             query: {
                 page: 1,
                 type: null,
@@ -303,13 +302,8 @@ export default {
             novelList
         };
     },
-    beforeRouteEnter(to, from, next) {
-        next(vm => {
-            if(from.name) vm.beforeUrl = from.path
-        });
-    },
     async mounted() {
-        if (this.beforeUrl == '') return
+        if (this.novelList.length > 0) return
         this.$store.commit('updateLoadingShow', true)
         await this.getCategory()
         await this.getNovelList()

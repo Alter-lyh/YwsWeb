@@ -21,6 +21,7 @@ export default {
                 'bookstore',
                 'bookshelf',
                 'novel',
+                'booklistItem',
                 'search'
             ], // 包括在内的组件，是否keepalive
         };

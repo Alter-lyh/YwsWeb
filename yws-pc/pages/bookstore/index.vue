@@ -289,23 +289,25 @@ export default {
     },
     async asyncData({ app, query, params }) {
         // 请检查您是否在服务器端
-        // if (!process.server) return;
-        // query.page = query.page * 1 || 1;
+        if (!process.server) return;
+        
+        const result = await Promise.all([
+            app.$api.novel.getCategory(),
+            app.$api.novel.getNovelList({ page: 1, scoreSort: 'score' })
+        ]);
 
-        // const result = await Promise.all([
-        //     app.$api.novel.getCategory({ type: query.type }),
-        //     app.$api.novel.getNovelList(query),
-        // ]);
-        // result[0].unshift({ id: null, cate_name: "全部" });
+        const categoryList = result[0].data
 
-        // return {
-        //     query: query,
-        //     categoryList: result[0],
-        //     pageAll: result[1].pageAll,
-        //     novelList: result[1].data,
-        // };
+        const pageAll = result[1].data.pageAll;
+        const novelList = result[1].data.data;
+        return {
+            categoryList,
+            pageAll,
+            novelList
+        };
     },
-    async activated() {
+    async mounted() {
+        if (this.novelList.length > 0) return
         await this.getCategory()
         await this.getNovelList()
     },

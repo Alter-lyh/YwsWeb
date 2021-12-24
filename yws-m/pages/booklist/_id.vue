@@ -95,6 +95,7 @@ export default {
             showPopover: false,
             // 通过 actions 属性来定义菜单选项
             actions: [{name: '正在追读', type: 1}, {name: '养肥待看', type: 2}, {name: '已经看过', type: 3}, {name: '取消收藏', type: 0}],
+            isServer: true
         }
     },
     watch: {
@@ -110,7 +111,7 @@ export default {
     },
     async asyncData({ app, query, params }) {
         // 请检查您是否在服务器端
-        if (!process.server) return;
+        if (!process.server) return {isServer: false};
         const {id} = params
         const booklistId = id.replace('.html', '')
 
@@ -133,7 +134,7 @@ export default {
         };
     },
     async activated() {
-        if (this.bookListInfo.title) return
+        if (this.bookListInfo.title || this.isServer) return
         this.booklistId = this.$route.params.id.replace('.html', '')
         this.$store.commit('updateLoadingShow', true)
         await this.getInfo()

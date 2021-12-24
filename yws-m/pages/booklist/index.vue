@@ -85,7 +85,6 @@ export default {
             ],
             pageAll: 1,
             bookList: [],
-            beforeUrl: ''
         };
     },
     async asyncData({ app, query, params }) {
@@ -109,13 +108,8 @@ export default {
             bookList
         }
     },
-    beforeRouteEnter(to, from, next) {
-        next(vm => {
-            if(from.name) vm.beforeUrl = from.path
-        });
-    },
     async mounted() {
-        if (this.beforeUrl == '') return
+        if (this.bookList.length > 0) return
         this.$store.commit('updateLoadingShow', true)
         this.getBooklist()
         this.$store.commit('updateLoadingShow', false)

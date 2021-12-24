@@ -102,7 +102,7 @@
                     <div class="item-header-right">随机推荐</div>
                 </div>
                 <div class="novel-info">
-                    <div class="novel-name">《{{item.noverInfo.novel_name}}》</div>
+                    <nuxt-link :to="`/novel/${item.noverInfo.id}.html`" class="novel-name">《{{item.noverInfo.novel_name}}》</nuxt-link >
                     <van-rate
                         :value="item.score/2"
                         :size="18"

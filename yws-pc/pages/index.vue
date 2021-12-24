@@ -23,7 +23,6 @@ export default {
     },
     async asyncData({ app, query, params }) {
         if (!process.server) return
-        console.time()
         const res = await app.$api.novel.getRandomDiscuss({page: 1});
         if (res.code != '00') return {}
         const json = res.data
@@ -34,7 +33,6 @@ export default {
             item.pageAll = 1
         })
         const pageAll = json.pageAll
-        console.timeEnd()
         return {
             discussList,
             pageAll

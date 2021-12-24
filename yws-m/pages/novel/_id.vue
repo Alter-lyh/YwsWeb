@@ -233,6 +233,7 @@ export default {
             showPopover: false,
             // 通过 actions 属性来定义菜单选项
             actions: [{ text: '我的书架' }, { text: '我的书单' }, { text: '举报' }],
+            isServer: true
         }
     },
     watch: {
@@ -255,7 +256,7 @@ export default {
     },
     async asyncData({ app, query, params }) {
         // 请检查您是否在服务器端
-        if (!process.server) return;
+        if (!process.server) return {isServer: false};
         const {id} = params
         const novelId = id.replace('.html', '')
 
@@ -302,7 +303,7 @@ export default {
         this.novelId = this.$route.params.id.replace('.html', '')
         this.$store.commit('updateLoadingShow', true)
 
-        if (!this.novelInfo.novel_name) {
+        if (!this.isServer) {
             await this.getNovelInfo()
             await this.getDiscussList()
         }

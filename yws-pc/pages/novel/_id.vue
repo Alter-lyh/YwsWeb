@@ -177,7 +177,7 @@
                     <div class="item" v-for="(item, $key) in discussList" :key="$key">
                         <div class="item-header">
                             <div class="item-header-left">
-                                <img class="author-img" src="https://avatar.lkong.com/avatar/000/68/77/17_avatar_small.jpg" alt=""/>
+                                <img class="author-img" src="@/assets/img/user_defalut.png" alt=""/>
                                 <div class="author-info">{{item.userInfo.name}}</div>
                             </div>
                             <div class="novel-rate" v-show="item.score">
@@ -208,6 +208,7 @@
 </template>
 <script>
 import {Bitcoin} from '@icon-park/vue'
+import { getToken } from "@/plugins/auth";
 export default {
     name: 'novel',
     components:{
@@ -268,7 +269,8 @@ export default {
             // 投币类型
             coinType: 1,
             // 用户书单
-            userBooklist: []
+            userBooklist: [],
+            isServer: true
         }
     },
     watch: {
@@ -284,31 +286,53 @@ export default {
     },
     async asyncData({ app, query, params }) {
         // 请检查您是否在服务器端
-        if (!process.server) return;
-        // query.page = query.page * 1 || 1;
+        if (!process.server) return {isServer: false};
+        const {id} = params
+        const novelId = id.replace('.html', '')
 
-        // const result = await Promise.all([
-        //     app.$api.novel.getNovelInfo({ novelId: query.id }),
-        // ]);
+        const result = await Promise.all([
+            app.$api.novel.getNovelInfo({ novelId }),
+            app.$api.novel.getDiscussList({ novelId, page: 1, num: 20, score: 0 })
+        ]);
+        // 书籍信息
+        let novelInfo = result[0].data
+        novelInfo['synTitle'] = '简介：'
+        novelInfo.synopsis.length > 16 ? novelInfo['synTitle'] += novelInfo.synopsis.slice(0, 16) + '...' : novelInfo['synTitle'] += novelInfo.synopsis
+        novelInfo.source = JSON.parse(novelInfo.source)
 
-        // return {
-        //     query: query,
-        //     categoryList: result[0],
-        //     pageAll: result[1].pageAll,
-        //     novelList: result[1].data,
-        // };
+        // 标签
+        const tagList = novelInfo.novel_tags
+
+        // 当前页
+        const page = result[1].data.page*1
+        const pageAll = result[1].data.pageAll
+        let discussList = result[1].data.data
+        discussList.map(item => {
+            item.replayShow = false
+            item.page = 1
+            item.pageAll = 1
+        })
+
+        return {
+            novelInfo,
+            tagList,
+            page,
+            pageAll,
+            discussList
+        };
     },
     async activated() {
         this.novelId = this.$route.params.id.replace('.html', '')
-        await this.getNovelInfo()
-        await this.getDiscussList()
-        this.getDiscussInfo()
-        this.getUserTagList()
-        this.getBookShelfNoverStatus()
-        // if (this.categoryList.length < 1) {
-        //     await this.getCategory()
-        //     await this.getNovelList()
-        // }
+        if (!this.isServer){
+            await this.getNovelInfo()
+            await this.getDiscussList()
+        }
+        
+        if (getToken()) {
+            this.getDiscussInfo()
+            this.getUserTagList()
+            this.getBookShelfNoverStatus()
+        }
     },
     methods: {
         async getNovelInfo() {
@@ -470,7 +494,7 @@ export default {
                 novelId: this.novelId
             }
             try {
-                console.log(params);
+                // console.log(params);
                 const res = await this.$api.bookshelfApi.getNoverStatus(params)
                 res.data.status == 1 ? this.novelBookshelfStatus = res.data.type : this.novelBookshelfStatus = 0
             } catch (error) {
