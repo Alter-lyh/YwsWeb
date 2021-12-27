@@ -443,18 +443,18 @@ export default {
         // 发布评论
         async postDiscuss() {
             if (this.content.length < 5) return this.$toast('评论必须大于5个字');
-            if (this.scoreValue <= 0) return this.$toast('评分必须大于0');
+            if (this.scoreValue <= 0 && this.discussType == 2) return this.$toast('评分必须大于0');
 
             const type = this.userScore.score > 0 && this.discussType == 2 ? 2 : 1
             const params = {
                 novelId: this.novelId,
-                type: type, // 1 发布评论 2修改评论
+                type: type, // 1 发布评论(评分和吐槽) 2修改评分
                 score: this.discussType != 1 ? this.scoreValue : null,
                 content: this.content,
             }
             try {
                 const res = await this.$api.novel.postDiscuss(params)
-                if (this.discussType == 2) this.userScore.score = res.data.score/2
+                if (this.discussType == 2) this.getDiscussInfo()
                 this.$toast('发布成功');
                 this.getDiscussList()
                 this.commentFlag = false
