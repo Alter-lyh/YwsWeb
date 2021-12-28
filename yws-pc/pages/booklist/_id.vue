@@ -45,13 +45,15 @@
                                         </el-rate>
                                     </div>
                                 </nuxt-link>
-                                <el-dropdown :hide-on-click="false">
+                                <el-dropdown :hide-on-click="false"  @command="addBookshelf">
                                     <span class="el-dropdown-link">
-                                        正在追读<i class="el-icon-arrow-down el-icon--right"></i>
+                                        {{item.novel.bookshelf_status | novelBookshelfFil}}<i class="el-icon-arrow-down el-icon--right"></i>
                                     </span>
                                     <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item>黄金糕</el-dropdown-item>
-                                        <el-dropdown-item>狮子头</el-dropdown-item>
+                                        <el-dropdown-item v-show="item.novel.bookshelf_status != 1" :command="`1,${item.novel.id},${$key}`">正在追读</el-dropdown-item>
+                                        <el-dropdown-item v-show="item.novel.bookshelf_status != 2" :command="`2,${item.novel.id},${$key}`">养肥待看</el-dropdown-item>
+                                        <el-dropdown-item v-show="item.novel.bookshelf_status != 3" :command="`3,${item.novel.id},${$key}`">已经看过</el-dropdown-item>
+                                        <el-dropdown-item v-show="item.novel.bookshelf_status != 0" :command="`0,${item.novel.id},${$key}`" :divided="true">取消收藏</el-dropdown-item>
                                     </el-dropdown-menu>
                                 </el-dropdown>
                             </div>
@@ -74,6 +76,7 @@
 </template>
 <script>
 import {Bitcoin} from '@icon-park/vue'
+import { getToken } from "@/plugins/auth";
 export default {
     name: 'booklistItem',
     components:{
@@ -139,7 +142,6 @@ export default {
             app.$api.booklistApi.getInfo({ booklistId }),
             app.$api.booklistApi.getNovelList({ booklistId })
         ]);
-
         const bookListInfo = result[0].data
 
         let novelList = result[1].data.data
@@ -149,6 +151,7 @@ export default {
             item.discussInfo.pageAll = 1
         })
         return {
+            booklistId,
             bookListInfo,
             novelList
         };
@@ -156,8 +159,8 @@ export default {
     async activated() {
         if (this.bookListInfo.title || this.isServer) return
         this.booklistId = this.$route.params.id.replace('.html', '')
-        await this.getInfo()
-        await this.getNovelList()
+        this.getInfo()
+        this.getNovelList()
     },
     methods: {
         async getInfo() {
@@ -172,7 +175,6 @@ export default {
                 booklistId: this.booklistId
             }
             const res = await this.$api.booklistApi.getNovelList(params)
-            console.log(res);
             this.novelList = res.data.data
             this.novelList.map(item => {
                 item.discussInfo.moreStatus = false
@@ -214,6 +216,28 @@ export default {
                     this.$notify({ type: 'success', message: '取消成功' });
                     this.novelList[$key].discussInfo.c_num--
                 }
+            }
+        },
+        // 添加到书架
+        async addBookshelf(data) {
+            data = data.split(',')
+            const $key = data[2]
+            const params = {
+                type: data[0] == 0 ? 0 : data[0],
+                status: data[0] == 0 ? 2 : 1,
+                novelId: data[1]
+            }
+            try {
+                const res = await this.$api.bookshelfApi.setStatus(params)
+                if (res.code != '00') return
+                if (data[0] != 0) {
+                    this.$message.success('加入成功');
+                } else {
+                    this.$message.success('取消成功');
+                }
+                this.novelList[$key]['novel']['bookshelf_status'] = data[0]
+            } catch (error) {
+                console.log(error)
             }
         },
         // 分页
