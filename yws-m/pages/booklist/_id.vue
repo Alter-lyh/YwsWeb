@@ -29,8 +29,8 @@
                             <div class="book-status">状态：{{item.novel.update_status | updateStatusFil}}</div>
                             <div class="update-time">更新时间：{{item.novel.update_time | timeFil}}</div>
                         </div>
-                        <div class="more-nav" @click.prevent="showPopover = true">
-                            <van-icon name="weapp-nav"/>
+                        <div class="more-nav" @click.prevent="showItemMore(item.novel, $key)">
+                            {{item.novel.bookshelf_status | novelBookshelfFil}}
                         </div>
                     </div>
                 </nuxt-link>
@@ -46,7 +46,7 @@
             @changePage="changePage"
         />
         <!-- 书籍更多操作 -->
-        <van-action-sheet v-model="showPopover" cancel-text="取消" close-on-click-action :actions="actions" @select="onSelect" />
+        <van-action-sheet v-model="showPopover" cancel-text="取消" close-on-click-action :actions="actions" @select="addBookshelf" />
     </div>
 </template>
 <script>
@@ -68,6 +68,8 @@ export default {
                 sort: null,
                 scoreSort: 'score',
             },
+            novelId: '',
+            $key: 0,
             booklistId: '',
             bookListInfo: {},
             novelList: [],
@@ -129,6 +131,7 @@ export default {
             item.discussInfo.pageAll = 1
         })
         return {
+            booklistId,
             bookListInfo,
             novelList
         };
@@ -161,9 +164,34 @@ export default {
                 item.discussInfo.pageAll = 1
             })
         },
-        // 点击书籍更多选项
-        onSelect(action) {
-            // Toast(action.text);
+        // 显示加入书架等选项
+        showItemMore(novel, $key) {
+            this.actions = [{name: '正在追读', type: 1}, {name: '养肥待看', type: 2}, {name: '已经看过', type: 3}, {name: '取消收藏', type: 0}]
+            this.actions = this.actions.filter(i => i.type != novel.bookshelf_status)
+            this.novelId = novel.id
+            this.$key = $key
+            this.showPopover = true
+        },
+        // 添加到书架
+        async addBookshelf(action) {
+            const {type} = action
+            const params = {
+                type: type,
+                status: type == 0 ? 2 : 1,
+                novelId: this.novelId
+            }
+            try {
+                const res = await this.$api.bookshelfApi.setStatus(params)
+                if (res.code != '00') return
+                if (type != 0) {
+                    this.$notify({ type: 'success', message: '加入成功' });
+                } else {
+                    this.$notify({ type: 'success', message: '取消成功' });
+                }
+                this.novelList[this.$key]['novel']['bookshelf_status'] = type
+            } catch (error) {
+                console.log(error)
+            }
         },
         // 更新筛选状态
         changeSort(status) {
@@ -323,9 +351,6 @@ export default {
                 position: absolute;
                 right: 0;
                 top: 0;
-                i{
-                    font-size: 42px;
-                }
             }
         }
     }

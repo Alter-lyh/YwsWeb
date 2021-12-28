@@ -248,7 +248,7 @@ export default {
     width: 100%;
     height: auto;
     background: #fff;
-    padding: 0 40px;
+    padding: 20px 40px;
     box-sizing: border-box;
     font-size: 28px;
     color: #999;
