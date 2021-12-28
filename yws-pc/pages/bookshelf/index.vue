@@ -40,7 +40,7 @@
                     >
                         <template slot-scope="scope">
                             <span class="time">{{scope.row.novel.update_time | timeFil}}</span>
-                            <a href="">立即阅读</a>
+                            <nuxt-link :to="`/novel/${scope.row.novel.id}.html`">立即阅读</nuxt-link>
                             <el-dropdown trigger="click" placement="bottom" @command="addBookshelf">
                                 <span class="el-dropdown-link">
                                     <i slot="reference" class="el-icon-more discuss-actions-right"></i>

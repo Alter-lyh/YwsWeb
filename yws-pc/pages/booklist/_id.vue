@@ -181,6 +181,11 @@ export default {
                 item.discussInfo.pageAll = 1
             })
         },
+        // 更新筛选状态
+        changeSort(status) {
+            this.query.sort = status;
+            // this.getNovelList();
+        },
         // 切换
         checkShow($key) {
             this.novelList[$key].discussInfo.moreStatus = !this.novelList[$key].discussInfo.moreStatus

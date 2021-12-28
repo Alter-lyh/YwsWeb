@@ -276,7 +276,7 @@ export default {
                 .item-tag{
                     color: #7d97e2;
                     font-size: 14px;
-                    cursor: pointer;
+                    // cursor: pointer;
                     span{
                         margin-right: 10px;
                     }
