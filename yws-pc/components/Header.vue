@@ -31,7 +31,11 @@
                     </el-tooltip>
                 </div>
                 <!-- <el-badge is-dot class="navbar-side-item" v-show="loginStatus"><i class="el-icon-bell"></i></el-badge> -->
-
+                <div class="navbar-side-item" v-show="loginStatus">
+                    <el-tooltip class="item" effect="dark" :content="userInfo.point" placement="bottom">
+                        <bitcoin theme="filled" size="24" fill="#FF6F59"/>
+                    </el-tooltip>
+                </div>
                 <el-dropdown class="navbar-side-item" v-show="loginStatus" placement="bottom">
                     <img class="user-img" src="https://s2.ax1x.com/2019/10/14/KSoO3T.png" alt=""/>
                     <el-dropdown-menu slot="dropdown">
@@ -51,11 +55,15 @@
 
 <script>
 import {clearToken, clearUserInfo} from "@/plugins/auth";
+import {Bitcoin} from '@icon-park/vue'
 export default {
     data() {
         return {
             input: '',
         };
+    },
+    components:{
+        Bitcoin
     },
     computed: {
         routeIndex() {
