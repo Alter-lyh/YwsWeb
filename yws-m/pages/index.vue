@@ -13,14 +13,14 @@
                 </van-swipe-item>
             </van-swipe>
         </div>
-        <div class="notice">
+        <nuxt-link to="/notice" class="notice">
             <!-- 公告 -->
             <van-notice-bar
                 left-icon="volume-o"
-                text="初次见面，你好！"
+                text="全民持股计划"
                 mode="link"
             />
-        </div>
+        </nuxt-link>
         <div class="home-desk">
             <div class="item">
                 <modify class="icon" theme="filled" size="18" fill="#567ceb"/>
