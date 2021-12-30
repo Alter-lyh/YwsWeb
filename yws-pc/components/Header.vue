@@ -6,9 +6,9 @@
                 <div class="navbar-main">
                     <nuxt-link to="/bookstore" :class="[routeIndex == 2 ? 'active' : '']">书库</nuxt-link>
                     <nuxt-link to="/booklist" :class="[routeIndex == 3 ? 'active' : '']">书单</nuxt-link>
-                    <nuxt-link to="/bookshelf" :class="[routeIndex == 4 ? 'active' : '']">书架</nuxt-link>
-                    <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">帮助中心</nuxt-link>
-                    <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">APP下载</nuxt-link>
+                    <nuxt-link to="/notice" :class="['notice', routeIndex == 5 ? 'active' : '']">全民持股</nuxt-link>
+                    <!-- <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">帮助中心</nuxt-link>
+                    <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">APP下载</nuxt-link> -->
                 </div>
                 <div class="search-view">
                     <el-input v-model="input" placeholder="请输入内容" @change="onSearch">
@@ -17,16 +17,20 @@
                 </div>
             </div>
             <div class="navbar-side">
-                <div class="navbar-side-item">足迹</div>
+                <!-- <div class="navbar-side-item">足迹</div> -->
                 <div class="navbar-side-item" @click="login" v-show="!loginStatus">登录/注册</div>
                 
-                <div class="navbar-side-item" v-show="loginStatus"><i class="el-icon-notebook-2"></i></div>
+                <nuxt-link to="/bookshelf" :class="['navbar-side-item', routeIndex == 4 ? 'active' : '']" v-show="loginStatus">
+                    <el-tooltip class="item" effect="dark" content="书架" placement="bottom">
+                        <i class="el-icon-notebook-2"></i>
+                    </el-tooltip>
+                </nuxt-link>
                 <div class="navbar-side-item" v-show="loginStatus" @click="taskSignIn">
                     <el-tooltip class="item" effect="dark" content="签到" placement="bottom">
                         <i class="el-icon-date"></i>
                     </el-tooltip>
                 </div>
-                <el-badge is-dot class="navbar-side-item" v-show="loginStatus"><i class="el-icon-bell"></i></el-badge>
+                <!-- <el-badge is-dot class="navbar-side-item" v-show="loginStatus"><i class="el-icon-bell"></i></el-badge> -->
 
                 <el-dropdown class="navbar-side-item" v-show="loginStatus" placement="bottom">
                     <img class="user-img" src="https://s2.ax1x.com/2019/10/14/KSoO3T.png" alt=""/>
@@ -69,6 +73,9 @@ export default {
                 case "/bookshelf":
                     routeIndex = 4;
                     break;
+                case "/notice":
+                    routeIndex = 5;
+                    break;
             }
             return routeIndex;
         },
@@ -91,9 +98,9 @@ export default {
             this.$store.commit('updateLoginStatus', false)
             this.$store.commit('setUserInfo', {name: '默认用户'})
         },
-        taskSignIn() {
-            const res = this.$api.taskApi.signIn()
-            console.log(res);
+        async taskSignIn() {
+            const res = await this.$api.taskApi.signIn()
+            if (res.code == '00') this.$message.success('签到成功');
         },
         // 搜索
         async onSearch() {
@@ -154,6 +161,10 @@ export default {
             a:nth-child(1){
                 margin-left: 0;
             }
+            .notice{
+                color: red;
+                font-size: 18px;
+            }
             .active{
                 color: #557cea;
             }
@@ -188,6 +199,9 @@ export default {
             font-size: 20px;
             margin: 0 10px;
             cursor: pointer;
+        }
+        .active{
+            color: #557cea;
         }
     }
 }
