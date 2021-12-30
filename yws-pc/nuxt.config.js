@@ -1,12 +1,13 @@
 export default {
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
-        title: 'yws-pc',
+        title: '全站书库_阅文说',
         meta: [
             { charset: 'utf-8' },
             { lang:'zh-CN' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-            { hid: 'description', name: 'description', content: '' }
+            { hid: 'keywords', name: 'keywords', content: '小说推荐, 读者评分, 书单分享, 正版阅读, 全站书库' },
+            { hid: 'description', name: 'description', content: '阅文说（www.ywshuo.com）是集小说推荐、正版阅读、读者评分、书单分享于一体，收录全网小说的书库，在这里不但可以追看小说最新更新,还可以解决书荒寻找到更多更好看的小说！' },
         ],
         link: [
             { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
