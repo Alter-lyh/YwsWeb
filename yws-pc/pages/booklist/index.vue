@@ -139,8 +139,7 @@ export default {
         // 男频 女频
         changeType(type) {
             this.query.type = type;
-            this.getCategory()
-            this.query.categoryId = null
+            this.query.page = 1;
             this.getBooklist();
         },
         // 分类

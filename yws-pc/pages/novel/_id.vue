@@ -4,7 +4,7 @@
             <img class="book-img" :src="novelInfo.novel_img" alt=""/>
             <div class="header-info">
                 <div class="book-info">
-                    <span class="book-name">{{novelInfo.novel_name}}</span>
+                    <h1 class="book-name">{{novelInfo.novel_name}}</h1>
                 </div>
                 <div class="author-info">作者：{{novelInfo.author_name}}</div>
                 <div class="book-word">本书字数：{{novelInfo.word_number | wordNumFilter}}</div>
@@ -271,6 +271,16 @@ export default {
             // 用户书单
             userBooklist: [],
             isServer: true
+        }
+    },
+    head() {
+        const {novel_name, author_name, synTitle} = this.novelInfo
+        return {
+            title: `${novel_name}_${author_name}_阅文说`,
+            meta: [
+                { hid: 'keywords', name: 'keywords', content: `${novel_name}, ${novel_name}评分, ${novel_name}最新章节, ${novel_name}追更阅读, ${author_name}, 阅文说` },
+                { hid: 'description', name: 'description', content: `${novel_name}是大神${author_name}所著，${novel_name}的评分、吐槽、深度解析、追更阅读由阅文说提供，${novel_name}${synTitle}` },
+            ],
         }
     },
     watch: {

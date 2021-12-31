@@ -1,15 +1,15 @@
 <template>
     <div class="container">
-        <header class="header">
+        <div class="header">
             <div class="tag-list">
                 <el-tag size="small" v-for="(item, key) in bookListInfo.categorys" :key="key">{{item.category_name}}({{item.count}})</el-tag>
             </div>
-            <h3>{{bookListInfo.title}}</h3>
+            <h1 class="title">{{bookListInfo.title}}</h1>
             <p class="desc">{{bookListInfo.intro}}</p>
             <div class="header-bot">
                 <span>{{bookListInfo.update_time | timeFil}}</span>
             </div>
-        </header>
+        </div>
         <div class="content">
             <div class="content-left">
                 <div class="store-sort">
@@ -262,7 +262,7 @@ export default {
             margin-right: 8px;
         }
     }
-    h3{
+    .title{
         font-size: 18px;
         color: #333;
         margin-top: 15px;

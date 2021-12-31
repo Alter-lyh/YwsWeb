@@ -1,15 +1,15 @@
 <template>
     <header class="navbar-wrap">
-        <nav class="navbar-inner">
+        <div class="navbar-inner">
             <div class="navbar-main-wrap">
-                <nuxt-link to="/" class="logo"></nuxt-link>
-                <div class="navbar-main">
-                    <nuxt-link to="/bookstore" :class="[routeIndex == 2 ? 'active' : '']">书库</nuxt-link>
-                    <nuxt-link to="/booklist" :class="[routeIndex == 3 ? 'active' : '']">书单</nuxt-link>
-                    <nuxt-link to="/notice" :class="['notice', routeIndex == 5 ? 'active' : '']">全民持股</nuxt-link>
+                <nuxt-link to="/" class="logo" title="阅文说"></nuxt-link>
+                <nav class="navbar-main">
+                    <nuxt-link to="/bookstore" title="书库" :class="[routeIndex == 2 ? 'active' : '']">书库</nuxt-link>
+                    <nuxt-link to="/booklist" title="书单" :class="[routeIndex == 3 ? 'active' : '']">书单</nuxt-link>
+                    <nuxt-link to="/notice" title="全民持股" :class="['notice', routeIndex == 5 ? 'active' : '']">全民持股</nuxt-link>
                     <!-- <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">帮助中心</nuxt-link>
                     <nuxt-link to="/bookshelf" :class="[routeIndex == 3 ? 'active' : '']">APP下载</nuxt-link> -->
-                </div>
+                </nav>
                 <div class="search-view">
                     <el-input v-model="input" placeholder="请输入内容" @change="onSearch">
                         <i slot="suffix" class="el-input__icon el-icon-search"></i>
@@ -49,7 +49,7 @@
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
-        </nav>
+        </div>
     </header>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="notice">
-            <h3 class="title">全民持股计划</h3>
+            <h4 class="title">全民持股计划</h4>
             <div class="content">
                 <p>为推进网站发展，我决定实行全民持股计划</p>
                 <p>简单的来说，就是把网站收益与硬币挂钩</p>
