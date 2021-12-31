@@ -8,7 +8,6 @@ export default {
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
             { name: 'author', content: 'safe' },
             { hid: 'og:title', name: 'og:title', content: '全站书库_阅文说' },
-            { hid: 'og:type', name: 'og:type', content: 'article' },
             { hid: 'og:image', name: 'og:image', content: 'https://content.markdowner.net/pub/j0jMXA-w1ynPLM' },
             { hid: 'og:url', name: 'og:url', content: 'https://www.ywshuo.com' },
             { hid: 'og:locale', name: 'og:locale', content: 'zh_CN' },

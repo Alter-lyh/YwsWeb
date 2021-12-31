@@ -21,6 +21,13 @@ export default {
             beforeUrl: ''
         };
     },
+    head() {
+        return {
+            meta: [
+                { hid: 'og:type', name: 'og:type', content: 'website' },
+            ],
+        }
+    },
     async asyncData({ app, query, params }) {
         if (!process.server) return
         const res = await app.$api.novel.getRandomDiscuss({page: 1});
