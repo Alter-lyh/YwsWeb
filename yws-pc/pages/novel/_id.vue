@@ -16,7 +16,7 @@
                             立即阅读
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item v-for="(item, $key) in novelInfo.source" :key="$key"><a :href="item.bookPage">{{item.siteName}}</a></el-dropdown-item>
+                            <el-dropdown-item v-for="(item, $key) in novelInfo.source" :key="$key"><a :href="item.bookPage" target="_blank" rel="nofollow">{{item.siteName}}</a></el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                     <el-dropdown :hide-on-click="false" @command="addBookshelf">
@@ -219,7 +219,7 @@ export default {
             novelId: '',
             novelInfo: {
                 synTitle: '简介：',
-                novel_tags: [{tag_name: ''}]
+                novel_category: {}
             },
             tagList: [],
             tagInputFlag: false,
@@ -275,7 +275,7 @@ export default {
         }
     },
     head() {
-        const {id, novel_name, author_name, synTitle, novel_img, novel_tags} = this.novelInfo
+        const {id, novel_name, author_name, synTitle, novel_img, novel_category} = this.novelInfo
         return {
             title: `${novel_name}_${author_name}_阅文说`,
             meta: [
@@ -287,7 +287,7 @@ export default {
                 {hid: 'description', name: 'description', content: `${novel_name}是大神${author_name}所著，${novel_name}的评分、吐槽、深度解析、追更阅读由阅文说提供，${novel_name}${synTitle}`},
                 {hid: 'og:description', name: 'og:description', content: `${novel_name}是大神${author_name}所著，${novel_name}的评分、吐槽、深度解析、追更阅读由阅文说提供，${novel_name}${synTitle}`},
                 {hid: 'og:image', name: 'og:image', content: novel_img },
-                {hid: 'og:novel:category', name: 'og:novel:category', content: novel_tags[0].tag_name },
+                {hid: 'og:novel:category', name: 'og:novel:category', content: novel_category.cate_name },
                 {hid: 'og:novel:author', name: 'og:novel:author', content: author_name },
                 {hid: 'og:novel:book_name', name: 'og:novel:book_name', content: novel_name },
                 {hid: 'og:novel:read_url', name: 'og:novel:read_url', content: `https://www.ywshuo.com/novel/${id}.html`},
