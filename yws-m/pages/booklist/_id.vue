@@ -71,7 +71,9 @@ export default {
             novelId: '',
             $key: 0,
             booklistId: '',
-            bookListInfo: {},
+            bookListInfo: {
+                userInfo: {name: ''}
+            },
             novelList: [],
             value: 3.7,
             sortList: [
@@ -98,6 +100,24 @@ export default {
             // 通过 actions 属性来定义菜单选项
             actions: [{name: '正在追读', type: 1}, {name: '养肥待看', type: 2}, {name: '已经看过', type: 3}, {name: '取消收藏', type: 0}],
             isServer: true
+        }
+    },
+    head() {
+        const {id, title, intro, userInfo} = this.bookListInfo
+        let keywords = ''
+        this.novelList.map(item => {
+            keywords += item.novel.novel_name + '，'
+        })
+        return {
+            title: `${title}_小说推荐单_阅文说`,
+            meta: [
+                {hid: 'og:title', name: 'og:title', content: `${title}_小说推荐单_阅文说` },
+                {name: 'mobile-agent', content: `format=html5; url=https://m.ywshuo.com/booklist/${id}.html`},
+                {hid: 'keywords', name: 'keywords', content: `${userInfo.name}关于${keywords}等小说推荐，阅文说`},
+                {hid: 'og:keywords', name: 'og:keywords', content: `${userInfo.name}关于${keywords}等小说推荐，阅文说`},
+                {hid: 'description', name: 'description', content: `${title}，${intro}，${userInfo.name}的小说推荐单，关于${keywords}等小说推荐，阅文说`},
+                {hid: 'og:description', name: 'og:description', content: `${title}，${intro}，${userInfo.name}的小说推荐单，关于${keywords}等小说推荐，阅文说`},
+            ],
         }
     },
     watch: {

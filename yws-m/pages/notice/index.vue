@@ -24,6 +24,18 @@ export default {
         return {
         };
     },
+    head() {
+        return {
+            title: `通知_阅文说`,
+            meta: [
+                {hid: 'og:title', name: 'og:title', content: `通知_阅文说` },
+                {hid: 'keywords', name: 'keywords', content: `通知_阅文说`},
+                {hid: 'og:keywords', name: 'og:keywords', content: `通知_阅文说`},
+                {hid: 'description', name: 'description', content: `通知_阅文说`},
+                {hid: 'og:description', name: 'og:description', content: `通知_阅文说`},
+            ],
+        }
+    },
     async asyncData({ app, query, params }) {
     },
     async activated() {

@@ -77,8 +77,17 @@ export default {
             novelList: []
         };
     },
-    beforeRouteEnter (to, from, next) {
-        next()
+    head() {
+        return {
+            title: `搜索_全网搜索_阅文说`,
+            meta: [
+                {hid: 'og:title', name: 'og:title', content: `搜索_全网搜索_阅文说` },
+                {hid: 'keywords', name: 'keywords', content: `小说搜索，全网小说搜索，阅文说`},
+                {hid: 'og:keywords', name: 'og:keywords', content: `小说搜索，全网小说搜索，阅文说`},
+                {hid: 'description', name: 'description', content: `阅文说可以搜索全网小说`},
+                {hid: 'og:description', name: 'og:description', content: `阅文说可以搜索全网小说`},
+            ],
+        }
     },
     async activated() {
         if (this.$route.meta.isBack) {

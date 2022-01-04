@@ -87,6 +87,18 @@ export default {
             bookList: [],
         };
     },
+    head() {
+        return {
+            title: `书单_小说推荐_阅文说`,
+            meta: [
+                {hid: 'og:title', name: 'og:title', content: `书单_小说推荐_阅文说` },
+                {hid: 'keywords', name: 'keywords', content: `书单, 书单推荐, 小说推荐, 男频书单, 女频书单, 阅文说`},
+                {hid: 'og:keywords', name: 'og:keywords', content: `书单, 书单推荐, 小说推荐, 男频书单, 女频书单, 阅文说`},
+                {hid: 'description', name: 'description', content: `书单是阅文说广大读者朋友多年阅读小说后获得的精品小说推荐集合，分为男频和女频，包含了玄幻，奇幻，武侠，仙侠，都市...`},
+                {hid: 'og:description', name: 'og:description', content: `书单是阅文说广大读者朋友多年阅读小说后获得的精品小说推荐集合，分为男频和女频，包含了玄幻，奇幻，武侠，仙侠，都市...`},
+            ],
+        }
+    },
     async asyncData({ app, query, params }) {
         // 请检查您是否在服务器端
         if (!process.server) return;
