@@ -6,6 +6,7 @@ export default {
             { charset: 'utf-8' },
             { lang:'zh-CN' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+            { name: 'applicable-device', content: 'pc' },
             { name: 'author', content: 'safe' },
             { hid: 'og:title', name: 'og:title', content: '全站书库_阅文说' },
             { hid: 'og:image', name: 'og:image', content: 'https://content.markdowner.net/pub/j0jMXA-w1ynPLM' },

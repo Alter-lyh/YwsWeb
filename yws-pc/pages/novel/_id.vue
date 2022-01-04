@@ -281,6 +281,7 @@ export default {
             meta: [
                 {hid: 'og:type', name: 'og:type', content: 'novel'},
                 {hid: 'og:title', name: 'og:title', content: `${novel_name}_${author_name}_阅文说` },
+                {name: 'mobile-agent', content: `format=html5; url=https://m.ywshuo.com/novel/${id}.html`},
                 {hid: 'keywords', name: 'keywords', content: `${novel_name}, ${novel_name}评分, ${novel_name}最新章节, ${novel_name}追更阅读, ${author_name}, 阅文说`},
                 {hid: 'og:keywords', name: 'og:keywords', content: `${novel_name}, ${novel_name}评分, ${novel_name}最新章节, ${novel_name}追更阅读, ${author_name}, 阅文说`},
                 {hid: 'description', name: 'description', content: `${novel_name}是大神${author_name}所著，${novel_name}的评分、吐槽、深度解析、追更阅读由阅文说提供，${novel_name}${synTitle}`},

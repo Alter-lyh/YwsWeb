@@ -24,6 +24,7 @@ export default {
     head() {
         return {
             meta: [
+                { name: 'mobile-agent', content: 'format=html5; url=https://m.ywshuo.com/' },
                 { hid: 'og:type', name: 'og:type', content: 'website' },
             ],
         }

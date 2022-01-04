@@ -122,7 +122,7 @@ export default {
         }
     },
     head() {
-        const {title, intro, userInfo} = this.bookListInfo
+        const {id, title, intro, userInfo} = this.bookListInfo
         let keywords = ''
         this.novelList.map(item => {
             keywords += item.novel.novel_name + '，'
@@ -131,6 +131,7 @@ export default {
             title: `${title}_小说推荐单_阅文说`,
             meta: [
                 {hid: 'og:title', name: 'og:title', content: `${title}_小说推荐单_阅文说` },
+                {name: 'mobile-agent', content: `format=html5; url=https://m.ywshuo.com/booklist/${id}.html`},
                 {hid: 'keywords', name: 'keywords', content: `${userInfo.name}关于${keywords}等小说推荐，阅文说`},
                 {hid: 'og:keywords', name: 'og:keywords', content: `${userInfo.name}关于${keywords}等小说推荐，阅文说`},
                 {hid: 'description', name: 'description', content: `${title}，${intro}，${userInfo.name}的小说推荐单，关于${keywords}等小说推荐，阅文说`},
