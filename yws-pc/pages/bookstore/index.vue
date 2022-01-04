@@ -287,6 +287,18 @@ export default {
             novelList: [],
         };
     },
+    head() {
+        return {
+            title: `书库_小说推荐_阅文说`,
+            meta: [
+                {hid: 'og:title', name: 'og:title', content: `书库_小说推荐_阅文说` },
+                {hid: 'keywords', name: 'keywords', content: `玄幻，奇幻，武侠，仙侠，都市，现实，军事，历史，悬疑，游戏，竞技，科幻，灵异，二次元，同人，小说推荐，阅文说`},
+                {hid: 'og:keywords', name: 'og:keywords', content: `玄幻，奇幻，武侠，仙侠，都市，现实，军事，历史，悬疑，游戏，竞技，科幻，灵异，二次元，同人，小说推荐，阅文说`},
+                {hid: 'description', name: 'description', content: `书库是阅文说搜集全网优质小说的集合，包含了玄幻，奇幻，武侠，仙侠，都市，现实，军事，历史，悬疑，游戏，竞技，科幻，灵异，二次元，同人等等精品小说`},
+                {hid: 'og:description', name: 'og:description', content: `书库是阅文说搜集全网优质小说的集合，包含了玄幻，奇幻，武侠，仙侠，都市，现实，军事，历史，悬疑，游戏，竞技，科幻，灵异，二次元，同人等等精品小说`},
+            ],
+        }
+    },
     async asyncData({ app, query, params }) {
         // 请检查您是否在服务器端
         if (!process.server) return;

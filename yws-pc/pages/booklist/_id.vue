@@ -95,9 +95,10 @@ export default {
                 scoreSort: 'score',
             },
             booklistId: '',
-            bookListInfo: {},
+            bookListInfo: {
+                userInfo: {name: ''}
+            },
             novelList: [],
-            value: 3.7,
             sortList: [
                 {
                     status: null,
@@ -118,6 +119,23 @@ export default {
             ],
             pageAll: 1,
             isServer: true
+        }
+    },
+    head() {
+        const {title, intro, userInfo} = this.bookListInfo
+        let keywords = ''
+        this.novelList.map(item => {
+            keywords += item.novel.novel_name + '，'
+        })
+        return {
+            title: `${title}_小说推荐单_阅文说`,
+            meta: [
+                {hid: 'og:title', name: 'og:title', content: `${title}_小说推荐单_阅文说` },
+                {hid: 'keywords', name: 'keywords', content: `${userInfo.name}关于${keywords}等小说推荐，阅文说`},
+                {hid: 'og:keywords', name: 'og:keywords', content: `${userInfo.name}关于${keywords}等小说推荐，阅文说`},
+                {hid: 'description', name: 'description', content: `${title}，${intro}，${userInfo.name}的小说推荐单，关于${keywords}等小说推荐，阅文说`},
+                {hid: 'og:description', name: 'og:description', content: `${title}，${intro}，${userInfo.name}的小说推荐单，关于${keywords}等小说推荐，阅文说`},
+            ],
         }
     },
     watch: {
