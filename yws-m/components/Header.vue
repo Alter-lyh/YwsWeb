@@ -1,6 +1,6 @@
 <template>
     <header class="header">
-        <nuxt-link to="/" class="logo"></nuxt-link>
+        <nuxt-link to="/" class="logo">阅 文 说</nuxt-link>
         <div class="header-right">
             <nuxt-link to="/search" class="item">
                 <van-icon name="search" size="1.2em"/>
@@ -99,6 +99,12 @@ export default {
         width: 200px;
         height: 60px;
         background: coral;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        line-height: normal;
+        font-size: 28px;
+        color: white;
     }
     .header-right{
         display: flex;

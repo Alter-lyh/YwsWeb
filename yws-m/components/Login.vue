@@ -6,7 +6,7 @@
         :showCancelButton="false">
         <div class="login-view">
             <p class="title">{{loginType == 2 ? '欢迎登录' : '马上注册'}}</p>
-            <p class="tips">——— — 超过15,55名用户加入网站名称 — ———</p>
+            <p class="tips">——— — 超过15,55名用户加入阅文说 — ———</p>
             <div class="login-block" v-show="loginType == 2">
                 <van-field class="name-input" v-model="email" type="email" placeholder="请输入邮箱"></van-field>
                 <van-field v-model="password" placeholder="请输入密码" show-password></van-field>
@@ -17,6 +17,14 @@
                 <van-field class="item" v-model="name" placeholder="请输入昵称"></van-field>
                 <van-field class="item" v-model="password" placeholder="请输入密码"></van-field>
                 <van-field class="item" v-model="confirmPassword" placeholder="请确认密码"></van-field>
+                <div class="item">
+                    <div class="scoreLevel">
+                        <span class="item-tilte">书龄</span>
+                        <van-dropdown-menu :overlay="false">
+                            <van-dropdown-item v-model="value" :title="scoreTitle" :options="option" />
+                        </van-dropdown-menu>
+                    </div>
+                </div>
                 <div class="item">
                     <van-field class="name-input" v-model="yzCode" placeholder="邮箱验证码"></van-field>
                     <van-button type="primary" @click="sendYZcode">发送验证码</van-button>
@@ -42,8 +50,25 @@ export default {
             email: '',
             password: '',
             confirmPassword: '',
-            yzCode: ''
+            yzCode: '',
+            scoreTitle: '请选择书龄',
+            option: [{
+                value: '1',
+                text: '三年内'
+            }, {
+                value: '2',
+                text: '七年内'
+            }, {
+                value: '3',
+                text: '七年上'
+            }],
+            value: '',
         };
+    },
+    watch: {
+        value(val) {
+            this.scoreTitle = this.option[val*1-1]['text']
+        }
     },
     computed: {
       loginFlag:{
@@ -109,6 +134,10 @@ export default {
                 this.$toast('请输入正确邮箱');
                 return
             }
+            if (this.value == '') {
+                this.$message('请选择书龄');
+                return
+            }
             if (!this.name ||!this.email || !this.password || !this.confirmPassword || !this.yzCode) {
                 this.$toast('请输入完整数据');
                 return
@@ -122,6 +151,7 @@ export default {
                 email: this.email,
                 password: this.password,
                 confirmPassword: this.confirmPassword,
+                scoreLevel: this.value,
                 yzCode: this.yzCode
             }
             try {
@@ -179,8 +209,33 @@ export default {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            .scoreLevel{
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-bottom: 20px;
+                border-bottom: 1px solid #ebedf0;
+            }
             .name-input{
                 width: 55%;
+            }
+            .item-tilte{
+                line-height: 90px;
+                min-width: 100px;
+                font-size: 28px;
+                color: #646566;
+                padding-left: 34px;
+            }
+            /deep/.van-dropdown-item{
+                top: 710px!important;
+                .van-cell{
+                    padding-left: 115px;
+                    padding-right: 80px;
+                }
+            }
+            /deep/.van-dropdown-menu{
+                width: 80%;
             }
         }
         .regist-btn{

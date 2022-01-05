@@ -2,7 +2,7 @@
     <header class="navbar-wrap">
         <div class="navbar-inner">
             <div class="navbar-main-wrap">
-                <nuxt-link to="/" class="logo" title="阅文说"></nuxt-link>
+                <nuxt-link to="/" class="logo" title="阅文说">阅 文 说</nuxt-link>
                 <nav class="navbar-main">
                     <nuxt-link to="/bookstore" title="书库" :class="[routeIndex == 2 ? 'active' : '']">书库</nuxt-link>
                     <nuxt-link to="/booklist" title="书单" :class="[routeIndex == 3 ? 'active' : '']">书单</nuxt-link>
@@ -154,6 +154,12 @@ export default {
             width: 100px;
             height: 30px;
             background: coral;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: normal;
+            font-size: 14px;
+            color: white;
         }
         .navbar-main{
             margin: 0 40px;

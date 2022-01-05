@@ -10,7 +10,7 @@
             </div>
             <div class="login-right">
                 <p class="title">{{loginType == 2 ? '欢迎登录' : '马上注册'}}</p>
-                <p class="tips">——— — 超过15,55名用户加入网站名称 — ———</p>
+                <p class="tips">——— — 超过15,55名用户加入阅文说 — ———</p>
                 <div class="login-block" v-show="loginType == 2">
                     <el-input class="name-input" v-model="email" type="email" placeholder="请输入邮箱"></el-input>
                     <el-input v-model="password" placeholder="请输入密码" show-password></el-input>
@@ -21,6 +21,14 @@
                     <el-input class="item" v-model="name" placeholder="请输入昵称"></el-input>
                     <el-input class="item" v-model="password" placeholder="请输入密码"></el-input>
                     <el-input class="item" v-model="confirmPassword" placeholder="请确认密码"></el-input>
+                    <el-select class="item" v-model="value" placeholder="请选择书龄">
+                        <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
                     <div class="item">
                         <el-input class="name-input" v-model="yzCode" placeholder="邮箱验证码"></el-input>
                         <el-button type="primary" @click="sendYZcode">发送验证码</el-button>
@@ -47,7 +55,18 @@ export default {
             email: '',
             password: '',
             confirmPassword: '',
-            yzCode: ''
+            yzCode: '',
+            options: [{
+                value: '1',
+                label: '三年内'
+            }, {
+                value: '2',
+                label: '七年内'
+            }, {
+                value: '3',
+                label: '七年上'
+            }],
+            value: ''
         };
     },
     computed: {
@@ -117,6 +136,10 @@ export default {
                 this.$message('请输入正确邮箱');
                 return
             }
+            if (this.value == '') {
+                this.$message('请选择书龄');
+                return
+            }
             if (!this.name ||!this.email || !this.password || !this.confirmPassword || !this.yzCode) {
                 this.$message('请输入完整数据');
                 return
@@ -130,6 +153,7 @@ export default {
                 email: this.email,
                 password: this.password,
                 confirmPassword: this.confirmPassword,
+                scoreLevel: this.value,
                 yzCode: this.yzCode
             }
             try {
@@ -156,7 +180,7 @@ export default {
 <style scoped lang="less">
 .login-view{
     width: 600px;
-    height: 440px;
+    height: 500px;
     display: flex;
     .img-box{
         width: 204px;
