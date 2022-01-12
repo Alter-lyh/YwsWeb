@@ -329,7 +329,7 @@ export default {
         }
 
         setTimeout(() => {
-            this.$refs.novelBottom.getBookShelfNoverStatus()
+            if (getToken()) this.$refs.novelBottom.getBookShelfNoverStatus()
         }, 100)
         if(getToken()) {
             this.getDiscussInfo()

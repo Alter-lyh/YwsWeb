@@ -13,7 +13,7 @@
                 <div class="item-header-right">随机推荐</div>
             </div>
             <div class="novel-info">
-                <nuxt-link class="novel-name" :to="`/novel/${item.novel_id}.html`">《{{item.noverInfo.novel_name}}》</nuxt-link>
+                <nuxt-link class="novel-name" :to="`/novel/${item.novel_id}.html`">《{{item.novelInfo.novel_name}}》</nuxt-link>
                 <el-rate
                     :value="item.score/2"
                     disabled
@@ -23,7 +23,7 @@
             </div>
             <DiscussContent :content="item.content" :editTime="item.update_time" />
             <DiscussActions :dzNum="item.dz_num" :cNum="item.c_num" :replyNum="item.reply_num" :discussId="item.id" @setStatus="setStatus($event, $key)" @setReplayShow="setReplayShow($key)"/>
-            <DiscussReplay v-show="item.replayShow" :replayShow="item.replayShow" :novelId="item.noverInfo.id" :discussId="item.id" />
+            <DiscussReplay v-show="item.replayShow" :replayShow="item.replayShow" :novelId="item.novelInfo.id" :discussId="item.id" />
         </div>
     </div>
 </template>
