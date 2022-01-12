@@ -62,7 +62,6 @@ export default {
     proxy: {
         '/api/': {
             target: 'http://127.0.0.1:8038/api',//这个网站是开源的可以请求到数据的
-            // target: 'http://127.0.0.1:7002/api',//这个网站是开源的可以请求到数据的
             pathRewrite: {
                 '^/api/': '/',
                 changeOrigin: true
