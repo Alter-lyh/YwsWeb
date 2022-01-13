@@ -17,7 +17,7 @@
             <!-- 公告 -->
             <van-notice-bar
                 left-icon="volume-o"
-                text="全民持股计划"
+                text="加入我们 ，共有收益，共建此站"
                 mode="link"
             />
         </nuxt-link>
