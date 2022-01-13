@@ -16,12 +16,13 @@
         <nuxt-link to="/notice" class="notice">
             <!-- 公告 -->
             <van-notice-bar
+                color="#1989fa" background="#ecf9ff"
                 left-icon="volume-o"
-                text="加入我们 ，共有收益，共建此站"
+                text="写书评，领红包"
                 mode="link"
             />
         </nuxt-link>
-        <div class="home-desk">
+        <nuxt-link to="/bookstore" class="home-desk">
             <div class="item">
                 <modify class="icon" theme="filled" size="18" fill="#567ceb"/>
                 <span>发表书评</span>
@@ -34,7 +35,7 @@
                 <add-print class="icon" theme="filled" size="18" fill="#567ceb"/>
                 <span>创建书单</span>
             </div>
-        </div>
+        </nuxt-link >
         <!-- 站长推荐 -->
         <div class="recommend-books">
             <div class="books-header">
