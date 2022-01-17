@@ -1,10 +1,19 @@
 <template>
     <div class="container">
+        <van-nav-bar
+            title="全民持股计划"
+            left-text="返回"
+            right-text="首页"
+            left-arrow
+            @click-left="goBack"
+            @click-right="goBack"
+        />
         <div class="notice">
             <h4 class="title">全民持股计划</h4>
             <div class="content">
-                <p><span>累计金额：</span><span class="money">5元</span></p>
-                <p><span>累计硬币：</span><span class="money">0</span></p>
+                <p><span>累计金额：</span><span class="money">20元</span></p>
+                <p><span>累计积分：</span><span class="money">2</span></p>
+                <p>请以下人员联系我：safe</p>
                 <p>为推进网站发展，我决定实行全民持股计划</p>
                 <p>简单的来说，就是把网站收益与硬币挂钩</p>
                 <p>举个例子，网站三天内产生的收益为100元，流通的硬币为100枚，那么到兑换时，1硬币即可兑换1元。如果流通的硬币为200枚，则1硬币可兑换0.5元。硬币没有固定价值，根据收益变动而变动</p>
@@ -44,6 +53,9 @@ export default {
     async activated() {
     },
     methods: {
+        goBack() {
+            this.$router.go(-1);
+        },
     }
 };
 </script>
