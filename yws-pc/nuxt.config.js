@@ -80,6 +80,12 @@ export default {
     //     }
     // },
 
+    // 环境变量属性
+    env: {
+        amount: 10,
+        point: 0
+    },
+
     server: {
         port: 3001, // default: 3000
         host: '0.0.0.0', // default: localhost
