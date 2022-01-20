@@ -82,9 +82,8 @@ export default {
     //     }
     // },
 
-    // 环境变量属性
-    env: {
-        amount: 10,
+    publicRuntimeConfig: {
+        amount: 15,
         point: 0
     },
     

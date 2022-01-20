@@ -25,8 +25,8 @@ export default {
     name: 'notice',
     data() {
         return {
-            amount: process.env.amount,
-            point: process.env.point
+            amount: this.$config.amount,
+            point: this.$config.point
         };
     },
     head() {
