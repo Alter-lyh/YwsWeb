@@ -5,10 +5,6 @@
             <van-swipe :autoplay="3000" indicator-color="#1989fa">
                 <van-swipe-item>
                     <nuxt-link class="item" :to="`/bookstore`">
-                        <img
-                            src="https://i.loli.net/2020/04/20/1GE9Lv78nJ4YoqA.png"
-                            alt=""
-                        />
                     </nuxt-link>
                 </van-swipe-item>
             </van-swipe>
@@ -230,17 +226,13 @@ export default {
     height: auto;
     background: #fff;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 15px;
     margin-top: 10px;
     .item {
         width: 100%;
-        height: 220px;
-        background: #fff;
-        img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
+        height: 216px;
+        background: #eee;
+        display: block;
     }
 }
 .home-desk {

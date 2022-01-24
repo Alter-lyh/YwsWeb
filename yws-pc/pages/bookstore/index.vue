@@ -116,7 +116,7 @@
                         <span class="book-sore">综合评分：<em>{{ item.score }}</em>（{{ item.scorer }}人）</span>
                         <span class="book-sore">三年内：<em>{{ item.score_1 }}</em>（{{ item.scorer_1 }}人）</span>
                         <span class="book-sore">七年内：<em>{{ item.score_2 }}</em>（{{ item.scorer_2 }}人）</span>
-                        <span class="book-sore">七年内：<em>{{ item.score_3 }}</em>（{{ item.scorer_3 }}人）</span>
+                        <span class="book-sore">七年上：<em>{{ item.score_3 }}</em>（{{ item.scorer_3 }}人）</span>
                     </div>
                     <div class="book-tag">
                         <span class="book-tag-title">本书标签:</span>

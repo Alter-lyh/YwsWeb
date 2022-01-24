@@ -1,7 +1,6 @@
 <template>
     <div class="main">
         <nuxt-link class="banner-view" :to="`/bookstore`">
-            <img src="https://i.loli.net/2020/04/20/1GE9Lv78nJ4YoqA.png" alt="" />
         </nuxt-link >
         <div class="bookpage-layout-main">
             <HomeLeftSide :page="page" :pageAll="pageAll" :discussList="discussList" />
@@ -82,13 +81,11 @@ export default {
 <style lang="less" scoped>
 .banner-view {
     width: 100%;
-    height: 265px;
+    height: 300px;
     box-sizing: border-box;
     overflow: hidden;
-    img{
-        width: 100%;
-        height: auto;
-    }
+    display: block;
+    background: #333;
 }
 .bookpage-layout-main {
     width: 100%;

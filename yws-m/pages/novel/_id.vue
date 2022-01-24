@@ -188,12 +188,12 @@ export default {
             introNames: [],
             page: 1,
             pageAll: 1,
-            discussStatus: null,
+            discussStatus: 'latest',
             sortList: [
-                {
-                    status: null,
-                    name: "综合",
-                },
+                // {
+                //     status: null,
+                //     name: "综合",
+                // },
                 {
                     status: 'latest',
                     name: "最新",
@@ -282,7 +282,7 @@ export default {
 
         const result = await Promise.all([
             app.$api.novel.getNovelInfo({ novelId }),
-            app.$api.novel.getDiscussList({ novelId, page: 1, num: 20, score: 0 })
+            app.$api.novel.getDiscussList({ novelId, page: 1, num: 20, score: 0, sort: 'latest' })
         ]);
         // 书籍信息
         let novelInfo = result[0].data
