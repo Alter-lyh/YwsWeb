@@ -73,7 +73,7 @@
         },
         methods: {
             toRead(action) {
-                window.open(action.bookPage)
+                window.open(`${action.bookPage}/`)
             },
             showCoin() {
                 this.$store.commit('updateCoinView', true)

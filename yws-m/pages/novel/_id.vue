@@ -661,7 +661,6 @@ export default {
 	padding: 20px 30px;
     background: #FFFFFF;
     display: flex;
-    align-items: center;
     flex-wrap: wrap;
     .input-new-tag{
         width: 120px;

@@ -103,7 +103,7 @@ export default {
             // 默认情况下点击选项时不会自动收起
             // 可以通过 close-on-click-action 属性开启自动收起
             this.show1 = false;
-            window.location.href = item.bookPage
+            window.open(`${item.bookPage}/`)
         },
         async onSelect2(item) {
             // 默认情况下点击选项时不会自动收起
